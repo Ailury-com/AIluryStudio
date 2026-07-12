@@ -4214,48 +4214,48 @@
         }
         
         .gridop1 {
-            background-size: 15px 15px;
-            background-image: radial-gradient(var(--overlaycolor-color) 1px, transparent 1px);
+            background-size: 15px 15px !important;
+            background-image: radial-gradient(var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showTrueGridTone .gridop1 {
-            background-image: radial-gradient(var(--griddot-color) 1px, transparent 1px);
+        .showFalseGridTone .gridop1 {
+            background-image: radial-gradient(var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
         .gridop2 {
-            background-size: 15px 15px;
-            background-image: linear-gradient(90deg, var(--overlaycolor-color) 1px, transparent 1px);
+            background-size: 15px 15px !important;
+            background-image: linear-gradient(90deg, var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showTrueGridTone .gridop2 {
-            background-image: linear-gradient(90deg, var(--griddot-color) 1px, transparent 1px);
+        .showFalseGridTone .gridop2 {
+            background-image: linear-gradient(90deg, var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
         .gridop3 {
-            background-size: 40px 40px;
-            background-image: radial-gradient(circle, transparent 90%, var(--overlaycolor-color) 2%);
+            background-size: 40px 40px !important;
+            background-image: radial-gradient(circle, transparent 90%, var(--griddot-color) 2%) !important;
         }
-        .showTrueGridTone .gridop3 {
-            background-image: radial-gradient(circle, transparent 90%, var(--griddot-color) 2%);
+        .showFalseGridTone .gridop3 {
+            background-image: radial-gradient(circle, transparent 90%, var(--overlaycolor-color) 2%) !important;
         }
         .gridop4 {
-            background-size: 15px 15px;
-            background-image: linear-gradient(var(--overlaycolor-color) 1px, transparent 1px);
+            background-size: 15px 15px !important;
+            background-image: linear-gradient(var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showTrueGridTone .gridop4 {
-            background-image: linear-gradient(var(--griddot-color) 1px, transparent 1px);
+        .showFalseGridTone .gridop4 {
+            background-image: linear-gradient(var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
         .gridop5 {
-            background-size: 20px 20px;
-            background-image: linear-gradient(var(--overlaycolor-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--overlaycolor-color) 1px, transparent 1px);
-        }
-        .showTrueGridTone .gridop5 {
+            background-size: 20px 20px !important;
             background-image: linear-gradient(var(--griddot-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--griddot-color) 1px, transparent 1px);
+                linear-gradient(90deg, var(--griddot-color) 1px, transparent 1px) !important;
+        }
+        .showFalseGridTone .gridop5 {
+            background-image: linear-gradient(var(--overlaycolor-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
         .gridop6 {
-            background-size: 50px 50px;
-            background-image: radial-gradient(var(--overlaycolor-color) 10%, transparent 10%);
+            background-size: 50px 50px !important;
+            background-image: radial-gradient(var(--griddot-color) 10%, transparent 10%) !important;
         }
-        .showTrueGridTone .gridop6 {
-            background-image: radial-gradient(var(--griddot-color) 10%, transparent 10%);
+        .showFalseGridTone .gridop6 {
+            background-image: radial-gradient(var(--overlaycolor-color) 10%, transparent 10%) !important;
         }
         .sidebarbardiv h1 {
             font-size: 1.3em;
@@ -6132,8 +6132,8 @@
             color: var(--contrast-color);
             padding: 10px;
             display: flex;
-            justify-content: space-between;
             gap: 5px;
+            justify-content: space-between;
         }
         .pinToFileTextCon {
             display: flex;
@@ -8154,7 +8154,7 @@
                         </div>
                         <div class="searchCon cfscscf cfscscpin" style="margin-top: 15px;">
                             <span class="searchConIcon">⌕</span>
-                            <input class="searchInput" type="text" placeholder="search for pinned line..." oninput="searchInCon(this, '.unpinlinesmanuallyorteleport', '.leidresult', '.leidResultSpan', null, 'flex')" data-targetCon="unpinlinesmanuallyorteleport">
+                            <input class="searchInput" type="text" placeholder="search for pinned lines..." oninput="searchInCon(this, '.unpinlinesmanuallyorteleport', '.leidresult', '.leidResultSpan', null, 'flex')" data-targetCon="unpinlinesmanuallyorteleport">
                             <button class="clearSearchConInput" onclick="clearClosestSearchCon(this)" style="display: none;">clear</button>
                         </div>
                         <h2 class="cfscscpin cfscscf cfscscpinlabel cfsch2">all pined lines</h2>
@@ -8177,20 +8177,20 @@
                             no custom short-cuts yet!
                         </div>
                         <h2 class="cfscscgrid cfscscf cfscscgridlabel cfsch2">grid options</h2>
-                        <div class="cfscscgrid cfscscf showtruegridtone">
+                        <div class="cfscscgrid cfscscf showFalseGridToneToggle">
                             <label class="switch">
-                                <input type="checkbox" data-checked="showtruegridtone" checked onchange="toggleTrueGridToneDisplay(this)">
+                                <input type="checkbox" data-checked="showFalseGridToneToggle" checked onchange="toggleTrueGridToneDisplay(this)">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">show true grid color</span>
                         </div>
-                        <div class="cfscscgrid cfscscf gridoptions showTrueGridTone">
-                            <div class="gridop gridop1 cyselected" onclick="selectthisgrid(this)"></div>
-                            <div class="gridop gridop2" onclick="selectthisgrid(this)"></div>
-                            <div class="gridop gridop3" onclick="selectthisgrid(this)"></div>
-                            <div class="gridop gridop4" onclick="selectthisgrid(this)"></div>
-                            <div class="gridop gridop5" onclick="selectthisgrid(this)"></div>
-                            <div class="gridop gridop6" onclick="selectthisgrid(this)"></div>
+                        <div class="cfscscgrid cfscscf gridoptions">
+                            <div class="gridop gridop1 cyselected" id="gridop1" onclick="selectthisgrid('gridop1')"></div>
+                            <div class="gridop gridop2" id="gridop2" onclick="selectthisgrid('gridop2')"></div>
+                            <div class="gridop gridop3" id="gridop3" onclick="selectthisgrid('gridop3')"></div>
+                            <div class="gridop gridop4" id="gridop4" onclick="selectthisgrid('gridop4')"></div>
+                            <div class="gridop gridop5" id="gridop5" onclick="selectthisgrid('gridop5')"></div>
+                            <div class="gridop gridop6" id="gridop6" onclick="selectthisgrid('gridop6')"></div>
                         </div>
                         <div class="cfscscsearch cfscscf commandforregexsearch">
                             <label class="switch">
@@ -8606,10 +8606,10 @@
         function toggleTrueGridToneDisplay(toggleEl) {
             const gridoptions = document.querySelector(".gridoptions");
             if (!gridoptions) return;
-            if (toggleEl && toggleEl.checked && !gridoptions.classList.contains("showTrueGridTone")) {
-                gridoptions.classList.add("showTrueGridTone");
-            } else if (gridoptions.classList.contains("showTrueGridTone")) {
-                gridoptions.classList.remove("showTrueGridTone");
+            if (toggleEl && toggleEl.checked && gridoptions.classList.contains("showFalseGridTone")) {
+                gridoptions.classList.remove("showFalseGridTone");
+            } else if (!gridoptions.classList.contains("showFalseGridTone")) {
+                gridoptions.classList.add("showFalseGridTone");
             }
         }
         function toggleAndSaveProjectBrightness() {
@@ -10343,25 +10343,26 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         }
         
         
-        function selectthisgrid(gridop) {
+        function selectthisgrid(gridop = null) {
             let gridSections = document.querySelectorAll('.section.gridenabled');
             
-            if (gridSections.length === 0) {
-                showAlert('Make sure you have "grid" enabled');
+            if (gridSections.length == 0) {
+                if (gridop) {
+                    showAlert('Make sure you have "grid" enabled');
+                }
                 return;
             }
-            
+            const gridopEl = document.querySelector('.gridop.cyselected');
             document.querySelectorAll('.gridop.cyselected').forEach(op => {
                 op.classList.remove('cyselected');
             });
-            
-            gridop.classList.add('cyselected');
-            
-            let computedStyle = getComputedStyle(gridop);
+            if (!gridop) {
+                gridop = gridopEl ? gridopEl.id : "gridop1";
+            }
+            document.querySelector(".gridop." + gridop)?.classList.add('cyselected');
             
             gridSections.forEach(sg => {
-                sg.style.backgroundSize = computedStyle.backgroundSize;
-                sg.style.backgroundImage = computedStyle.backgroundImage;
+                sg.classList.add(gridop);
                 
                 if (sg._gridObserver) {
                     sg._gridObserver.disconnect();
@@ -10370,10 +10371,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 sg._gridObserver = new MutationObserver((mutations, observer) => {
                     mutations.forEach(mutation => {
                         if (mutation.attributeName === "class" && !sg.classList.contains('gridenabled')) {
-                            sg.style.backgroundSize = "";
-                            sg.style.backgroundImage = "";
+                            sg.classList.remove("gridop1", "gridop2", "gridop3", "gridop4", "gridop5", "gridop6");
                             observer.disconnect();
-                            sg._gridObserver = null; // Clean up reference
+                            sg._gridObserver = null;
                         }
                     });
                 });
@@ -13155,9 +13155,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 themetoedit.style.setProperty('--griddot-color', rgba);
             }
             await updateCssVariable();
-            if (document.querySelector('.gridop.cyselected') && document.getElementById('enablegridcheckbox').checked) {
-                selectthisgrid(document.querySelector('.gridop.cyselected'));
-            }
+            
             generateCustomThemeCode();
         }
         
@@ -19305,12 +19303,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     } else if (checkbox.checked == true) {
                         if(!section.classList.contains('gridenabled')){
                             section.classList.add('gridenabled');
-                            if (document.querySelector('.gridop.cyselected')){
-                                selectthisgrid(document.querySelector('.gridop.cyselected'));
-                            }
                         }
                     }
                 });
+                selectthisgrid();
             }
         }
 
@@ -19399,9 +19395,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     document.querySelectorAll('.section').forEach(section => {
                         if (!section.classList.contains('gridenabled')) {
                             section.classList.add('gridenabled');
-                            if (document.querySelector('.gridop.cyselected')) {
-                                selectthisgrid(document.querySelector('.gridop.cyselected'));
-                            }
                         }
                     });
                     checkbox0.checked = true;
@@ -19409,9 +19402,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     document.querySelectorAll('.section').forEach(section => {
                         if (!section.classList.contains('gridenabled')) {
                             section.classList.add('gridenabled');
-                            if (document.querySelector('.gridop.cyselected')) {
-                                selectthisgrid(document.querySelector('.gridop.cyselected'));
-                            }
                         }
                     });
                     checkbox0.checked = true;
