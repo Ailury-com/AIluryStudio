@@ -46,7 +46,6 @@
             --safariheader-color: #dcdcdc;
             --urlbarbackground-color: #fff;
             --browsercontainerbackground-color: #F2F2F7;
-            --spencialbtnbackground-color: #fff;
             --spencialbtncolor-color: #000;
             --overlayborder-color: #F2F2F7;
             --overlaycolor-color: #333;
@@ -104,7 +103,6 @@
                 --safariheader-color: #0c0c0c;
                 --urlbarbackground-color: #161b22;
                 --browsercontainerbackground-color: #000;
-                --spencialbtnbackground-color: #161b22;
                 --spencialbtncolor-color: #fff;
                 --overlayborder-color: #161b22;
                 --overlaycolor-color: #666;
@@ -1457,12 +1455,12 @@
             width: 68vw;
         }
         .seccontainer-line.specialbtn:active{
-            background: var(--spencialbtnbackground-color);
-            color: var(--spencialbtncolor-color);
+            background: var(--lightgrey-color);
+            color: var(--contrast-color);
         }
         .seccontainer-line.specialbtn:hover{
-            background: var(--spencialbtnbackground-color);
-            color: var(--spencialbtncolor-color);
+            background: var(--lightgrey-color);
+            color: var(--contrast-color);
         }
         @keyframes rotatesign {
             100%{
@@ -10572,7 +10570,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     "createshortcutcontainer",
                     "addshortcutbtn",
                     "createcommandcontainer",
-                    "clearpasttoundobtn"
+                    "clearpasttoundobtn",
+                    "addCommentsAsLineNotesBtn"
                 ];
                 
                 if (!excludedClasses.some(cls => element.classList.contains(cls))) {
@@ -13043,7 +13042,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             themetoedit.style.removeProperty('--commandlistbackground-color');
             themetoedit.style.removeProperty('--deviceborder-color');
             themetoedit.style.removeProperty('--urlbarbackground-color');
-            themetoedit.style.removeProperty('--spencialbtnbackground-color');
             themetoedit.style.removeProperty('--browsercontainerbackground-color');
             themetoedit.style.removeProperty('--browseriframebackgroundcolor-color');
             themetoedit.style.removeProperty('--browsercontainerbackground-color');
@@ -13083,7 +13081,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             themetoedit.style.setProperty('--lightgrey-color', rgba);
             themetoedit.style.setProperty('--lightdarkgrey-color', minusRgba);
             themetoedit.style.setProperty('--urlbarbackground-color', rgba);
-            themetoedit.style.setProperty('--spencialbtnbackground-color', rgba);
             themetoedit.style.setProperty('--seccontainerbackground-color', rgba);
             generateCustomThemeCode();
         }
@@ -21097,7 +21094,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "viewThisFileFromFilesBtn": "When you click this button, a testing section will appear, that allows you to test the code in the file, to see what it's output is.",
             "uploadNewFilesBtn": "When you click this button you will be given the option to upload files to this code editor. It's important to note that only text files are saved and image files are only available as long as this page is not refreshed or closed.",
             "clearconsole": "When you click this button, the js console will be cleared.",
-            "clearpyconsole": "When you click this button, the python console will be cleared."
+            "clearpyconsole": "When you click this button, the python console will be cleared.",
+            "addCommentsAsLineNotesBtn": "This button makes it so the currently open file is analyzed and comments are extracted and added as line notes. It's important to keep in mind that if you have multi-line comments in your file, that they have to have been rendered in the form of a comment, at least once, to be properly extracted."
         };
         var savedSelection = {
             hadSelection: false,
