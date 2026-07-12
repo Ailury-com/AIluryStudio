@@ -20612,7 +20612,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         function addallselectedlinestodeleteselectedlinesmanually() {
             if (!editorFiles[editorIndex]) return;
             const allselectedlines = editorFiles[editorIndex].filter(el => el.classes.includes('selected'));
-            buildPaginatedLeidList(allselectedlines, 'deleteselectedlinesmanually', "no disabled lines yet!", adddeleteleidresult);
+            buildPaginatedLeidList(allselectedlines, 'deleteselectedlinesmanually', "no selected lines yet!", adddeleteleidresult);
         }
         
         function addalllineswithnotesmanually() {
