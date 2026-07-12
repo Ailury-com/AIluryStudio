@@ -989,6 +989,14 @@
                 transform: rotate(0);
             }
         }
+        @keyframes rotaterightsign {
+            0% {
+                transform: rotate(-360deg);
+            }
+            100% {
+                transform: rotate(0);
+            }
+        }
         @keyframes moveup {
             50% {
                 transform: translateY(-10px);
@@ -1572,7 +1580,7 @@
             border: 2px solid #a855f7;
             border-radius: 50%;
         }
-        .layoutSwitchCon {
+        .layoutSwitchCon, .projectNotesSwitchConRep {
             padding: 3px 7px;
             display: flex;
             width: 100%;
@@ -1619,7 +1627,7 @@
             font-weight: bold;
             font-size: 1.2em;
             flex-shrink: 0;
-            color: var(--text-color);
+            color: var(--bg-color);
         }
         .ceebtnposexample span {
             justify-content: center;
@@ -1866,13 +1874,14 @@
             overflow: visible;
             font-weight: normal;
             color: rgba(120, 120, 120, 0.8);
+            border-top-left-radius: 0;
         }
         .fileSecFileRep:after {
             content: "";
             position: absolute;
             height: 10px;
-            top: -10px;
-            left: 0;
+            top: -11px;
+            left: -1px;
             background: var(--card-full-op-bg-light);
             width: 33%;
             border: 1px solid var(--border-color);
@@ -1958,6 +1967,46 @@
             margin: 7px;
             margin-top: 12px;
         }
+        #projectNameInputConRep {
+            display: flex;
+            background: transparent;
+            gap: 2px;
+            justify-content: flex-start;
+            flex-direction: row;
+            align-items: center;
+            white-space: nowrap;
+            overflow-wrap: nowrap;
+            border: 1px solid var(--border-color);
+            padding: 2px 10px;
+            border-radius: 50px;
+            margin-right: 5px;
+        }
+        #projectNameInputConRep input {
+            width: 150px;
+            padding: 7px 4px;
+            font-size: 0.7rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            outline: none;
+            caret-color: #06b6d4;
+            font-weight: normal;
+            border: none;
+        }
+        #projectNameInputConRep:has(input:focus) {
+            color: white;
+            background: #06b6d4;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        #projectNameInputConRep:has(input:focus) input {
+            color: white;
+            caret-color: white;
+        }
+        #projectNameInputConRep:has(input:focus) input::placeholder {
+            color: white;
+            opacity: 0.7;
+        }
+        
         @media(max-width: 600px) {
             .code-line, .code-line::before, .code-line.selected::after {
                 font-size: 0.35rem;
@@ -2059,7 +2108,7 @@
                 <div class="max-w-content mx-auto" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     
                     <div id="topVEl" class="elWithEaseinAnimation">
-                        v3.0 Public
+                        v3.5 Public
                     </div>
                     <h1 class="font-display headline elWithEaseinAnimation" style="max-width: 58rem;">
                         Edit your code from<br>
@@ -2142,6 +2191,7 @@
                         <div class="aboutSecRep" style="gap: 0;">
                             <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent;">
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('undoTool')">↺</button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('redoTool')">↻</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">⌧</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('commentTool')">#</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('pinTool')">⚠</button>
@@ -2153,6 +2203,7 @@
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('removeIndentTool')">↤</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('addIndentTool')">↦</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('replaceAllTool')">⤻</button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('lineNoteTool')">N</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('searchTool')">⌕</button>
                             </div>
                             <div class="code-line-container">
@@ -2566,14 +2617,27 @@
                             <h2>Undo</h2>
                         </header>
                         <div class="tool-description-container">
-                            <p><strong>Advantages and Limitations:</strong> The editor provides you with an undo button that can undo any changes that you made to your code. Although this is a very helpful features, it has its limitations; This tool can not undo chnages that where made outside the file and this feature does not give you the ability to redo what you have undone.</p>
+                            <p><strong>Advantages and Limitations:</strong> The editor provides you with an undo button that can undo any changes that you made to your code. Although this is a very helpful features, it has its limitations; This tool can not undo changes that where made outside the file and this feature does not give you the ability to redo what you have undone. If you want to redo what you have undone there is a redo button.</p>
                             <p><strong>The Limit:</strong> Most tools come with their unique set of settings, this one is one of the many tools that has settings. I'm not going to explain every setting but one of the settings for this tool is the "undo limit". A limit might not seem very appealing but since browsers only have a limited amount of local storage for every user, having a limit is very much necessary but we still give you the ability to remove the limit.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-card" id="redoTool">
+                    <hr class="section-divider">
+                    <div class="tool-panel card-border-green elWithEaseinAnimation">
+                        <header>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'rotaterightsign')">↻</div>
+                            <h2>Redo</h2>
+                        </header>
+                        <div class="tool-description-container">
+                            <p><strong>Advantages and Limitations:</strong> The editor provides you with a redo button that can redo any action that you have undone in your code. Although this is a very helpful features, it has its limitations; This tool can not redo what you have undone if you edit the file after undoing changes.</p>
+                            <p><strong>The Limit:</strong> Unlike the undo button, this one has no history limit, since the history is immediately erased after a change has been made in the currently open file. Although there are no history limits for the redo tool, there is a limit to how quickly you can spam it, due to its animation; you can turn this limit off though, by turning of the button animation in the file settings. </p>
                         </div>
                     </div>
                 </div>
                 <div class="tool-card" id="copyTool">
                     <hr class="section-divider">
-                    <div class="tool-panel card-border-green elWithEaseinAnimation">
+                    <div class="tool-panel card-border-gray elWithEaseinAnimation">
                         <header>
                             <div class="toolIcon" onclick="changeBtnTextOnClick(this, '☑')">□</div>
                             <h2>Copy</h2>
@@ -2687,6 +2751,19 @@
                         <div class="tool-description-container">
                             <p>Teleport, not to be confused with search "⌕" lets you scroll to a line instantly. This feature is with the tools that effect all lines and if you enter a number and click the "Enter" key, You will be teleported to the line that you entered the index of or at least to the closest point possible.</p>
                             <p><strong>Limitations:</strong> This tool can only teleport you to lines in the current file and does not scroll you to hidden lines but it gets you as close as possible to the line that you entered the index of. </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-card" id="lineNoteTool">
+                    <hr class="section-divider">
+                    <div class="tool-panel card-border-gray elWithEaseinAnimation">
+                        <header>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">N</div>
+                            <h2>Attach Note</h2>
+                        </header>
+                        <div class="tool-description-container">
+                            <p>This tool allows you to add notes to selected lines. You can add line notes by either using this tool or you press and hold a line until you get a options popup that allows you to add a line note to the line you pressed, specifically. If you wish to remove notes from lines, simply add an empty note to the lines you want to remove the notes from, or go to the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> and open the options for this tool, there you can remove notes from lines individually. If you wish to delete an entire note from all lines, go to "project notes" and open the file you want to remove the note from, then click on the note and click "delete" on the popup. If you want to no longer have your code full of comments but still want the information present, consider applying comments as line notes. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button>, you can open this tool's options and click the button that says: "add comments as line notes", and this will add comments as line notes.</p>
+                            <p><strong>Advantages and Limitations:</strong> Line notes are especially useful if your goal is to write code without comments but still want information on what your code does in certain parts, without having to write notes yourself and keep track of what index every line is at, to keep the notes up to date.  Although line notes can come in handy, they have their limits when the tools are used to apply them; Line notes are file specific and are not applied to selected lines outside of the currently opened file, this means, if you want to apply notes to lines in multiple files at once, you won't be able to and will have to apply notes for every file individually. Another limitation is that if you add multi-line comments as line notes, you have to keep in mind that you have to have rendered/seen the entire comment in the form of a comment before, to have the full comment be added as a line note, this is due to how the syntax highlighting logic works.</p>
                         </div>
                     </div>
                 </div>
@@ -2813,9 +2890,16 @@
             </div>
             <div class="features-container">
                 <hr class="section-divider">
+                <div class="feature-con card-border-gray elWithEaseinAnimation" id="indentSizeSec">
+                    <i class="fa-solid fa-arrows-left-right-to-line" style="color: rgb(120, 120, 120); font-size: 1.875rem; margin-bottom: 1rem;"></i>
+                    <p class="featureDescriptionText">Indentations. Indentations are the spaces infront of a text in a line of code. Usually you choose an indentation size and stick with it, since changing it would be super tedious, especially in large code bases, but ailury studio provides you with features that let you easily customize the standard indent size of tge editor. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> you can scroll down until you see the space indentation option, and if you open the features details, by clicking the chevron on it's right, you get the customization options. There you can choose the standard indent size, you can decide if you want to have the standard indent size applied to uploaded files, and you can apply the standard indent size to the file that you are currently in the settings of. </p>
+                </div>
+            </div>
+            <div class="features-container">
+                <hr class="section-divider">
                 <div class="feature-con card-border-pink elWithEaseinAnimation" id="fileNameInputSec">
                     <i class="fa-solid fa-pen" style="color: #ec4899; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">These are the file nav bars, here is where you can edit a file's name but this is not all. If you hold this file nav element the "files" section will be opened, and if you swipe up on a file nav element the "file settings" will open.</p>
+                    <p class="featureDescriptionText">These are the file nav bars, here is where you can edit a file's name but this is not all. If you hold this file nav element the "files" section will be opened, and if you swipe up on a file nav element the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> will open.</p>
                     <div id="FileNavEl"><span onclick="toggleClass('#FileNavEl', 'borderRound')">←</span>index.html<span onclick="toggleClass('#FileNavEl', 'borderRound')">→</span></div>
                 </div>
             </div>
@@ -2830,7 +2914,7 @@
                 <hr class="section-divider">
                 <div class="feature-con card-border-purple elWithEaseinAnimation" id="deleteAllEmptyLinesSec">
                     <i class="fa-solid fa-trash" style="color: #a855f7; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">This feature is inside the "file settings" and it allows you to delete all lines in the current file that have no text aside from spaces. </p>
+                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> and it allows you to delete all lines in the current file that have no text aside from spaces. </p>
                     <div class="fileSettingsFeature">delete empty lines</div>
                 </div>
             </div>
@@ -2838,7 +2922,7 @@
                 <hr class="section-divider">
                 <div class="feature-con card-border-pink elWithEaseinAnimation" id="deleteCommentsSec">
                     <i class="fa-solid fa-comment" style="color: #ec4899; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">This feature is inside the "file settings" in HTML, CSS, Python, or JavaScript files and it allows you to to delete all comments from the current file. The supported comment types are: HTML, CSS, JavaScript, and Python. Although this tool can be useful, it is not fully fleshed out and relies on 2 factors; these factors are: no strings that can be confused with comments, and comments that go over multiple lines have to have been rendered at least once to be correctly deleted.</p>
+                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> in HTML, CSS, Python, or JavaScript files and it allows you to to delete all comments from the current file. The supported comment types are: HTML, CSS, JavaScript, and Python. Although this tool can be useful, it is not fully fleshed out and relies on 2 factors; these factors are: no strings that can be confused with comments, and comments that go over multiple lines have to have been rendered at least once to be correctly deleted.</p>
                     <div class="fileSettingsFeature">delete comments</div>
                 </div>
             </div>
@@ -3535,20 +3619,22 @@
                             <strong>How to rename a project ?:</strong> To rename a project, you just need to select the project that you want to rename, by clicking on the project, enter a new name in the project name input bar, and click "Enter"; and the project will be renamed to the new name.<br>
                             <strong>How to delete a project ?:</strong> To delete a project, you click on the cross in the box in the top left corner of the project container (after deleting a project you get a pop-up in the top right corner of the site, that allows you to undo the deletion, for a few seconds after the deletion.<br>
                             <strong>How to open a project ?:</strong> To open a project you just select the project you want to open and click the button that says: "Open Selected Projects", or wants you to accept the terms and conditions. <br>
-                            <strong>What does "casual use" do ?:</strong> When "casual use" is enabled, everything you do in the editor is not saved, except the cross poject stuff, like: themes, commands, and shortcuts; but anything like file edits, file uploads, file deletion, etc. is not saved. Casual mode simply gives you the ability to quickly program without having to think about local storage space (where everything is stored) or having to worry about cleaning up the editor afterwards.
+                            <strong>What does "casual use" do ?:</strong> When "casual use" is enabled, everything you do in the editor is not saved, except the cross poject stuff, like: themes, commands, and shortcuts; but anything like file edits, file uploads, file deletion, etc. is not saved. Casual mode simply gives you the ability to quickly program without having to think about local storage space (where everything is stored) or having to worry about cleaning up the editor afterwards. <br>
+                            <strong>What does the button with the sun icon do ?:</strong> The button with the sun icon lets you toggle between a lower contrast version of the project preview container and the regular version of it. This is useful if you are using dark mode, since, depending on the languages you use, or how far into the process of creating your project you are, the project background might be very bright, since it's white by default, and lowering the contrast makes it so the bright containers don't hurt your eyes with their brightness.
                         </p>
                         <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px;">
                             <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px; width: fit-content; max-width: 100%; padding: 20px; border: 1px solid var(--border-color);">
-                                <span style="font-size: 0.8rem; color: #06b6d4; font-weight: bold; position: absolute; top: 10px; left: 10px;">Cancel</span>
-                                <h4 style="color: var(--text-color);">projets</h4>
-                                <div class="secEl" style="background: transparent; flex-direction: row; gap: 4px; width: 100%; overflow: hidden; overflow-x: auto; justify-content: flex-start;">
-                                    <div class="projectConRep" style="border: 2px solid #06b6d4;">NEW</div>
+                                <span style="background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 6px 8px; font-size: 0.7rem; color: white; font-weight: bold; position: absolute; top: 10px; left: 10px;">Cancel</span>
+                                <span style="background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 3px 5px; font-size: 0.9rem; color: white; font-weight: bold; position: absolute; top: 10px; right: 10px;">☼</span>
+                                <h4 style="color: var(--text-color); margin-top: 0;">projets</h4>
+                                <div class="secEl" style="background: transparent; flex-direction: row; gap: 8px; width: 100%; overflow: hidden; overflow-x: auto; justify-content: flex-start; padding: 3px; scrollbar-width: none; -ms-overflow-style: none;">
+                                    <div class="projectConRep" style="outline: 2px solid #06b6d4; flex-direction: column; gap: 1px;"><span>NEW</span><span style="opacity: 0.7; font-size: 0.8rem; font-weight: normal;">create a new project</span></div>
                                     <div class="projectConRep"><span class="deleteProjectConRep">⌧</span><span class="projectNameConRep">New Project</span></div>
                                 </div>
-                                <div class="secEl" style="width: 100%; background: transparent; flex-direction: row; gap: 5px; justify-content: flex-start; align-items: center; white-space: nowrap; overflow: hidden; overflow-x: auto;">
-                                    Project name: <input type="text" class="secEl" placeholder="My Project" style="width: 150px; padding: 7px 4px; font-size: 0.7rem; background: transparent; border: 1px solid var(--border-color); text-align: left; outline: none; caret-color: #06b6d4; font-weight: normal;"> casual use: <span class="switchEl"><span class="switchedDot"></span></span>
+                                <div class="secEl" style="width: 100%; background: transparent; flex-direction: row; gap: 5px; justify-content: flex-start; align-items: center; white-space: nowrap; overflow: hidden; overflow-x: auto; font-weight: normal; scrollbar-width: none; -ms-overflow-style: none;">
+                                    <div id="projectNameInputConRep">Project name: <input type="text" class="secEl" placeholder="My New Project"></div> casual use: <span class="switchEl"><span class="switchedDot"></span></span>
                                 </div>
-                                <div class="secEl" style="justify-content: center; width: 100%; padding: 7px 4px; background: #06b6d4; max-width: 300px; color: white; border-radius: 30px; font-weight: normal; margin-top: 10px;">Open Selected Project</div>
+                                <div class="secEl" style="justify-content: center; width: 100%; padding: 7px 4px; background: #06b6d4; max-width: 300px; color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 30px; font-weight: normal; margin-top: 10px;">Open Selected Project</div>
                             </div>
                         </div>
                     </div>
@@ -3592,6 +3678,15 @@
                                         <span class="filesettingsline-title">undo</span>
                                         <span class="secEl function-icon">↺</span>
                                         <span class="expandEl" onclick="scrollToToolInToolSec('undoTool')">></span>
+                                    </span>
+                                </div>
+                                
+                                <div class="secEl filesettings-line">
+                                    <span class="switchEl on"><span class="switchedDot"></span></span>
+                                    <span class="fIconCon">
+                                        <span class="filesettingsline-title">redo</span>
+                                        <span class="secEl function-icon">↻</span>
+                                        <span class="expandEl" onclick="scrollToToolInToolSec('redoTool')">></span>
                                     </span>
                                 </div>
                                 
@@ -3760,6 +3855,15 @@
                                 <div class="secEl filesettings-line">
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
+                                        <span class="filesettingsline-title">attach note</span>
+                                        <span class="secEl function-icon">N</span>
+                                        <span class="expandEl" onclick="scrollToToolInToolSec('lineNoteTool')">></span>
+                                    </span>
+                                </div>
+                                
+                                <div class="secEl filesettings-line">
+                                    <span class="switchEl on"><span class="switchedDot"></span></span>
+                                    <span class="fIconCon">
                                         <span class="filesettingsline-title">replace all</span>
                                         <span class="secEl function-icon">⤻</span>
                                         <span class="expandEl" onclick="scrollToToolInToolSec('replaceAllTool')">></span>
@@ -3801,7 +3905,7 @@
                                 </div>
                                 
                                 <div class="secEl filesettings-line">
-                                    <span class="switchEl on"><span class="switchedDot"></span></span>
+                                    <span class="switchEl"><span class="switchedDot"></span></span>
                                     <span>zoom enabled</span>
                                 </div>
                             </div>
@@ -3885,7 +3989,7 @@
                             <li>Choose the font. Next or below the note type selection element you'll find a font selection element, here you can choose what font you want this note to have. This can be edited later, so don't worry about choosing the right font immediately.</li>
                             <li>Enter a note title. Below the note type selection and font selection, you get to enter a note title with up to 150 characters. The title is the only text of the note that is visible unless the note is expanded; use it to summarize the contents of the note description or treat the title as the note itself, in case the note is not that long.</li>
                             <li>Enter a note discription. This is optional but critical for extensive notes. Since the note title only allows up to 150 characters, the discription allows you to type out your note in more detail.</li>
-                            <li>Attach your note to a file. This is optional but below the description input area there is a selection element that allows you to select a file that you can attach your note to. When a note is attached to a file it is added to a note container in the bottom right of the file. This can also be edited afterwards, so don't worry about attaching notes to files and changing your mind later. If you decide you don't want your notes to be in the bottom right corner perminently, you can also go into the notes editing section (after the note has been created) and turn on "temporary display"; this makes it so the notes attached to files are only visible for a few seconds after the file has been opened.</li>
+                            <li>Attach your note to a file. This is optional but below the description input area there is a selection element that allows you to select a file that you can attach your note to. When a note is attached to a file it is added to a note container in the bottom right of the file. This can also be edited afterwards, so don't worry about attaching notes to files and changing your mind later. If you decide you don't want your notes to be in the bottom right corner perminently, you can also turn on "temporary display"; this makes it so the notes attached to files are only visible for a few seconds after the file has been opened.</li>
                             <li>click "create".</li>
                         </ol>
                         <br>
@@ -3894,12 +3998,20 @@
                             <strong>How do I expand a note ?:</strong> To expand a note in the notes section, you simply click the note and an overlay will appear from below that displays the notes content.<br>
                             <strong>How do I expand a note in the notes area of a file ?:</strong> To expand a note that is in the notes area of a file, first expand the notes area by clicking the symbol in its top right corner and then click the chevron next to the note you want to expand; now you should be able to see the notes title and discription. To close that section, simply click the chevron in the top left corner of the expanded note.<br>
                             <strong>How do I pin a note ?:</strong> To pin a note, open the notes editing section, by clicking the chevron to the right of the note in the notes section, and then click the pin simbol "⚠" in the top right corner of the editing section. To unpin it again, simply click it a second time.<br>
-                            <strong>How do I delete a note ?:</strong> To delete a note, open the notes editing section by clicking on the chevron to the right of the note in the notes section, and click the delete button at the bottom of it.<br>
+                            <strong>How do I delete a note ?:</strong> To delete a note, open the notes editing section by clicking on the chevron to the right of the note in the notes section, and click the delete button at the bottom of it.<br><br>
+                            <strong>What about line notes ?:</strong> Line notes are notes that are attached to individual lines, you can attach a note to a line with the <button class="openSecRef" onclick="scrollToToolInToolSec('lineNoteTool')">"N"/ Attach note</button> <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tool ↗</button> and here you can see what files have line notes and on the left of every displayed file, you can click the chevron to see what notes exactly are attached to that file. If you then click on the notes, you can edit them and you will get a list of line numbers that have a note attached. If you want to see a list of all lines with notes attached, you have to go to the file settings of the file you want to see the lines of with notes attached, and open the "N"/(attach note) tool settings.
                         </p>
                         <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px; justify-content: flex-start;">
                             <div id="closeSecRep"></div>
-                            <h4 style="display: flex; align-items: center; flex-direction: row; gap: 7px;">Notes <div class="secEl" style="display: flex; height: 30px; width: 30px; border-radius: 50%; align-items: center; justify-content: center; background: transparent; border: 1px solid var(--border-color); font-size: 0.9rem; font-weight: normal; padding: 0; line-height: 1;">+</div></h4>
+                            <div id="closeSecRep" style="left: auto; right: 5px;"></div>
+                            <h4 style="display: flex; align-items: center; flex-direction: row; gap: 7px;">Notes <div class="secEl" style="display: flex; height: 30px; width: 30px; border-radius: 50%; align-items: center; justify-content: center; background: #22c55e; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 0.9rem; font-weight: bold; padding: 0; line-height: 1; color: white;">+</div></h4>
+                            <div class="secEl projectNotesSwitchConRep" style="padding: 8px; max-width: 300px;">Temporary display <span class="switchEl"><span class="switchedDot"></span></span></div>
+                            <div class="secEl" style="width: 100%; max-width: 300px; padding: 4px 10px; font-size: 0.9rem; font-weight: normal; background: transparent; border: 1px solid var(--border-color); border-radius: 5px; flex-direction: row; gap: 12px; align-items: center;"><span style="font-size: 1.3rem;">⌕</span><span style="opacity: 0.5;">search for note...</span></div>
                             <div class="secEl" style="width: 100%; max-width: 300px; padding: 8px; font-size: 0.9rem; justify-content: center; font-weight: normal; background: transparent; border: 1px solid var(--border-color); border-radius: 5px;">No List Items</div>
+                            <div class="secEl" style="width: 100%; max-width: 300px; padding: 0; background: transparent; border: 1px solid var(--border-color); border-radius: 5px; flex-direction: column;">
+                                <div class="secEl" style="width: 100%; max-width: 300px; padding: 8px; font-size: 1rem; font-weight: bold; background: transparent; border: none; border-bottom: 1px solid var(--border-color); border-radius: 0;">Files With Line Notes</div>
+                                <div class="secEl" style="width: 100%; max-width: 300px; padding: 12px; font-size: 0.9rem; font-weight: normal; background: transparent; border: none">No Line Notes Yet!</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3920,7 +4032,7 @@
                             <div style="font-family: system-ui; font-weight: bold; display: flex; justify-content: center; font-size: 1.2rem; color: rgba(120, 120, 120, 0.7);">↓</div>
                             <br>
                             <div class="secEl" style="padding-left: 10px; width: 100%; height: 25px; max-width: 300px;">Hello World</div>
-                            <div class="secEl" style="width: 100%; height: 25px; max-width: 300px; justify-content: center; background: #a855f7; color: white;" onclick="scrollToToolInToolSec('replaceAllTool')">replace</div>
+                            <div class="secEl" style="width: 100%; height: 25px; max-width: 300px; justify-content: center; background: #a855f7; color: white; border: 1px solid rgba(255, 255, 255, 0.2);" onclick="scrollToToolInToolSec('replaceAllTool')">replace</div>
                         </div>
                     </div>
                 </div>
