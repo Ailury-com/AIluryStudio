@@ -16739,26 +16739,21 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         async function scrolltolinenumber(targetIndex, editor = inputDiv, opts = {}, callback) {
             globalScrollTaskId++;
             const myScrollTaskId = globalScrollTaskId;
-        
-            try {
-                const {
-                    tolerancePx = 6,
-                    settleDelay = 80
-                } = opts || {};
+            let didSucceed = false;
             
-                if (!editor || typeof targetIndex !== 'number') throw new Error('Invalid args');
+            try {
+                const { tolerancePx = 6, settleDelay = 80 } = opts || {};
+                
+                if (!editor || typeof targetIndex !== 'number') return false;
+                
                 const state = editor._loadingState;
                 if (!state) {
                     console.warn('Editor has no _loadingState.');
-                    if (callback) callback();
                     return false;
                 }
                 const innum = state.innum;
                 const all = _getAllLines(editor, innum);
-                if (!all || all.length === 0) {
-                    if (callback) callback();
-                    return false;
-                }
+                if (!all || all.length === 0) return false;
                 
                 targetIndex = Math.max(0, Math.min(targetIndex, all.length - 1));
                 
@@ -16827,23 +16822,26 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             
                 if (rendered) {
                     try { rendered.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {}
-                    try { (typeof focuseceline == 'function' ? focuseceline : (el => el && el.focus))(rendered); } catch (e) {}
-                    
                     await new Promise(r => setTimeout(r, settleDelay));
                     if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
-                        return false; 
+                        return false;
                     }
+                    rendered = editor.querySelector(`.code-editor-line[line-index="${targetIndex}"]`);
+                    if (rendered) {
+                        try { focuseceline(rendered) } catch (e) {}
             
-                    if (callback) callback();
-                    return true;
+                        await new Promise(r => setTimeout(r, settleDelay));
+                        if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
+                            return false;
+                        }
+            
+                        didSucceed = true;
+                        return true;
+                    }
                 }
-            
+        
                 editor.scrollTop = Math.max(0, Math.min(totalH - editor.clientHeight, heightAbove));
                 await new Promise(r => setTimeout(r, settleDelay));
-                
-                if (globalScrollTaskId === myScrollTaskId && callback) {
-                    callback();
-                }
                 return false;
             } finally {
                 if (globalScrollTaskId === myScrollTaskId && callback) {
