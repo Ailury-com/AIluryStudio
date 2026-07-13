@@ -14287,9 +14287,18 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 rect.style.display = "flex";
             });
             
-            newRectangle.querySelector('.copyiurl-btn').onclick = () => {
-                copythistext(imageUrl);
-            };
+            const copyurlBtn = newRectangle.querySelector('.copyiurl-btn');
+            if (copyurlBtn) {
+                copyurlBtn.onclick = () => {
+                    copyurlBtn.disabled = true;
+                    copythistext(imageUrl);
+                    copyurlBtn.textContent = "Copied!";
+                    setTimeout(() => {
+                        copyurlBtn.disabled = false;
+                        copyurlBtn.textContent = "Copy";
+                    }, 2000);
+                };
+            }
             newRectangle.querySelector('.image-name').textContent = fileName;
             
             newRectangle.querySelector('.download-btn').addEventListener('click', () => {
