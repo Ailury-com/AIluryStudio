@@ -3855,6 +3855,8 @@
             border-radius: 8px;
             margin-top: 5px;
             transition: var(--tr);
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
         
         .scrollableInfoSec {
@@ -8181,9 +8183,9 @@
                                 <input type="checkbox" data-checked="commandforregexsearch" checked>
                                 <span class="slider"></span>
                             </label>
-                            <span class="cfscscswitchdesname commandtosearchregexswitchtext">/r to search with regex</span>
+                            <span class="cfscscswitchdesname commandtosearchregexswitchtext">"/r" to search with regex</span>
                         </div>
-                        <input type="text" class="cfscscsearch cfscscf commandtosearchregex" oninput="changecommandtosearchregexswitchtext(this)" value="r/">
+                        <input type="text" class="cfscscsearch cfscscf commandtosearchregex" oninput="changecommandtosearchregexswitchtext(this)" value="r/" maxlength="10" onblur="checkRegexStringInput(this)">
                         <div class="cfscscsearch cfscscf linenumberforsearchresult">
                             <label class="switch">
                                 <input type="checkbox" data-checked="linenumberforsearchresult">
@@ -8447,6 +8449,14 @@
                 }, 500);
             }, 1000);
         });
+        function checkRegexStringInput(el) {
+            if (!el.value.endsWith('/')) {
+                if (el.value.length >= 10) {
+                    el.value = el.value.slice(0, 9);
+                }
+                el.value = el.value + '/';
+            }
+        }
         function recoverIndentSizeSelection() {
             const spaceindentationnum = document.querySelector(".spaceindentationnum");
             if (!spaceindentationnum) return;
@@ -10570,7 +10580,16 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         }
         
         function changecommandtosearchregexswitchtext(tehtv) {
-            document.querySelector('.commandtosearchregexswitchtext').textContent = tehtv.value + " to search with regex";
+            const commandtosearchregexswitchtext = document.querySelector('.commandtosearchregexswitchtext');
+            if (commandtosearchregexswitchtext) {
+                tehtv.value = tehtv.value.trim();
+                if (tehtv.value == "") {
+                    commandtosearchregexswitchtext.textContent = "No regex search enabled/disabled";
+                } else {
+                    commandtosearchregexswitchtext.textContent = `"${tehtv.value}" to search with regex`;
+                }
+                
+            }
         }
         
         function closetimeinputoverlay() {
