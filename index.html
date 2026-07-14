@@ -21042,7 +21042,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "downbtn": "This button allows you to move selected lines down. You can edit the jump size in the \"file settings\".",
             "sleapbtn": "This allows you to enable or disable lines. Disabled lines can not be edited. You can use the enable all lines to enable disabled lines or you can go to the \"file settings\" to enable manually.",
             "copybtn": "This button allows you to copy code. This button at the top copies code only from selected lines and this button at the bottom copies the entire files content. You can also open file options and copy the entire files content there. You can edit this button in the \"file settings\".",
-            "trimbtn": "This button trims the text in selected lines. Trimming removes all spaces on both sides of the text, while leaving all the spaces in the middle. You can edit this button in the \"file settings\".",
+            "trimbtn": "This button trims the text in selected lines. Trimming removes all spaces on both sides of the text, while leaving all the spaces in the middle.",
             "removespacesleftbtn": "This button removes indent spaces left. You can edit the removal amount in the \"file settings\".",
             "addspacesleftbtn": "This button adds indent spaces left. You can edit the indent size in the \"file settings\".",
             "replaceaslbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text only in selected lines.",
@@ -21078,7 +21078,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "uploadNewFilesBtn": "When you click this button you will be given the option to upload files to this code editor. It's important to note that only text files are saved and image files are only available as long as this page is not refreshed or closed.",
             "clearconsole": "When you click this button, the js console will be cleared.",
             "clearpyconsole": "When you click this button, the python console will be cleared.",
-            "addCommentsAsLineNotesBtn": "This button makes it so the currently open file is analyzed and comments are extracted and added as line notes. It's important to keep in mind that if you have multi-line comments in your file, that they have to have been rendered in the form of a comment, at least once, to be properly extracted."
+            "addCommentsAsLineNotesBtn": "This button makes it so the currently open file is analyzed and comments are extracted and added as line notes. It's important to keep in mind that if you have multi-line comments in your file, that they have to have been rendered in the form of a comment, at least once, to be properly extracted.",
+            "attachnotebtn": "This button lets you add a note to all selected line at once. You can view the note in the project notes section, under this file. You can view all lines with notes in the \"file settings\", under this tool."
         };
         var savedSelection = {
             hadSelection: false,
