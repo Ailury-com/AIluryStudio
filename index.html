@@ -11743,7 +11743,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             currentGroup.forEach(lineNoteId => {
                 const lineExistingNote = getALineNote(currentOpenLineNoteSec, lineNoteId);
                 const extraTxtForLineNote = mergeLineNotes && lineExistingNote && attachToSelected ? lineExistingNote : null;
-                updateLineNote(lineNoteId, (extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? createFileNoteTitleInput.value + " – " + extraTxtForLineNote.title : createFileNoteTitleInput.value), (extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? createFileNoteDescriptionInput.value + " | " + extraTxtForLineNote.description : createFileNoteDescriptionInput.value), currentOpenLineNoteSec);
+                updateLineNote(lineNoteId, filterTitle(extraTxtForLineNote, createFileNoteTitleInput.value), filterDescription(extraTxtForLineNote, createFileNoteDescriptionInput.value), currentOpenLineNoteSec);
             });
             attachToSelected = false;
             saveLineNotesTimeout = setTimeout(() => {
@@ -17341,11 +17341,16 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             updateSelectedClasses();
             updateSaveFile();
         }
-        
+        function filterTitle(extraTxtForLineNote, title) {
+            return extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? title.trim() != "" ? title + " – " + extraTxtForLineNote.title : extraTxtForLineNote.title : title;
+        }
+        function filterDescription(extraTxtForLineNote, bundledContent) {
+            return extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? bundledContent.trim() != "" ? bundledContent + " | " + extraTxtForLineNote.description : extraTxtForLineNote.description : bundledContent;
+        }
         function addCommentsAsLineNotes() {
             askConfirm("Are you sure you want to attach all comments in your code as line notes ? This can only be undone manually. The undo button does not undo this action.", (answer) => {
                 if (!answer) return;
-                askConfirm("Do you want lines with notes to be overwritten ?", (overwrite) => {
+                askConfirm("Do you want lines with notes to be overwritten ? (if you don't, notes from lines that already have a note will not be edited)", (overwrite) => {
                     if (!section || !editorIndex || editorIndex == "forview") {
                         importantnotificationmessageelement("File verification failed!");
                         return;
@@ -17377,7 +17382,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         { percent: 100, text: 'comments noted!' }
                     ];
                     startLoadingThis(steps, 'checking...');
-                    
                     setTimeout(() => {
                         if (!section || !editorIndex || editorIndex == "forview") {
                             importantnotificationmessageelement("File verification failed!");
@@ -17474,7 +17478,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                 const extraTxtForLineNote = mergeLineNotes && lineExistingNote ? lineExistingNote : null;
                                 bundleLines.forEach(bl => {
                                     bundledIds.add(bl.id);
-                                    updateLineNote(bl.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? title + " – " + extraTxtForLineNote.title : title, extraTxtForLineNote && extraTxtForLineNote.description.trim() != ""? bundledContent + " | " + extraTxtForLineNote.description : bundledContent, editorIndex);
+                                    updateLineNote(bl.id, filterTitle(extraTxtForLineNote, title), filterDescription(extraTxtForLineNote, bundledContent), editorIndex);
                                 });
                                 
                                 i = j + (closeLine ? 1 : 0);
@@ -17512,9 +17516,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                 const extraTxtForLineNote = mergeLineNotes && lineExistingNote ? lineExistingNote : null;
                                 const textToAdd = removeAbbreviations(normalizeSpaces(line.text));
                                 if (line.classes.includes('syntaxcomment')) {
-                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "JS/CSS comment – " + extraTxtForLineNote.title : "JS/CSS comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? extraTxtForLineNote.description + " | " + textToAdd : textToAdd, editorIndex);
+                                    updateLineNote(line.id, filterTitle(extraTxtForLineNote, "JS/CSS comment"), filterDescription(extraTxtForLineNote, textToAdd), editorIndex);
                                 } else {
-                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "HTML comment – " + extraTxtForLineNote.title : "HTML comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? extraTxtForLineNote.description + " | " + textToAdd : textToAdd, editorIndex);
+                                    updateLineNote(line.id, filterTitle(extraTxtForLineNote, "HTML comment"), filterDescription(extraTxtForLineNote, textToAdd), editorIndex);
                                 }
                             });
                         }
@@ -17550,13 +17554,13 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                 if (languageList.length > 0) {
                                     const content = matchedConfigs.map(cfg => text.onlyMatchCommentContent(cfg)).filter(Boolean).join(' | ');
                                     const theTxt = "In HTML " + languageList.join("/") + " comment.";
-                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? theTxt + " – " + extraTxtForLineNote.title : theTxt, extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex);
+                                    updateLineNote(line.id, filterTitle(extraTxtForLineNote, theTxt), filterDescription(extraTxtForLineNote, content), editorIndex);
                                 }
                             } else if (currentFileName.endsWith(".css")) {
                                 let isItTrueCSS = Boolean(text.match(BLOCK_COMMENT.regex));
                                 if (isItTrueCSS) {
                                     const content = text.onlyMatchCommentContent(BLOCK_COMMENT);
-                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "CSS comment – " + extraTxtForLineNote.title : "CSS comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex);
+                                    updateLineNote(line.id, filterTitle(extraTxtForLineNote, "CSS comment"), filterDescription(extraTxtForLineNote, content), editorIndex);
                                 }
                             } else if (currentFileName.endsWith(".js")) {
                                 let isItTrueJSCSS = Boolean(text.match(BLOCK_COMMENT.regex));
@@ -17566,13 +17570,13 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                     if (isItTrueJSCSS) matchedConfigs.push(BLOCK_COMMENT);
                                     if (isItTrueJS) matchedConfigs.push(JS_LINE_COMMENT);
                                     const content = matchedConfigs.map(cfg => text.onlyMatchCommentContent(cfg)).filter(Boolean).join(' | ');
-                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "JS comment – " + extraTxtForLineNote.title : "JS comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex, editorIndex);
+                                    updateLineNote(line.id, filterTitle(extraTxtForLineNote, "JS comment"), filterDescription(extraTxtForLineNote, content), editorIndex);
                                 }
                             } else if (currentFileName.endsWith(".py")) {
                                 let isItTruePy = Boolean(text.match(PY_COMMENT.regex));
                                 if (isItTruePy) {
                                     const content = text.onlyMatchCommentContent(PY_COMMENT);
-                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "Python comment – " + extraTxtForLineNote.title : "Python comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex, editorIndex);
+                                    updateLineNote(line.id, filterTitle(extraTxtForLineNote, "Python comment"), filterDescription(extraTxtForLineNote, content), editorIndex);
                                 }
                             }
                         });
