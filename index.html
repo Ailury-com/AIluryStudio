@@ -7587,7 +7587,7 @@
             </div>
             <div id="createFileLineNoteOverlay">
                 <div id="createFileLineNoteCon">
-                    <button id="closeCreateFileNoteBtn" onclick="toggleNoteDetails(false, 'createFileLineNoteOverlay', 'createFileLineNoteCon');aAnimationFor(this, 'pop');">cancel</button>
+                    <button id="closeCreateFileNoteBtn" onclick="toggleNoteDetails(false, 'createFileLineNoteOverlay', 'createFileLineNoteCon');aAnimationFor(this, 'pop'); attachToSelected = false;">cancel</button>
                     <button id="deleteLineNotesBtn" onclick="deleteLineNoteGroup();aAnimationFor(this, 'pop');">delete</button>
                     <div class="noteTitleInputCon">
                         <textarea id="createFileNoteTitleInput" placeholder="..." oninput="updateCharacterLimitDisplay(this)" maxlength="150"></textarea>
@@ -8208,6 +8208,13 @@
                         <h2 class="cfscscdelete cfscscf cfscscdeletelabel cfsch2">All selected lines in this File</h2>
                         <div class="scrollableInfoSec cfscscdelete cfscscf deleteselectedlinesmanually">
                             no lines selected yet!
+                        </div>
+                        <div class="cfscscattachnotestolines cfscscf mergelinenotesonautomatedaddintion">
+                            <label class="switch">
+                                <input type="checkbox" data-checked="mergelinenotesonautomatedaddintion">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="cfscscswitchdesname addfullcodecopytoclipboardpastswitchtext">Merge notes when line notes are mass applied.</span>
                         </div>
                         <button class="cfscscattachnotestolines cfscscf addCommentsAsLineNotesBtn" id="addCommentsAsLineNotesBtn" style="justify-content: center; margin-bottom: 10px; border-radius: 15px;" onclick="addCommentsAsLineNotes()">add comments as line notes</button>
                         <div class="searchCon cfscscf cfscscattachnotestolines">
@@ -11714,10 +11721,12 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         var currentGroup = [];
         var currentOpenLineNoteSec = null;
         var currentLineNoteDetailSec = "checklist-container";
+        var attachToSelected = false;
         function createOrUpdateFileLineNotes() {
             if (!currentOpenLineNoteSec) {
                 toggleNoteDetails(false, 'createFileLineNoteOverlay', 'createFileLineNoteCon');
                 showAlert("Unable to update notes, due to missing file declaration in the backend!");
+                attachToSelected = false;
                 return;
             }
             toggleNoteDetails(false, 'createFileLineNoteOverlay', 'createFileLineNoteCon');
@@ -11730,10 +11739,13 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             if (saveLineNotesTimeout) {
                 clearTimeout(saveLineNotesTimeout);
             }
+            const mergeLineNotes = document.querySelector('.mergelinenotesonautomatedaddintion input[type="checkbox"]')?.checked;
             currentGroup.forEach(lineNoteId => {
-                updateLineNote(lineNoteId, createFileNoteTitleInput.value, createFileNoteDescriptionInput.value, currentOpenLineNoteSec);
+                const lineExistingNote = getALineNote(currentOpenLineNoteSec, lineNoteId);
+                const extraTxtForLineNote = mergeLineNotes && lineExistingNote && attachToSelected ? lineExistingNote : null;
+                updateLineNote(lineNoteId, (extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? createFileNoteTitleInput.value + " – " + extraTxtForLineNote.title : createFileNoteTitleInput.value), (extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? createFileNoteDescriptionInput.value + " | " + extraTxtForLineNote.description : createFileNoteDescriptionInput.value), currentOpenLineNoteSec);
             });
-            
+            attachToSelected = false;
             saveLineNotesTimeout = setTimeout(() => {
                 saveAllLineNotes();
                 saveLineNotesTimeout = null;
@@ -11777,6 +11789,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 if (!createFileNoteDescriptionInput) return;
                 const deleteLineNotesBtn = document.getElementById("deleteLineNotesBtn");
                 if (!deleteLineNotesBtn) return;
+                attachToSelected = true;
                 currentGroup = allLines;
                 const lineInFile = editorFiles[selectedSec].filter(line => currentGroup.includes(line.id)).map(line => editorFiles[selectedSec].indexOf(line) + 1);
                 includedLinesContent.textContent = serializeRanges(lineInFile);
@@ -11818,13 +11831,14 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         function deleteLineNoteGroup() {
             if (!currentOpenLineNoteSec) {
                 toggleNoteDetails(false, 'createFileLineNoteOverlay', 'createFileLineNoteCon');
+                attachToSelected = false;
                 showAlert("Unable to delete notes, due to missing file declaration in the backend!");
                 return;
             }
             askConfirm("Are you sure you want to remove this note from all the lines with this note ? This can not be undone!", (answer) => {
                 if (answer) {
                     toggleNoteDetails(false, 'createFileLineNoteOverlay', 'createFileLineNoteCon');
-                    
+                    attachToSelected = false;
                     currentGroup.forEach(lineNoteId => {
                         deleteLineNote(lineNoteId, currentOpenLineNoteSec);
                     });
@@ -11956,6 +11970,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     }
                     const lineInFile = editorFiles[dataId].filter(line => currentGroup.includes(line.id)).map(line => editorFiles[dataId].indexOf(line) + 1);
                     includedLinesContent.textContent = serializeRanges(lineInFile);
+                    attachToSelected = false;
                     toggleNoteDetails(true, 'createFileLineNoteOverlay', 'createFileLineNoteCon');
                 };
                 lineNotesContainer.appendChild(lineNote);
@@ -17330,220 +17345,241 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         function addCommentsAsLineNotes() {
             askConfirm("Are you sure you want to attach all comments in your code as line notes ? This can only be undone manually. The undo button does not undo this action.", (answer) => {
                 if (!answer) return;
-                if (!section || !editorIndex || editorIndex == "forview") {
-                    importantnotificationmessageelement("File verification failed!");
-                    return;
-                }
-                const allLines = editorFiles[editorIndex];
-                const currentFileName = projectNames[editorIndex].toLowerCase();
-                if (!currentFileName) {
-                    importantnotificationmessageelement("File name not found!");
-                    return;
-                }
-                if (!currentFileName.endsWith(".html") && !currentFileName.endsWith(".htm") && !currentFileName.endsWith(".js") && !currentFileName.endsWith(".css") && !currentFileName.endsWith(".py")) {
-                    showAlert('This feature does not support the file type: ' + currentFileName.split(".").pop());
-                    return;
-                }
-                if (!allLines) {
-                    showAlert('File not found.');
-                    return;
-                }
-                const sectionlinecontainer = section.querySelector(".code-editor-container");
-                if (!sectionlinecontainer) {
-                    showAlert('File content not found.');
-                    return;
-                }
-                
-                const steps = [
-                    { percent: 0, text: 'Processing...' },
-                    { percent: 50, text: 'analyzing...' },
-                    { percent: 100, text: 'comments noted!' }
-                ];
-                startLoadingThis(steps, 'checking...');
-                
-                setTimeout(() => {
+                askConfirm("Do you want lines with notes to be overwritten ?", (overwrite) => {
                     if (!section || !editorIndex || editorIndex == "forview") {
                         importantnotificationmessageelement("File verification failed!");
                         return;
                     }
-                    const allsyntaxcommentsectionlines = allLines.filter(el => el.classes.includes('syntaxcomment'));
-                    const allsyntaxhtmlcommentsectionlines = allLines.filter(el => el.classes.includes('syntaxhtmlcomment'));
+                    const allLines = editorFiles[editorIndex];
+                    const currentFileName = projectNames[editorIndex].toLowerCase();
+                    const mergeLineNotes = document.querySelector('.mergelinenotesonautomatedaddintion input[type="checkbox"]')?.checked;
+                    if (!currentFileName) {
+                        importantnotificationmessageelement("File name not found!");
+                        return;
+                    }
+                    if (!currentFileName.endsWith(".html") && !currentFileName.endsWith(".htm") && !currentFileName.endsWith(".js") && !currentFileName.endsWith(".css") && !currentFileName.endsWith(".py")) {
+                        showAlert('This feature does not support the file type: ' + currentFileName.split(".").pop());
+                        return;
+                    }
+                    if (!allLines) {
+                        showAlert('File not found.');
+                        return;
+                    }
+                    const sectionlinecontainer = section.querySelector(".code-editor-container");
+                    if (!sectionlinecontainer) {
+                        showAlert('File content not found.');
+                        return;
+                    }
                     
-                    const HTML_COMMENT = { regex: /<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, open: '<!--', close: '-->' };
-                    const BLOCK_COMMENT = { regex: /\/\*[\s\S]*?\*\/|((?:(?!\/\*)[\s\S])*)\*\/|\/\*[\s\S]*$/g, open: '/*', close: '*/' };
-                    const JS_LINE_COMMENT = { regex: /\/\/.*/g, open: '//', close: null };
-                    const PY_COMMENT = { regex: /#(?=[\s#]).*/g, open: '#', close: null };
+                    const steps = [
+                        { percent: 0, text: 'Processing...' },
+                        { percent: 50, text: 'analyzing...' },
+                        { percent: 100, text: 'comments noted!' }
+                    ];
+                    startLoadingThis(steps, 'checking...');
                     
-                    function extractCommentContent(text, config) {
-                        const matches = [...text.matchAll(config.regex)];
-                        if (!matches.length) return '';
-                        return matches.map(m => {
-                            const full = m[0];
-                            const group1 = m[1];
-                            const hasOpen = !!(config.open && full.startsWith(config.open));
-                            const hasClose = !!(config.close && full.endsWith(config.close));
-                            let content;
-                            if (hasOpen && hasClose && full.length >= config.open.length + config.close.length) {
-                                content = full.slice(config.open.length, full.length - config.close.length);
-                            } else if (hasClose) {
-                                content = (group1 !== undefined) ? group1 : full.slice(0, full.length - config.close.length);
-                            } else if (hasOpen) {
-                                content = full.slice(config.open.length);
-                            } else {
-                                content = full;
+                    setTimeout(() => {
+                        if (!section || !editorIndex || editorIndex == "forview") {
+                            importantnotificationmessageelement("File verification failed!");
+                            return;
+                        }
+                        const allsyntaxcommentsectionlines = allLines.filter(el => el.classes.includes('syntaxcomment'));
+                        const allsyntaxhtmlcommentsectionlines = allLines.filter(el => el.classes.includes('syntaxhtmlcomment'));
+                        
+                        const HTML_COMMENT = { regex: /<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, open: '<!--', close: '-->' };
+                        const BLOCK_COMMENT = { regex: /\/\*[\s\S]*?\*\/|((?:(?!\/\*)[\s\S])*)\*\/|\/\*[\s\S]*$/g, open: '/*', close: '*/' };
+                        const JS_LINE_COMMENT = { regex: /\/\/.*/g, open: '//', close: null };
+                        const PY_COMMENT = { regex: /#(?=[\s#]).*/g, open: '#', close: null };
+                        
+                        function extractCommentContent(text, config) {
+                            const matches = [...removeAbbreviations(normalizeSpaces(text)).matchAll(config.regex)];
+                            if (!matches.length) return '';
+                            return matches.map(m => {
+                                const full = m[0];
+                                const group1 = m[1];
+                                const hasOpen = !!(config.open && full.startsWith(config.open));
+                                const hasClose = !!(config.close && full.endsWith(config.close));
+                                let content;
+                                if (hasOpen && hasClose && full.length >= config.open.length + config.close.length) {
+                                    content = full.slice(config.open.length, full.length - config.close.length);
+                                } else if (hasClose) {
+                                    content = (group1 !== undefined) ? group1 : full.slice(0, full.length - config.close.length);
+                                } else if (hasOpen) {
+                                    content = full.slice(config.open.length);
+                                } else {
+                                    content = full;
+                                }
+                                return content;
+                            }).filter(Boolean).join(' | ');
+                        }
+                        String.prototype.onlyMatchCommentContent = function(config) {
+                            return extractCommentContent(this, config);
+                        };
+                        
+                        function truncated(text) {
+                            return removeAbbreviations(normalizeSpaces(text.length > 5000 ? text.substring(0, 4997) + '...' : text));
+                        }
+                        
+                        function findShapedMatch(text, config, wantOpen, wantClose) {
+                            const matches = [...text.matchAll(config.regex)];
+                            return matches.find(m => {
+                                const full = m[0];
+                                const hasOpen = !!(config.open && full.startsWith(config.open));
+                                const hasClose = !!(config.close && full.endsWith(config.close));
+                                return hasOpen === wantOpen && hasClose === wantClose;
+                            });
+                        }
+                        
+                        function bundleMultilineComments(config, spanClass, titleFor) {
+                            const bundledIds = new Set();
+                            let i = 0;
+                            while (i < allLines.length) {
+                                const line = allLines[i];
+                                if (!overwrite && getALineNote(editorIndex, line.id)) {
+                                    i++; continue;
+                                }
+                                const text = truncated(line.text);
+                                const openMatch = findShapedMatch(text, config, true, false);
+                                if (!openMatch) { i++; continue; }
+                                
+                                let j = i + 1;
+                                const spanLines = [];
+                                while (j < allLines.length && allLines[j].classes.includes(spanClass)) {
+                                    spanLines.push(allLines[j]);
+                                    j++;
+                                }
+                                
+                                if (spanLines.length === 0) { i++; continue; }
+                                
+                                let closeLine = null;
+                                let closeLineText = null;
+                                if (j < allLines.length) {
+                                    const candidateText = truncated(allLines[j].text);
+                                    if (findShapedMatch(candidateText, config, false, true)) {
+                                        closeLine = allLines[j];
+                                        closeLineText = candidateText;
+                                    }
+                                }
+                                
+                                const bundleLines = [line, ...spanLines];
+                                if (closeLine) bundleLines.push(closeLine);
+                                
+                                const parts = [extractCommentContent(text, config)];
+                                spanLines.forEach(sl => parts.push(truncated(sl.text)));
+                                if (closeLine) parts.push(extractCommentContent(closeLineText, config));
+                                
+                                const bundledContent = parts.filter(Boolean).join('\n');
+                                const title = titleFor(currentFileName);
+                                const lineExistingNote = getALineNote(editorIndex, line.id);
+                                const extraTxtForLineNote = mergeLineNotes && lineExistingNote ? lineExistingNote : null;
+                                bundleLines.forEach(bl => {
+                                    bundledIds.add(bl.id);
+                                    updateLineNote(bl.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? title + " – " + extraTxtForLineNote.title : title, extraTxtForLineNote && extraTxtForLineNote.description.trim() != ""? bundledContent + " | " + extraTxtForLineNote.description : bundledContent, editorIndex);
+                                });
+                                
+                                i = j + (closeLine ? 1 : 0);
                             }
-                            return content;
-                        }).filter(Boolean).join(' | ');
-                    }
-                    String.prototype.onlyMatchCommentContent = function(config) {
-                        return extractCommentContent(this, config);
-                    };
-                    
-                    function truncated(text) {
-                        return removeAbbreviations(normalizeSpaces(text.length > 5000 ? text.substring(0, 4997) + '...' : text));
-                    }
-                    
-                    function findShapedMatch(text, config, wantOpen, wantClose) {
-                        const matches = [...text.matchAll(config.regex)];
-                        return matches.find(m => {
-                            const full = m[0];
-                            const hasOpen = !!(config.open && full.startsWith(config.open));
-                            const hasClose = !!(config.close && full.endsWith(config.close));
-                            return hasOpen === wantOpen && hasClose === wantClose;
-                        });
-                    }
-                    
-                    function bundleMultilineComments(config, spanClass, titleFor) {
-                        const bundledIds = new Set();
-                        let i = 0;
-                        while (i < allLines.length) {
-                            const line = allLines[i];
-                            const text = truncated(line.text);
-                            const openMatch = findShapedMatch(text, config, true, false);
-                            if (!openMatch) { i++; continue; }
-                            
-                            let j = i + 1;
-                            const spanLines = [];
-                            while (j < allLines.length && allLines[j].classes.includes(spanClass)) {
-                                spanLines.push(allLines[j]);
-                                j++;
+                            return bundledIds;
+                        }
+                        
+                        if (saveLineNotesTimeout) {
+                            clearTimeout(saveLineNotesTimeout);
+                        }
+                        
+                        const bundledLineIds = new Set();
+                        if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
+                            bundleMultilineComments(HTML_COMMENT, 'syntaxhtmlcomment', () => "Multi-line HTML comment")
+                                .forEach(id => bundledLineIds.add(id));
+                        }
+                        if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm") || currentFileName.endsWith(".js") || currentFileName.endsWith(".css")) {
+                            bundleMultilineComments(BLOCK_COMMENT, 'syntaxcomment', (fname) => {
+                                if (fname.endsWith(".css")) return "Multi-line CSS comment.";
+                                if (fname.endsWith(".js")) return "Multi-line JS comment.";
+                                return "Multi-line JS/CSS comment";
+                            }).forEach(id => bundledLineIds.add(id));
+                        }
+                        
+                        if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm") || currentFileName.endsWith(".js") || currentFileName.endsWith(".css")) {
+                            let allsyntaxcommentsyntaxhtmlcommentsectionlines = allsyntaxcommentsectionlines.filter(l => !bundledLineIds.has(l.id));
+                            if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
+                                allsyntaxcommentsyntaxhtmlcommentsectionlines.push(...allsyntaxhtmlcommentsectionlines.filter(l => !bundledLineIds.has(l.id)));
                             }
-                            
-                            if (spanLines.length === 0) { i++; continue; }
-                            
-                            let closeLine = null;
-                            let closeLineText = null;
-                            if (j < allLines.length) {
-                                const candidateText = truncated(allLines[j].text);
-                                if (findShapedMatch(candidateText, config, false, true)) {
-                                    closeLine = allLines[j];
-                                    closeLineText = candidateText;
+                            allsyntaxcommentsyntaxhtmlcommentsectionlines.forEach(line => {
+                                if (!overwrite && getALineNote(editorIndex, line.id)) {
+                                    return;
+                                }
+                                const lineExistingNote = getALineNote(editorIndex, line.id);
+                                const extraTxtForLineNote = mergeLineNotes && lineExistingNote ? lineExistingNote : null;
+                                const textToAdd = removeAbbreviations(normalizeSpaces(line.text));
+                                if (line.classes.includes('syntaxcomment')) {
+                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "JS/CSS comment – " + extraTxtForLineNote.title : "JS/CSS comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? extraTxtForLineNote.description + " | " + textToAdd : textToAdd, editorIndex);
+                                } else {
+                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "HTML comment – " + extraTxtForLineNote.title : "HTML comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? extraTxtForLineNote.description + " | " + textToAdd : textToAdd, editorIndex);
+                                }
+                            });
+                        }
+                        
+                        allLines.forEach(line => {
+                            if (bundledLineIds.has(line.id)) return;
+                            if (!overwrite && getALineNote(editorIndex, line.id)) {
+                                return;
+                            }
+                            const lineExistingNote = getALineNote(editorIndex, line.id);
+                            const extraTxtForLineNote = mergeLineNotes && lineExistingNote ? lineExistingNote : null;
+                            let text = removeAbbreviations(normalizeSpaces(line.text));
+                            if (text.length > 5000) {
+                                text = text.substring(0, 4997) + '...';
+                            }
+                            if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
+                                let isItTrueHTML = Boolean(text.match(HTML_COMMENT.regex));
+                                let isItTrueJSCSS = Boolean(text.match(BLOCK_COMMENT.regex));
+                                let isItTrueJS = Boolean(text.match(JS_LINE_COMMENT.regex));
+                                let languageList = [];
+                                let matchedConfigs = [];
+                                if (isItTrueHTML) {
+                                    languageList.push("HTML");
+                                    matchedConfigs.push(HTML_COMMENT);
+                                }
+                                if (isItTrueJSCSS) {
+                                    languageList.push("JS/CSS");
+                                    matchedConfigs.push(BLOCK_COMMENT);
+                                } else if (isItTrueJS) {
+                                    languageList.push("JS");
+                                    matchedConfigs.push(JS_LINE_COMMENT);
+                                }
+                                if (languageList.length > 0) {
+                                    const content = matchedConfigs.map(cfg => text.onlyMatchCommentContent(cfg)).filter(Boolean).join(' | ');
+                                    const theTxt = "In HTML " + languageList.join("/") + " comment.";
+                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? theTxt + " – " + extraTxtForLineNote.title : theTxt, extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex);
+                                }
+                            } else if (currentFileName.endsWith(".css")) {
+                                let isItTrueCSS = Boolean(text.match(BLOCK_COMMENT.regex));
+                                if (isItTrueCSS) {
+                                    const content = text.onlyMatchCommentContent(BLOCK_COMMENT);
+                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "CSS comment – " + extraTxtForLineNote.title : "CSS comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex);
+                                }
+                            } else if (currentFileName.endsWith(".js")) {
+                                let isItTrueJSCSS = Boolean(text.match(BLOCK_COMMENT.regex));
+                                let isItTrueJS = Boolean(text.match(JS_LINE_COMMENT.regex));
+                                if (isItTrueJSCSS || isItTrueJS) {
+                                    let matchedConfigs = [];
+                                    if (isItTrueJSCSS) matchedConfigs.push(BLOCK_COMMENT);
+                                    if (isItTrueJS) matchedConfigs.push(JS_LINE_COMMENT);
+                                    const content = matchedConfigs.map(cfg => text.onlyMatchCommentContent(cfg)).filter(Boolean).join(' | ');
+                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "JS comment – " + extraTxtForLineNote.title : "JS comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex, editorIndex);
+                                }
+                            } else if (currentFileName.endsWith(".py")) {
+                                let isItTruePy = Boolean(text.match(PY_COMMENT.regex));
+                                if (isItTruePy) {
+                                    const content = text.onlyMatchCommentContent(PY_COMMENT);
+                                    updateLineNote(line.id, extraTxtForLineNote && extraTxtForLineNote.title.trim() != "" ? "Python comment – " + extraTxtForLineNote.title : "Python comment", extraTxtForLineNote && extraTxtForLineNote.description.trim() != "" ? content + " | " + extraTxtForLineNote.description : content, editorIndex, editorIndex);
                                 }
                             }
-                            
-                            const bundleLines = [line, ...spanLines];
-                            if (closeLine) bundleLines.push(closeLine);
-                            
-                            const parts = [extractCommentContent(text, config)];
-                            spanLines.forEach(sl => parts.push(truncated(sl.text)));
-                            if (closeLine) parts.push(extractCommentContent(closeLineText, config));
-                            
-                            const bundledContent = parts.filter(Boolean).join('\n');
-                            const title = titleFor(currentFileName);
-                            
-                            bundleLines.forEach(bl => {
-                                bundledIds.add(bl.id);
-                                updateLineNote(bl.id, title, bundledContent, editorIndex);
-                            });
-                            
-                            i = j + (closeLine ? 1 : 0);
-                        }
-                        return bundledIds;
-                    }
-                    
-                    if (saveLineNotesTimeout) {
-                        clearTimeout(saveLineNotesTimeout);
-                    }
-                    
-                    const bundledLineIds = new Set();
-                    if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
-                        bundleMultilineComments(HTML_COMMENT, 'syntaxhtmlcomment', () => "Multi-line HTML comment")
-                            .forEach(id => bundledLineIds.add(id));
-                    }
-                    if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm") || currentFileName.endsWith(".js") || currentFileName.endsWith(".css")) {
-                        bundleMultilineComments(BLOCK_COMMENT, 'syntaxcomment', (fname) => {
-                            if (fname.endsWith(".css")) return "Multi-line CSS comment.";
-                            if (fname.endsWith(".js")) return "Multi-line JS comment.";
-                            return "Multi-line JS/CSS comment";
-                        }).forEach(id => bundledLineIds.add(id));
-                    }
-                    
-                    if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm") || currentFileName.endsWith(".js") || currentFileName.endsWith(".css")) {
-                        let allsyntaxcommentsyntaxhtmlcommentsectionlines = allsyntaxcommentsectionlines.filter(l => !bundledLineIds.has(l.id));
-                        if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
-                            allsyntaxcommentsyntaxhtmlcommentsectionlines.push(...allsyntaxhtmlcommentsectionlines.filter(l => !bundledLineIds.has(l.id)));
-                        }
-                        allsyntaxcommentsyntaxhtmlcommentsectionlines.forEach(line => {
-                            if (line.classes.includes('syntaxcomment')) {
-                                updateLineNote(line.id, "JS/CSS comment", line.text, editorIndex);
-                            } else {
-                                updateLineNote(line.id, "HTML comment", line.text, editorIndex);
-                            }
                         });
-                    }
-                    
-                    allLines.forEach(line => {
-                        if (bundledLineIds.has(line.id)) return;
-                        let text = line.text;
-                        if (text.length > 5000) {
-                            text = text.substring(0, 4997) + '...';
-                        }
-                        if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
-                            let isItTrueHTML = Boolean(text.match(HTML_COMMENT.regex));
-                            let isItTrueJSCSS = Boolean(text.match(BLOCK_COMMENT.regex));
-                            let isItTrueJS = Boolean(text.match(JS_LINE_COMMENT.regex));
-                            let languageList = [];
-                            let matchedConfigs = [];
-                            if (isItTrueHTML) {
-                                languageList.push("HTML");
-                                matchedConfigs.push(HTML_COMMENT);
-                            }
-                            if (isItTrueJSCSS) {
-                                languageList.push("JS/CSS");
-                                matchedConfigs.push(BLOCK_COMMENT);
-                            } else if (isItTrueJS) {
-                                languageList.push("JS");
-                                matchedConfigs.push(JS_LINE_COMMENT);
-                            }
-                            if (languageList.length > 0) {
-                                const content = matchedConfigs.map(cfg => text.onlyMatchCommentContent(cfg)).filter(Boolean).join(' | ');
-                                updateLineNote(line.id, "In HTML " + languageList.join("/") + " comment.", content, editorIndex);
-                            }
-                        } else if (currentFileName.endsWith(".css")) {
-                            let isItTrueCSS = Boolean(text.match(BLOCK_COMMENT.regex));
-                            if (isItTrueCSS) {
-                                updateLineNote(line.id, "CSS comment.", text.onlyMatchCommentContent(BLOCK_COMMENT), editorIndex);
-                            }
-                        } else if (currentFileName.endsWith(".js")) {
-                            let isItTrueJSCSS = Boolean(text.match(BLOCK_COMMENT.regex));
-                            let isItTrueJS = Boolean(text.match(JS_LINE_COMMENT.regex));
-                            if (isItTrueJSCSS || isItTrueJS) {
-                                let matchedConfigs = [];
-                                if (isItTrueJSCSS) matchedConfigs.push(BLOCK_COMMENT);
-                                if (isItTrueJS) matchedConfigs.push(JS_LINE_COMMENT);
-                                const content = matchedConfigs.map(cfg => text.onlyMatchCommentContent(cfg)).filter(Boolean).join(' | ');
-                                updateLineNote(line.id, "JS comment.", content, editorIndex);
-                            }
-                        } else if (currentFileName.endsWith(".py")) {
-                            let isItTruePy = Boolean(text.match(PY_COMMENT.regex));
-                            if (isItTruePy) {
-                                updateLineNote(line.id, "Python comment.", text.onlyMatchCommentContent(PY_COMMENT), editorIndex);
-                            }
-                        }
-                    });
-                    saveAllLineNotes();
-                    addalllineswithnotesmanually();
-                }, 100);
+                        saveAllLineNotes();
+                        addalllineswithnotesmanually();
+                    }, 100);
+                });
             });
         }
         
@@ -21945,7 +21981,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 { regex: /\b(case|catch|class(?!=)|default|do|else|enum|export|extends|finally|def|function|if|elif|import|switch|try|while|with|implements|interface|package|private|protected|public|async|GeneratorFunction|AsyncFunction|for|match|except)\b/g, className: "syntaxblock" },
                 { regex: /@(container|page|supports|keyframes|import|font-face|media|document)\b/g, className: "syntaxkeyword" },
                 { regex: /\-\-[\w-]+(?=\:)/g, className: "syntaxvariable", goto: "def" },
-                { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true" },
+                { regex: /(?<=\b(?:def|function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "def" },
+                { regex: /(?<!\b(?:function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "function ", isBefore: true }, 
+                { regex: /(?<!\b(?:def)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "def ", isBefore: true },
+                { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true", additionalTxt: ":" },
                 { regex: /(?<=<\/?)([^\s>/]+)(?=[\s>])/g, className: "syntaxhtmltagcontent" },
                 { regex: signregex, className: "syntaxoperator" },
                 { regex: /(#|0x)([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g, className: "syntaxhex" },
@@ -21970,7 +22009,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 while (lastIndex < text.length) {
                     let matched = false;
                     
-                    for (const { regex, className, goto = false } of patterns) {
+                    for (const { regex, className, goto = false, additionalTxt = "", isBefore = false} of patterns) {
                         const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
                         r.lastIndex = lastIndex;
                         const match = r.exec(text);
@@ -22153,17 +22192,18 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                                         });
                                     });
                                 };
-                            } else if (className.includes("syntaxvariable") && goto === "def") {
+                            } else if (className.includes("syntaxvariable") && goto == "def") {
                                 span.classList.add("cssvardef");
-                            } else if (goto === "true") {
+                            } else if (goto == "true") {
                                 span.onclick = () => {
                                     let definition = null;
                                     const allLines = editorFiles[fileEditorIndex];
                                     const alldeflines = allLines.filter(el => el.classes.includes('cssvardef'));
                                     if (alldeflines) {
                                         for (let sv of alldeflines) {
-                                            if (sv.text.includes(span.textContent + ":")) {
-                                                definition = alldeflines.indexOf(sv);
+                                            const txtForSearch = `${isBefore == true ? additionalTxt : ""}${span.textContent}${isBefore == false ? additionalTxt : ""}`;
+                                            if (normalizeSpaces(sv.text).includes(txtForSearch)) {
+                                                definition = editorFiles[fileEditorIndex].indexOf(sv);
                                                 break;
                                             }
                                         }
