@@ -5917,7 +5917,7 @@
             display: inline-block;
         }
         .expandedNotes .toggleSpecificNoteConSize {
-            transform: scaleX(0.7) scaleY(1.5) rotate(180deg);
+            transform: scaleX(1.5) scaleY(0.7) rotate(90deg);
         }
         .noteElTextCon {
             display: flex;
@@ -7456,7 +7456,7 @@
                     <div id="noteDisplayTimeSwitch">
                         <span id="temporaryDisplayText">Temporary display</span>
                         <label class="switch">
-                            <input type="checkbox" class="switchbox" onchange="updateNoteTemporraryDisplay(this)">
+                            <input type="checkbox" class="switchbox" id="temporaryDisplaySwitch" onchange="updateNoteTemporraryDisplay(this);saveTemporaryDisplayVal(this);">
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -7782,6 +7782,11 @@
                         <span class="switchtothememaincolorspan" style="background: #393A43"></span>
                         <span class="switchtothemetitlespan">gray</span>
                         <button class="deleteThemeOp" onclick="deleteThemeOp('grayThemeOp')">⌧</button>
+                    </div>
+                    <div class="themeoption" id="darkGrayThemeOp" data-themeId="darkgray-theme" onclick="switchtotheme('darkgray-theme', event)">
+                        <span class="switchtothememaincolorspan" style="background: #1A1A1C"></span>
+                        <span class="switchtothemetitlespan">dark gray</span>
+                        <button class="deleteThemeOp" onclick="deleteThemeOp('darkGrayThemeOp')">⌧</button>
                     </div>
                     <div class="themeoption" id="vintageThemeOp" data-themeId="vintage-theme" onclick="switchtotheme('vintage-theme', event)">
                         <span class="switchtothememaincolorspan" style="background: gray"></span>
@@ -8457,71 +8462,161 @@
             }, 1000);
         });
         function checkRegexStringInput(el) {
-            if (!el.value.endsWith('/')) {
+            if (!el.value.trim().endsWith('/')) {
                 if (el.value.length >= 10) {
                     el.value = el.value.slice(0, 9);
                 }
                 el.value = el.value + '/';
                 changecommandtosearchregexswitchtext(el);
             }
+            saveRegexSearchString(el);
         }
-        function recoverIndentSizeSelection() {
-            const spaceindentationnum = document.querySelector(".spaceindentationnum");
-            if (!spaceindentationnum) return;
+        function _localRecover(config) {
+            const {
+                selector,
+                storageKey,
+                onFound, // (el, storedValue) => void  — apply the recovered value
+                onCatchImmediate, // optional: runs first thing on failure, before anything else
+                onFailure, // (el) => void  — apply the fallback value(s)
+                recoverWarnMsg,
+                removeWarnMsg
+            } = config;
+            const el = document.querySelector(selector);
+            if (!el) return;
             try {
-                const indentSize = localStorage.getItem("AIluryStudioCodeIndentSize");
-                if (indentSize) {
-                    spaceindentationnum.value = indentSize;
-                    editorIndentSize = parseInt(indentSize);
+                const stored = localStorage.getItem(storageKey);
+                if (stored) {
+                    onFound(el, stored);
                 }
             } catch {
-                console.warn("something went wrong while trying to recover selected indent size, for the editor.");
+                if (onCatchImmediate) onCatchImmediate();
+                console.warn(recoverWarnMsg);
                 try {
-                    spaceindentationnum.value = "4";
-                    editorIndentSize = 4;
-                    localStorage.removeItem("AIluryStudioCodeIndentSize");
+                    onFailure(el);
+                    localStorage.removeItem(storageKey);
                 } catch {
-                    console.warn("something went wrong while trying to remove selected indent size, after failure to retrieve the indent size.");
+                    console.warn(removeWarnMsg);
                 }
             }
         }
-        recoverIndentSizeSelection();
-        function recoverIndentApplicationOnFileUploadSelection() {
-            const applyspaceindentationonupload = document.querySelector(".applyspaceindentationonupload");
-            if (!applyspaceindentationonupload) return;
-            try {
-                const isChecked = localStorage.getItem("AIluryStudioApplyIndentOnLoad");
-                if (isChecked) {
-                    applyspaceindentationonupload.checked = isChecked;
-                    applyIndentSizeOnLoad = isChecked;
-                }
-            } catch {
-                applyIndentSizeOnLoad = true;
-                console.warn("something went wrong while trying to recover if you want to apply the selected indentbsize to files when they are rendered.");
+        
+        function _localSave(config) {
+            const { shouldStore, storageKey, valueToStore, saveFailMsg, removeFailMsg } = config;
+            if (shouldStore) {
                 try {
-                    applyspaceindentationonupload.checked = true;
-                    localStorage.removeItem("AIluryStudioApplyIndentOnLoad");
+                    localStorage.setItem(storageKey, valueToStore);
                 } catch {
-                    console.warn("something went wrong while trying to remove the selection for applying indent size when a file is rendered.");
-                }
-            }
-        }
-        recoverIndentApplicationOnFileUploadSelection();
-        function applyIndentSizeOnLoadToggle(el) {
-            applyIndentSizeOnLoad = el.checked;
-            if (applyIndentSizeOnLoad != true) {
-                try {
-                    localStorage.setItem("AIluryStudioApplyIndentOnLoad", applyIndentSizeOnLoad);
-                } catch {
-                    showAlert("something went wrong while trying to save if selected indent size is supposed to be applied to files when rendered. You might have run out of local storage.");
+                    showAlert(saveFailMsg);
                 }
             } else {
                 try {
-                    localStorage.removeItem("AIluryStudioApplyIndentOnLoad");
+                    localStorage.removeItem(storageKey);
                 } catch {
-                    showAlert("something went wrong while trying to update if selected indent size is supposed to be applied to files when they are rendered. Local storage error.");
+                    showAlert(removeFailMsg);
                 }
             }
+        }
+        
+        function recoverIndentSizeSelection() {
+            _localRecover({
+                selector: ".spaceindentationnum",
+                storageKey: "AIluryStudioCodeIndentSize",
+                onFound: (el, indentSize) => {
+                    el.value = indentSize;
+                    editorIndentSize = parseInt(indentSize);
+                },
+                onFailure: (el) => {
+                    el.value = "4";
+                    editorIndentSize = 4;
+                },
+                recoverWarnMsg: "something went wrong while trying to recover selected indent size, for the editor.",
+                removeWarnMsg: "something went wrong while trying to remove selected indent size, after failure to retrieve the indent size."
+            });
+        }
+        recoverIndentSizeSelection();
+        
+        function recoverIndentApplicationOnFileUploadSelection() {
+            _localRecover({
+                selector: ".applyspaceindentationonupload",
+                storageKey: "AIluryStudioApplyIndentOnLoad",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked;
+                    applyIndentSizeOnLoad = isChecked;
+                },
+                onCatchImmediate: () => {
+                    applyIndentSizeOnLoad = true;
+                },
+                onFailure: (el) => {
+                    el.checked = true;
+                },
+                recoverWarnMsg: "something went wrong while trying to recover if you want to apply the selected indentbsize to files when they are rendered.",
+                removeWarnMsg: "something went wrong while trying to remove the selection for applying indent size when a file is rendered."
+            });
+        }
+        recoverIndentApplicationOnFileUploadSelection();
+        
+        function applyIndentSizeOnLoadToggle(el) {
+            applyIndentSizeOnLoad = el.checked;
+            _localSave({
+                shouldStore: applyIndentSizeOnLoad != true,
+                storageKey: "AIluryStudioApplyIndentOnLoad",
+                valueToStore: applyIndentSizeOnLoad,
+                saveFailMsg: "something went wrong while trying to save if selected indent size is supposed to be applied to files when rendered. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update if selected indent size is supposed to be applied to files when they are rendered. Local storage error."
+            });
+        }
+        function recoverRegexString() {
+            _localRecover({
+                selector: ".commandtosearchregex",
+                storageKey: "AIluryStudioRegexSearchString",
+                onFound: (el, rString) => {
+                    el.value = rString;
+                },
+                onFailure: (el) => {
+                    el.value = "r/";
+                },
+                recoverWarnMsg: "something went wrong while trying to recover regex-search string.",
+                removeWarnMsg: "something went wrong while trying to remove saved regex-search string."
+            });
+        }
+        recoverRegexString();
+        
+        function saveRegexSearchString(el) {
+            _localSave({
+                shouldStore: el.value != "r/",
+                storageKey: "AIluryStudioRegexSearchString",
+                valueToStore: el.value,
+                saveFailMsg: "something went wrong while trying to save the regex-search string. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update regex-search string. Local storage error."
+            });
+        }
+        
+        function recoverTemporaryDisplayVal() {
+            _localRecover({
+                selector: "#temporaryDisplaySwitch",
+                storageKey: "AIluryStudioTemporaryDisplay",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked;
+                    updateNoteTemporraryDisplay(el);
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                    updateNoteTemporraryDisplay(el);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover temporary display. Local storage error.",
+                removeWarnMsg: "something went wrong while trying to remove temporary display selection after an error during the recovery process. Local storage error."
+            });
+        }
+        recoverTemporaryDisplayVal();
+        
+        function saveTemporaryDisplayVal(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioTemporaryDisplay",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save temporary display selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update temporary display selection. Local storage error."
+            });
         }
         function clearClosestSearchCon(clearSearchInputEl) {
             if (!clearSearchInputEl) return;
@@ -12380,7 +12475,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 else if (element.type == "text" && hasIndex(element.index)) {
                     const target = safeGetLine(element.index);
                     let elToPush = {
-                        element: { ...target },
                         type: "text",
                         text: target.text,
                         index: element.index
@@ -12416,9 +12510,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     const target = safeGetLine(element.index);
                     if (target) {
                         pushEl.push({
-                            element: {...target},
                             type: "removeclass",
-                            text: element.text
+                            text: element.text,
+                            index: element.index
                         });
                         if (!Array.isArray(target.classes)) target.classes = [];
                         if (!target.classes.includes(element.text)) target.classes.push(element.text);
@@ -12429,9 +12523,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     const target = safeGetLine(element.index);
                     if (target && Array.isArray(target.classes)) {
                         pushEl.push({
-                            element: { ...target },
                             type: "addclass",
-                            text: element.text
+                            text: element.text,
+                            index: element.index
                         });
                         const ci = target.classes.indexOf(element.text);
                         if (ci !== -1) target.classes.splice(ci, 1);
@@ -12613,7 +12707,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             let newpast = [];
             
             let pastelement = {
-                element: celine,
                 type: "text",
                 text: celine.text,
                 index: celines.indexOf(celine)
@@ -12705,7 +12798,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 }
                 
                 let pastelement2 = {
-                    element: newline,
+                    element: {...newline},
                     type: "create",
                     index: celines.indexOf(newline)
                 };
@@ -13537,6 +13630,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             "deeplightblue-theme": "#ffffff,100.#daf4ff,100.#aafbff,50.#00cafb,100.#ccffff,100.#0088ef,100.#53e0ff,100.#0156cd,100.#007fd7,100.#ffffff,10.#84ebff,100.#64daff,100.#0d9fff,100.#3873bf,100.#007dff,100.#61bfff,100.#aafbff,100.#009fff,100.#73c2ff,100.#0078dd,100.#aafbff,100.#007cff,100.#8ce2ff,100",
             "enhanceddefaultdark-theme": "#020615,100.#0b1120,100.#0156cd,50.#ffffff,100.#0b1120,100.#0156cd,100.#ffffff,100.#0156cd,100.#0156cd,100.#0b1120,75.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
             "gray-theme": "#28282e,100.#393a43,100.#0156cd,74.#ffffff,100.#393a43,100.#0156cd,100.#ffffff,100.#0156cd,100.#0156cd,100.#393a43,12.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
+            "darkgray-theme": "#1a1a1c,100.#2f2f32,100.#0091ff,74.#ffffff,100.#38383b,100.#0091ff,100.#ffffff,100.#0091ff,100.#0091ff,100.#38383b,12.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
             "lightyellow-theme": "#f0f0f0,100.#ebebeb,100.#ffab01,50.#000000,100.#d6d6d6,100.#ffab01,100.#000000,100.#fecb3e,100.#ffab01,100.#d6d6d6,37.#a96800,100.#da5100,100.#858585,100.#707070,100.#da5100,100.#d19a66,100.#5c6370,100.#d19d01,100.#e5c07b,100.#d19d01,100.#5c6370,100.#d38301,100.#333333,100",
             "darkpurple-theme": "#141425,100.#1e1e2f,100.#5c2d91,100.#ffffff,100.#1e1e2f,100.#5c2d91,100.#ffffff,100.#5c2d91,100.#61afef,100.#1e1e2f,44.#c640dd,100.#5c2d91,100.#abb2bf,100.#abb2bf,100.#72c338,100.#d02d91,72.#5c6370,100.#61afef,100.#61afef,100.#b125dd,100.#5c6370,100.#5c2d91,100.#ffffff,100",
             "light-theme": "#ffffff,100.#f2f2f8,100.#0075f0,34.#000000,100.#e8eaee,100.#0075f0,100.#7f868b,100.#0075f0,100.#0075f0,100.#dadce1,21.#0075f0,100.#abb2bf,100.#abb2bf,100.#abb2bf,100.#009500,100.#61afef,72.#5c6370,100.#0075f0,100.#0075f0,100.#0075f0,100.#5c6370,100.#0075f0,100.#000000,100",
@@ -16932,7 +17026,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         .forEach(line => {
                             const theLine = allLines[allLines.indexOf(line)];
                             let pastelement = {
-                                element: {...line},
                                 type: "text",
                                 text: line.text,
                                 index: allLines.indexOf(line)
@@ -16953,7 +17046,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     .forEach(line => {
                         const theLine = allLines[allLines.indexOf(line)];
                         let pastelement = {
-                            element: {...line},
                             type: "text",
                             text: line.text,
                             index: allLines.indexOf(line)
@@ -17310,7 +17402,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
 
             allLines.forEach(line => {
                 let pastelement = {
-                    element: {...line},
                     type: "text",
                     text: line.text,
                     index: allLines.indexOf(line)
@@ -19896,7 +19987,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                             allLines.splice(allLines.indexOf(selectedline), 1);
                         } else {
                             let pastelement = {
-                                element: { ...selectedline },
                                 type: "text",
                                 text: selectedline.text,
                                 index: allLines.indexOf(selectedline)
@@ -19906,7 +19996,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         }
                     }else {
                         let pastelement = {
-                            element: { ...selectedline },
                             type: "text",
                             text: selectedline.text,
                             index: allLines.indexOf(selectedline)
@@ -19979,7 +20068,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 newpast.push({
                     type: "text",
                     text: line.text,
-                    element: {...line},
                     index: index
                 });
                 editorFiles[editorIndex][index].text = selerateText[index];
@@ -20015,7 +20103,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
                 if (line.text.trim() == "" && lastSpaceCount > newLastSpaceCount) {
                     let pastelement = {
-                        element: { ...line },
                         type: "text",
                         text: line.text,
                         index: index
@@ -20350,7 +20437,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     const currentLineIndex = allLines.indexOf(selectedline);
                     
                     let pastelement = {
-                        element: { ...selectedline },
                         type: "text",
                         text: selectedline.text,
                         index: currentLineIndex
@@ -20413,7 +20499,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (allselectedlines.length) {
                 allselectedlines.forEach(selectedline => {
                     let pastelement = {
-                        element: {...selectedline},
                         type: "text",
                         text: selectedline.text,
                         index: allLines.indexOf(selectedline)
@@ -20452,7 +20537,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (allselectedlines.length) {
                 allselectedlines.forEach(selectedline => {
                     let pastelement = {
-                        element: {...selectedline},
                         type: "text",
                         text: selectedline.text,
                         index: allLines.indexOf(selectedline)
@@ -20493,7 +20577,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 allselectedlines.forEach(selectedline => {
                     if (/^[ \u00A0]/.test(selectedline.text)){
                         let pastelement = {
-                            element: {...selectedline},
                             type: "text",
                             text: selectedline.text,
                             index: allLines.indexOf(selectedline)
@@ -20829,7 +20912,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     newpast.push(pastelement);
                 } else {
                     let pastelement = {
-                        element: {...element},
                         type: "text",
                         text: element.textContent,
                         index: allLines.indexOf(element)
@@ -21543,7 +21625,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             preCaretRange.setEnd(range.startContainer, range.startOffset);
             //const cursorOffset = preCaretRange.toString().length;
             const newpast2 = [{
-                element: { ...allLines[lineIndex] },
                 type: "text",
                 text: replaceNormalSpaces(celine.textContent),
                 index: lineIndex
@@ -21646,7 +21727,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     text: spaces + processedLines[i]
                 };
                 newLines[i - 1] = newline;
-                newpast2.push({ element: newline, type: "create", index: lineIndex + i });
+                newpast2.push({ element: {...newline}, type: "create", index: lineIndex + i });
             }
             
             allLines.splice(lineIndex + 1, 0, ...newLines);
@@ -21805,7 +21886,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 lasteventsparentsection = section;
                 const allLines = editorFiles[editorIndex];
                 let pastelement2 = {
-                    element: {...allLines[lineIndex]},
                     type: "text",
                     text: replaceNormalSpaces(text),
                     index: lineIndex
@@ -22096,7 +22176,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                                     if (!allLines || !allLines[lineIndex]) return;
                                     
                                     const newpast = {
-                                        element: allLines[lineIndex],
                                         type: "text",
                                         text: allLines[lineIndex].text,
                                         index: lineIndex
@@ -22155,7 +22234,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                                     const lineIndex = parseInt(celineEIndex);
                                     if (lineIndex == null || lineIndex == undefined || isNaN(lineIndex) || allLines[lineIndex] == null || allLines[lineIndex] == undefined) return;
                                     let newpast = {
-                                        element: allLines[lineIndex],
                                         type: "text",
                                         text: allLines[lineIndex].text,
                                         index: lineIndex
@@ -22181,7 +22259,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                                                 const lineIndex = parseInt(celineEIndex, 10);
                                                 if (!allLines || !allLines[lineIndex]) return;
                                                 const newpast = {
-                                                    element: allLines[lineIndex],
                                                     type: "text",
                                                     text: allLines[lineIndex].text,
                                                     index: lineIndex
@@ -22560,7 +22637,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (!celineEIndex) return;
             const lineIndex = parseInt(celineEIndex);
             if (lineIndex == null || lineIndex == undefined || isNaN(lineIndex)) return;
-            pushPastTo(newpast, { element: { ...allLines[lineIndex] }, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+            pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
             const text = celine.textContent;
             let after = closingChar + text.substring(cursorOffset);
             let before = text.substring(0, cursorOffset);
@@ -22594,7 +22671,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 if (!celineEIndex) return false;
                 const lineIndex = parseInt(celineEIndex);
                 if (lineIndex == null || lineIndex == undefined || isNaN(lineIndex)) return false;
-                pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                 return false;
             }
         }
@@ -22668,7 +22745,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         const getElCPos = getCursorPosition(celine) + selectedText.length;
                         const allLines = editorFiles[editorIndex];
                         pushPastTo(newpast, {
-                            element: {...allLines[lineIndex]},
                             type: "text",
                             text: celine.textContent,
                             index: lineIndex,
@@ -22691,7 +22767,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 lasteventsparentsection = section;
                 if (keyLen <= 1 && celine) {
                     pushPastTo(newpast, {
-                        element: celine,
                         type: "text",
                         text: replaceNormalSpaces(celine.textContent),
                         index: lineIndex,
@@ -22721,7 +22796,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 if (!selection || !range || !celine) return;
                 lasteventsparentsection = section;
                 const allLines = editorFiles[editorIndex];
-                pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                 const text = celine.textContent;
                 const after = text.substring(cursorOffset);
                 celine.textContent = text.substring(0, cursorOffset) + open + close + after;
@@ -22740,7 +22815,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     event.preventDefault();
                 } else {
                     lasteventsparentsection = section;
-                    pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                     event.preventDefault();
                     insertClosing(cosing = closingChar, closingChar);
                     const text2 = celine.textContent;
@@ -22772,7 +22847,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 
                 const newid = createCodeEditorLineId();
                 lasteventsparentsection = section;
-                pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                 
                 const text = celine.textContent;
                 const textBehindCursor = text.substring(cursorOffset);
@@ -22872,7 +22947,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 lasteventsparentsection = section;
                 const allFileLines = editorFiles[editorIndex];
                 if (celine && celine.textContent != "") {
-                    pushPastTo(newpast, { element: {...allFileLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                 }
                 
                 
@@ -22950,7 +23025,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                             deleteLineNote(currentLineData.id);
                             
                             pushPastTo(newpast, {
-                                element: {...previousLineData},
                                 type: "text",
                                 text: previousLineData.text,
                                 index: previousLineIndex
@@ -23003,7 +23077,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             else if (event.key === '>') {
                 lasteventsparentsection = section;
                 const allLines = editorFiles[editorIndex];
-                pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                 const sel = window.getSelection();
                 if (!sel || !sel.rangeCount) return;
                 const r = sel.getRangeAt(0);
@@ -23052,7 +23126,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 } else {
                     lasteventsparentsection = section;
                     const allLines = editorFiles[editorIndex];
-                    pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                     event.preventDefault();
                     insertClosingCharacterFor(celine, selection, range, cursorOffset, '"', '"', newpast, cursorPosition, selectedText);
                 }
@@ -23064,7 +23138,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 } else {
                     lasteventsparentsection = section;
                     const allLines = editorFiles[editorIndex];
-                    pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                     event.preventDefault();
                     insertClosingCharacterFor(celine, selection, range, cursorOffset, "'", "'", newpast, cursorPosition, selectedText);
                 }
@@ -23082,7 +23156,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 } else {
                     lasteventsparentsection = section;
                     const allLines = editorFiles[editorIndex];
-                    pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                     event.preventDefault();
                     insertClosingCharacterFor(celine, selection, range, cursorOffset, '"', '"', newpast, cursorPosition, selectedText);
                 }
@@ -23094,7 +23168,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 } else {
                     lasteventsparentsection = section;
                     const allLines = editorFiles[editorIndex];
-                    pushPastTo(newpast, { element: {...allLines[lineIndex]}, type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
                     event.preventDefault();
                     insertClosingCharacterFor(celine, selection, range, cursorOffset, "'", "'", newpast, cursorPosition, selectedText);
                 }
@@ -24711,7 +24785,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         lasteventsparentsection = section;
                         const allFileLines = editorFiles[editorIndex];
                         let pastelement2 = {
-                            element: { ...allFileLines[lineIndex] },
                             type: "text",
                             text: allFileLines[lineIndex].text,
                             index: lineIndex
