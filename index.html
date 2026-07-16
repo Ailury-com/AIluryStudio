@@ -22084,14 +22084,14 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             let spatterns = [
                 { regex: /(?<=re\.(?:compile|search|match|fullmatch|findall|finditer|sub|subn|split)\s*\(\s*)(?:r|R)?(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
                 { regex: /(?<![\w])(?:r|R)(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
-                { regex: /(["'`])(?:(?!\1)[^\\]|\\.)*\1/g, className: "syntaxstring" },
+                { regex: allExistingFilePaths, className: "syntaxfilepath" }, 
+                { regex: allExistingImgFilePaths, className: "syntaximgfilepath" },
+                { regex: /(["'])(?:(?!\1)[^\\]|\\.)*\1|f(["'])(?:(?!\2)[^\\{]|\\.)*(?:\2|\{)|`(?:[^\\`$]|\\.)*(?:`|\$\{)|\}(?:[^\\{}"'`]|\\.)*(?:["'`]|\$?\{)/g, className: "syntaxstring" },
                 { regex: /#(?=[\s#]).*/g, className: "syntaxpycomment" },
                 { regex: indentSizeRegex, className: "syntaxspace" },
                 { regex: /<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, className: "syntaxhtmlcomment" },
                 { regex: /\/\*[\s\S]*?\*\/|((?:(?!\/\*)[\s\S])*)\*\/|\/\*[\s\S]*$/g, className: "syntaxcomment" },
                 { regex: /\/\/.*/g, className: "syntaxcomment" },
-                { regex: allExistingFilePaths, className: "syntaxfilepath" },
-                { regex: allExistingImgFilePaths, className: "syntaximgfilepath" },
                 { regex: /(?<=rgba\(\s*)\d+\s*,\s*\d+\s*,\s*\d+,/, className: "syntaxrgb syntaxrgba syntaxnumber" },
                 { regex: /(?<=rgb\(\s*)\d+\s*,\s*\d+\s*,\s*\d+(?=\s*\))/, className: "syntaxrgb syntaxnumber" },
                 { regex: /\/(?!\/)(?=\S)(.*?)(\/[gimsuy]*)/g, className: "syntaxregex" },
@@ -22160,6 +22160,69 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                                         checkiffileandexpand(span.textContent);
                                     });
                                 };
+                            }
+                            else if (className.includes("syntaxstring")) {
+                                const filePathNames = Array.from(document.querySelectorAll('.filedot .filePathInput'))
+                                    .map(el => el.value)
+                                    .filter(Boolean)
+                                    .map(name => ({ name, type: "file" }));
+                                
+                                const imageFileNames = [
+                                        "Image.jpg",
+                                        ...Object.keys(allimages).map(key => key.trim())
+                                    ]
+                                    .filter(Boolean)
+                                    .map(name => ({ name, type: "img" }));
+                                
+                                const allNames = [...filePathNames, ...imageFileNames]
+                                    .sort((a, b) => b.name.length - a.name.length);
+                                
+                                if (allNames.length) {
+                                    const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                                    const nameRegex = new RegExp(allNames.map(o => escape(o.name)).join("|"), "g");
+                                    const text = match[0];
+                                    
+                                    if (nameRegex.test(text)) {
+                                        nameRegex.lastIndex = 0;
+                                        span.textContent = ""; // clear BEFORE building sub-spans
+                                        let last = 0;
+                                        let nm;
+                                        while ((nm = nameRegex.exec(text))) {
+                                            if (nm.index > last) {
+                                                const before = document.createElement("span");
+                                                before.textContent = text.slice(last, nm.index);
+                                                span.appendChild(before);
+                                            }
+                                            const foundName = allNames.find(o => o.name === nm[0]);
+                                            const nameSpan = document.createElement("span");
+                                            nameSpan.textContent = nm[0];
+                                            nameSpan.classList.add("syntax");
+                                            if (foundName.type === "img") {
+                                                nameSpan.classList.add("syntaximgfilepath");
+                                                nameSpan.onclick = () => {
+                                                    notify("open image", "open", () => {
+                                                        showOverlay('#files_overlay', "files", false);
+                                                        checkiffileandexpand(nameSpan.textContent);
+                                                    });
+                                                };
+                                            } else {
+                                                nameSpan.classList.add("syntaxfilepath");
+                                                nameSpan.onclick = () => {
+                                                    notify("open file", "open", () => {
+                                                        checkiffileandgoto(nameSpan.textContent.trim());
+                                                    });
+                                                };
+                                            }
+                                            span.appendChild(nameSpan);
+                                            last = nm.index + nm[0].length;
+                                        }
+                                        if (last < text.length) {
+                                            const after = document.createElement("span");
+                                            after.textContent = text.slice(last);
+                                            span.appendChild(after);
+                                        }
+                                    }
+                                }
                             }
                             else if (className.includes("syntaxrgb")) {
                                 function expandRgb(rgbString) {
