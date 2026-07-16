@@ -12586,7 +12586,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             });
             wantedCounterBucket[parentId].push(pushEl);
             const lastElement = events[events.length - 1];
-            if (section && lastElement.index != undefined && lastElement.element && hasIndex(lastElement.index) && parentId == section.id) {
+            if (section && lastElement.index != undefined && hasIndex(lastElement.index) && parentId == section.id) {
                 scrolltolinenumber(lastElement.index);
                 
                 updateSelectedClasses(undefined, () => {
