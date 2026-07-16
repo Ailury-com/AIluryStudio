@@ -12590,13 +12590,11 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 scrolltolinenumber(lastElement.index);
                 
                 updateSelectedClasses(undefined, () => {
-                    if (lastElement.element) {
-                        const rendered = section.querySelector(
-                            `.code-editor-line[line-index="${lastElement.index}"]`
-                        );
-                        if (lastElement.cursor && rendered) {
-                            setCursorPosition(rendered, lastElement.cursor);
-                        }
+                    const rendered = section.querySelector(
+                        `.code-editor-line[line-index="${lastElement.index}"]`
+                    );
+                    if (lastElement.cursor && rendered) {
+                        setCursorPosition(rendered, lastElement.cursor);
                     }
                     noKeyDown = false;
                     undoing = false;
