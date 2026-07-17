@@ -7446,25 +7446,25 @@
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
-                            <input type="checkbox" class="switchbox" data-update-class="gridenabled" onchange="updategridenabledordisabledcheckbox(this)" id="enablegridcheckbox" checked>
+                            <input type="checkbox" class="switchbox" data-update-class="gridenabled" onchange="updategridenabledordisabledcheckbox(this);saveGridEnabledOrDisabled(this);" id="enablegridcheckbox" checked>
                             <span class="slider"></span>
                         </label> <div class="symbolspancontainer"> grid <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('grid')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
-                            <input type="checkbox" class="switchbox" data-update-aceclass="autocompleteenabled" onchange="updateautocompleteenabledordisabledcheckbox(this)" checked>
+                            <input type="checkbox" class="switchbox" id="suggestionToggleEl" data-update-aceclass="autocompleteenabled" onchange="updateautocompleteenabledordisabledcheckbox(this);saveAutoCompleteToggle(this);" checked>
                             <span class="slider"></span>
                         </label> <div class="symbolspancontainer"> suggestions <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('suggestions')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
-                            <input type="checkbox" class="syntaxspaceienabledtoggleswitch" onchange="toggleClass('.divcodeeditor-container', 'syntaxspaceienabled')">
+                            <input type="checkbox" id="spaceIndentationDisplayToggleCheckboxEl" class="syntaxspaceienabledtoggleswitch" onchange="toggleClass('.divcodeeditor-container', 'syntaxspaceienabled');saveSpaceIndentationEnabledOrDisabled(this);">
                             <span class="slider"></span>
                         </label> <div class="symbolspancontainer"> space indentation <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('spaceindentation')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
-                            <input type="checkbox" class="wordselectswitch">
+                            <input type="checkbox" class="wordselectswitch" id="wordselectswitch" onchange="saveAutoWordHighlightToggle(this)">
                             <span class="slider"></span>
                         </label> word select
                     </div>
@@ -8090,11 +8090,11 @@
                     <h3>Animation</h3>
                     <br>
                     <div class="chooseanimationexamplecontainer">
-                        <div class="caexample caexample1 selectedanimation" onclick="chengeanimation(this, 'swipe')" id="animationOpswipe"><button></button> <span class="caexampleLabel">Slide</span></div>
-                        <div class="caexample caexample2" onclick="chengeanimation(this, 'ease')" id="animationOpease"><button></button> <span class="caexampleLabel">Ease</span></div>
-                        <div class="caexample caexample3" onclick="chengeanimation(this, 'roll')" id="animationOproll"><button></button> <span class="caexampleLabel">Roll</span></div>
-                        <div class="caexample caexample4" onclick="chengeanimation(this, 'pop')" id="animationOppop"><button></button> <span class="caexampleLabel">Pop</span></div>
-                        <div class="caexample caexample5" onclick="chengeanimation(this, 'none')" id="animationOpnone"><button></button> <span class="caexampleLabel">None</span></div>
+                        <div class="caexample caexample1 selectedanimation" onclick="chengeanimation(this, 'swipe');" id="animationOpswipe"><button></button> <span class="caexampleLabel">Slide</span></div>
+                        <div class="caexample caexample2" onclick="chengeanimation(this, 'ease');" id="animationOpease"><button></button> <span class="caexampleLabel">Ease</span></div>
+                        <div class="caexample caexample3" onclick="chengeanimation(this, 'roll');" id="animationOproll"><button></button> <span class="caexampleLabel">Roll</span></div>
+                        <div class="caexample caexample4" onclick="chengeanimation(this, 'pop');" id="animationOppop"><button></button> <span class="caexampleLabel">Pop</span></div>
+                        <div class="caexample caexample5" onclick="chengeanimation(this, 'none');" id="animationOpnone"><button></button> <span class="caexampleLabel">None</span></div>
                     </div>
                 </div>
             </div>
@@ -8107,21 +8107,21 @@
                     <div class="chooseceebtnposopcontainer">
                         <div class="chooseceebtnposopcontainerswitchcontainer layouteditswitch" id="reduceBarsSpanTextForInfo">
                             <label class="switch">
-                                <input id="roundedUItoggleSwitch" type="checkbox" data-checked="chooseceebtnposopcontainerswitchcontainer" onchange="togglesmallNavBar(this)">
+                                <input id="roundedUItoggleSwitch" type="checkbox" onchange="togglesmallNavBar(this)">
                                 <span class="slider"></span>
                             </label>
                             <span class="chooseceebtnposopcontainerswitchcontainername">reduced bars</span>
                         </div>
                         <div class="chooseceebtnposopcontainerswitchcontainer ifislandenableddisablethis layouteditswitch" id="bordersSpanTextForInfo">
                             <label class="switch">
-                                <input type="checkbox" data-checked="chooseceebtnposopcontainerswitchcontainer" onchange="toggleceefbrlbd(this)">
+                                <input type="checkbox" onchange="toggleceefbrlbd(this)">
                                 <span class="slider"></span>
                             </label>
                             <span class="chooseceebtnposopcontainerswitchcontainername">borders</span>
                         </div>
                         <div class="chooseceebtnposopcontainerswitchcontainer ifborderenableddisablethis layouteditswitch" id="islandsBarsSpanTextForInfo">
                             <label class="switch">
-                                <input type="checkbox" data-checked="chooseceebtnposopcontainerswitchcontainer" onchange="togglecebtnislands(this)">
+                                <input type="checkbox" onchange="togglecebtnislands(this)">
                                 <span class="slider"></span>
                             </label>
                             <span class="chooseceebtnposopcontainerswitchcontainername">islands</span>
@@ -8174,7 +8174,7 @@
                         <div class="cfscscmoveup cfscscmovedown cfscscremovespaceleft cfscscaddspaceleft cfscscf cfscounter"><span class="cfscountervalue">1</span><div class="cfscounterbtnc"><button class="cfscounteradd">+</button><button class="cfscounterremove">-</button></div></div>
                         <div class="cfscscpin cfscscf pinedlinestopsearchresult">
                             <label class="switch">
-                                <input type="checkbox" data-checked="pinedlinestopsearchresult" checked>
+                                <input type="checkbox" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">pined lines are top search results</span>
@@ -8190,7 +8190,7 @@
                         </div>
                         <div class="cfscsccommands cfscscf commandassuggestion">
                             <label class="switch">
-                                <input type="checkbox" data-checked="commandassuggestion" checked>
+                                <input type="checkbox" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">cammands in suggestions</span>
@@ -8206,22 +8206,22 @@
                         <h2 class="cfscscgrid cfscscf cfscscgridlabel cfsch2">grid options</h2>
                         <div class="cfscscgrid cfscscf showFalseGridToneToggle">
                             <label class="switch">
-                                <input type="checkbox" data-checked="showFalseGridToneToggle" checked onchange="toggleTrueGridToneDisplay(this)">
+                                <input type="checkbox" checked onchange="toggleTrueGridToneDisplay(this)">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">show true grid color</span>
                         </div>
                         <div class="cfscscgrid cfscscf gridoptions">
-                            <div class="gridop gridop1 cyselected" id="gridop1" onclick="selectthisgrid('gridop1')"></div>
-                            <div class="gridop gridop2" id="gridop2" onclick="selectthisgrid('gridop2')"></div>
-                            <div class="gridop gridop3" id="gridop3" onclick="selectthisgrid('gridop3')"></div>
-                            <div class="gridop gridop4" id="gridop4" onclick="selectthisgrid('gridop4')"></div>
-                            <div class="gridop gridop5" id="gridop5" onclick="selectthisgrid('gridop5')"></div>
-                            <div class="gridop gridop6" id="gridop6" onclick="selectthisgrid('gridop6')"></div>
+                            <div class="gridop gridop1 cyselected" id="gridop1" onclick="selectthisgrid('gridop1');saveGridSelection('gridop1');"></div>
+                            <div class="gridop gridop2" id="gridop2" onclick="selectthisgrid('gridop2');saveGridSelection('gridop2');"></div>
+                            <div class="gridop gridop3" id="gridop3" onclick="selectthisgrid('gridop3');saveGridSelection('gridop3');"></div>
+                            <div class="gridop gridop4" id="gridop4" onclick="selectthisgrid('gridop4');saveGridSelection('gridop4');"></div>
+                            <div class="gridop gridop5" id="gridop5" onclick="selectthisgrid('gridop5');saveGridSelection('gridop5');"></div>
+                            <div class="gridop gridop6" id="gridop6" onclick="selectthisgrid('gridop6');saveGridSelection('gridop6');"></div>
                         </div>
                         <div class="cfscscsearch cfscscf commandforregexsearch">
                             <label class="switch">
-                                <input type="checkbox" data-checked="commandforregexsearch" checked>
+                                <input type="checkbox" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname commandtosearchregexswitchtext">"/r" to search with regex</span>
@@ -8229,14 +8229,14 @@
                         <input type="text" class="cfscscsearch cfscscf commandtosearchregex" oninput="changecommandtosearchregexswitchtext(this)" value="r/" maxlength="10" onblur="checkRegexStringInput(this)">
                         <div class="cfscscsearch cfscscf linenumberforsearchresult">
                             <label class="switch">
-                                <input type="checkbox" data-checked="linenumberforsearchresult">
+                                <input type="checkbox">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname linenumberforsearchresultswitchtext">show line numbers in search results</span>
                         </div>
                         <div class="cfscscdelete cfscscf onlydeletelinecontent">
                             <label class="switch">
-                                <input type="checkbox" data-checked="onlydeletelinecontent">
+                                <input type="checkbox">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">only delete lines content</span>
@@ -8252,7 +8252,7 @@
                         </div>
                         <div class="cfscscattachnotestolines cfscscf mergelinenotesonautomatedaddintion">
                             <label class="switch">
-                                <input type="checkbox" data-checked="mergelinenotesonautomatedaddintion">
+                                <input type="checkbox">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname addfullcodecopytoclipboardpastswitchtext">Merge notes when line notes are mass applied.</span>
@@ -8270,7 +8270,7 @@
                         <h2 class="cfscsccopy cfscscf cfscsccopylabel cfsch2">AIlury Clipboard</h2>
                         <div class="cfscsccopy cfscscf addfullcodecopytoclipboardpast">
                             <label class="switch">
-                                <input type="checkbox" data-checked="addfullcodecopytoclipboardpast">
+                                <input type="checkbox">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname addfullcodecopytoclipboardpastswitchtext">add full code copy to clipboard past</span>
@@ -8305,21 +8305,21 @@
                         </div>
                         <div class="cfscscredo cfscscf redoanimation">
                             <label class="switch">
-                                <input type="checkbox" data-checked="redoanimation" checked>
+                                <input type="checkbox" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">redo button animation</span>
                         </div>
                         <div class="cfscscundo cfscscf undoanimation">
                             <label class="switch">
-                                <input type="checkbox" data-checked="undoanimation" checked>
+                                <input type="checkbox" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">undo button animation</span>
                         </div>
                         <div class="cfscscsuggestions cfscscf suggestuniquevalues">
                             <label class="switch">
-                                <input type="checkbox" data-checked="suggestuniquevalues" onchange="updateSuggestionInterval(this)" checked>
+                                <input type="checkbox" id="uniqueValuesInSuggestionsToggleEl" checked onchange="updateSuggestionInterval(this);saveUniqueValuesForSuggestionsToggle(this);">
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">Suggest unique values</span>
@@ -8331,7 +8331,7 @@
                         </select>
                         <div class="cfscscspaceindentation cfscscf applyspaceindentationonupload" style="margin-top: 10px;">
                             <label class="switch">
-                                <input type="checkbox" data-checked="applyspaceindentationonupload" onchange="applyIndentSizeOnLoadToggle(this)" checked>
+                                <input type="checkbox" onchange="applyIndentSizeOnLoadToggle(this)" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">apply space indentation to uploaded files</span>
@@ -8341,7 +8341,7 @@
                         <button class="cfscscspaceindentation cfscscf equalizeIndentSizeBtn" id="equalizeIndentSizeBtn" onclick="equalizeIndentSize()" style="justify-content: center;">Equalize Indent Size</button>
                         <div class="cfscscundo cfscscf undolimit">
                             <label class="switch">
-                                <input type="checkbox" data-checked="undolimit" checked>
+                                <input type="checkbox" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">undo limit</span>
@@ -8511,9 +8511,9 @@
             const {
                 selector,
                 storageKey,
-                onFound, // (el, storedValue) => void  — apply the recovered value
-                onCatchImmediate, // optional: runs first thing on failure, before anything else
-                onFailure, // (el) => void  — apply the fallback value(s)
+                onFound,
+                onCatchImmediate,
+                onFailure,
                 recoverWarnMsg,
                 removeWarnMsg
             } = config;
@@ -8528,7 +8528,7 @@
                 if (onCatchImmediate) onCatchImmediate();
                 console.warn(recoverWarnMsg);
                 try {
-                    onFailure(el);
+                    if (onFailure) onFailure(el);
                     localStorage.removeItem(storageKey);
                 } catch {
                     console.warn(removeWarnMsg);
@@ -8576,8 +8576,8 @@
                 selector: ".applyspaceindentationonupload",
                 storageKey: "AIluryStudioApplyIndentOnLoad",
                 onFound: (el, isChecked) => {
-                    el.checked = isChecked;
-                    applyIndentSizeOnLoad = isChecked;
+                    el.checked = isChecked ? false : true;
+                    applyIndentSizeOnLoad = isChecked ? false : true;
                 },
                 onCatchImmediate: () => {
                     applyIndentSizeOnLoad = true;
@@ -8596,7 +8596,7 @@
             _localSave({
                 shouldStore: applyIndentSizeOnLoad != true,
                 storageKey: "AIluryStudioApplyIndentOnLoad",
-                valueToStore: applyIndentSizeOnLoad,
+                valueToStore: true,
                 saveFailMsg: "something went wrong while trying to save if selected indent size is supposed to be applied to files when rendered. You might have run out of local storage.",
                 removeFailMsg: "something went wrong while trying to update if selected indent size is supposed to be applied to files when they are rendered. Local storage error."
             });
@@ -8652,6 +8652,171 @@
                 valueToStore: true,
                 saveFailMsg: "something went wrong while trying to save temporary display selection. You might have run out of local storage.",
                 removeFailMsg: "something went wrong while trying to update temporary display selection. Local storage error."
+            });
+        }
+        
+        function recoverGridEnabledDisabled() {
+            _localRecover({
+                selector: "#enablegridcheckbox",
+                storageKey: "AIluryStudioGridEnabled",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked;
+                    updategridenabledordisabledcheckbox(el);
+                    recoverGridSelection();
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                    updategridenabledordisabledcheckbox(el);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover if the grid was set to enabled. Local storage error.",
+                removeWarnMsg: "something went wrong while trying to remove grid enabled/disabled selection after an error during the recovery process. Local storage error."
+            });
+        }
+        
+        
+        function saveGridEnabledOrDisabled(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioGridEnabled",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save grid enabled/disabled selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update grid enabled/disabled selection. Local storage error."
+            });
+        }
+        function recoverIndentDisplayEnabledDisabled() {
+            _localRecover({
+                selector: "#spaceIndentationDisplayToggleCheckboxEl",
+                storageKey: "AIluryStudioIndentDisplayEnabled",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked;
+                    toggleClass('.divcodeeditor-container', 'syntaxspaceienabled', isChecked ? true : false);
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                    toggleClass('.divcodeeditor-container', 'syntaxspaceienabled', false);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover if the space indent display was set to enabled. Local storage error.",
+                removeWarnMsg: "something went wrong while trying to remove space indent display selection after an error during the recovery process. Local storage error."
+            });
+        }
+        recoverIndentDisplayEnabledDisabled();
+        
+        function saveSpaceIndentationEnabledOrDisabled(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioIndentDisplayEnabled",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save space indent display selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update space indent display selection. Local storage error."
+            });
+        }
+        
+        function recoverGridSelection() {
+            _localRecover({
+                selector: "#spaceIndentationDisplayToggleCheckboxEl",
+                storageKey: "AIluryStudioGridSelection",
+                onFound: (el, gridop) => {
+                    if (el.checked) {
+                        selectthisgrid(gridop);
+                    }
+                },
+                onFailure: (el) => {
+                    selectthisgrid('gridop1');
+                },
+                recoverWarnMsg: "something went wrong while trying to recover grid selection. Local storage error.",
+                removeWarnMsg: "something went wrong while trying to remove saved grid selection after an error during the recovery process. Local storage error."
+            });
+        }
+        
+        function saveGridSelection(val) {
+            _localSave({
+                shouldStore: val != 'gridop1',
+                storageKey: "AIluryStudioGridSelection",
+                valueToStore: val,
+                saveFailMsg: "something went wrong while trying to save grid selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update grid selection. Local storage error."
+            });
+        }
+        recoverGridEnabledDisabled();
+        
+        function recoverAutoCompleteSelection() {
+            _localRecover({
+                selector: "#suggestionToggleEl",
+                storageKey: "AIluryStudioSuggestionsEnabled",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked;
+                    updateautocompleteenabledordisabledcheckbox(el);
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                    updateautocompleteenabledordisabledcheckbox(el);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover suggestion toggle selection.",
+                removeWarnMsg: "something went wrong while trying to remove suggestion toggle selection. Local storage error."
+            });
+        }
+        recoverAutoCompleteSelection();
+        
+        function saveAutoCompleteToggle(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioSuggestionsEnabled",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save suggestion toggle selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update suggestion toggle selection. Local storage error."
+            });
+        }
+        
+        function recoverWordHighlightSelection() {
+            _localRecover({
+                selector: "#wordselectswitch",
+                storageKey: "AIluryStudioWordHighlightEnabled",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked;
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                },
+                recoverWarnMsg: "something went wrong while trying to recover word highlight toggle selection.",
+                removeWarnMsg: "something went wrong while trying to remove word highlight toggle selection. Local storage error."
+            });
+        }
+        recoverWordHighlightSelection();
+        
+        function saveAutoWordHighlightToggle(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioWordHighlightEnabled",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save word highlight toggle selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update word highlight toggle selection. Local storage error."
+            });
+        }
+        
+        function recoverUniqueValuesForSuggestionsEnabledToggleSelection() {
+            _localRecover({
+                selector: "#uniqueValuesInSuggestionsToggleEl",
+                storageKey: "AIluryStudioUniqueValuesForSuggestionsEnabled",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked ? false : true;
+                    updateSuggestionInterval(el);
+                },
+                onFailure: (el) => {
+                    el.checked = true;
+                    updateSuggestionInterval(el);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover if unique values are added to suggestions, selection.",
+                removeWarnMsg: "something went wrong while trying to remove if unique values are added to suggestions, selection. Local storage error."
+            });
+        }
+        
+        function saveUniqueValuesForSuggestionsToggle(el) {
+            _localSave({
+                shouldStore: el.checked != true,
+                storageKey: "AIluryStudioUniqueValuesForSuggestionsEnabled",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save if unique values are added to suggestions, selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update if unique values are added to suggestions, selection. Local storage error."
             });
         }
         function clearClosestSearchCon(clearSearchInputEl) {
@@ -10903,8 +11068,13 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         }
         
         
-        function toggleClass(elementclass, classtt) {
-            document.querySelector(elementclass).classList.toggle(classtt);
+        function toggleClass(elementclass, classtt, setToVal = null) {
+            const el = document.querySelector(elementclass);
+            if (el && setToVal == null) {
+                el.classList.toggle(classtt);
+            } else if (el) {
+                el.classList.toggle(classtt, setToVal);
+            }
         }
         
         
@@ -19463,22 +19633,16 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         }
     
         function updategridenabledordisabledcheckbox(checkbox) {
-            if (!section) {
-                return;
-            }
-            if (section.classList.contains('viewcontainer')) {
-                return;
-            }
             const dataValue = checkbox.getAttribute('data-update-class');
             if (dataValue) {
-                document.querySelectorAll('.section').forEach(section => {
+                document.querySelectorAll('.section').forEach(sec => {
                     if (checkbox.checked == false) {
-                        if(section.classList.contains('gridenabled')){
-                            section.classList.remove('gridenabled');
+                        if(sec.classList.contains('gridenabled')){
+                            sec.classList.remove('gridenabled');
                         }
                     } else if (checkbox.checked == true) {
-                        if(!section.classList.contains('gridenabled')){
-                            section.classList.add('gridenabled');
+                        if(!sec.classList.contains('gridenabled')){
+                            sec.classList.add('gridenabled');
                         }
                     }
                 });
@@ -19487,12 +19651,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         }
 
         function updateautocompleteenabledordisabledcheckbox(checkbox) {
-            if (!section) {
-                return;
-            }
-            if (section.classList.contains('viewcontainer')) {
-                return;
-            }
             const dataValue = checkbox.getAttribute('data-update-aceclass');
             if (dataValue) {
                 document.querySelectorAll('.section').forEach(aSec => {
@@ -19506,7 +19664,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         }
                     }
                 });
-                updateUniqueVals();
+                if (section && !section.classList.contains('viewcontainer')) {
+                    updateUniqueVals();
+                }
             }
         }
 
@@ -19561,45 +19721,45 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                 }
                 if (!dataValue && dataValue3 && !dataValue4 && !section.classList.contains('gridenabled') && !document.querySelector('.section.gridenabled')) {
-                    document.querySelectorAll('.section').forEach(section => {
-                        if (section.classList.contains('gridenabled')) {
-                            section.classList.remove('gridenabled');
+                    document.querySelectorAll('.section').forEach(sec => {
+                        if (sec.classList.contains('gridenabled')) {
+                            sec.classList.remove('gridenabled');
                         }
                     });
                     checkbox0.checked = false;
                 } else if (!dataValue && dataValue3 && !dataValue4 && !section.classList.contains('gridenabled') && document.querySelector('.section.gridenabled')) {
-                    document.querySelectorAll('.section').forEach(section => {
-                        if (!section.classList.contains('gridenabled')) {
-                            section.classList.add('gridenabled');
+                    document.querySelectorAll('.section').forEach(sec => {
+                        if (!sec.classList.contains('gridenabled')) {
+                            sec.classList.add('gridenabled');
                         }
                     });
                     checkbox0.checked = true;
                 } else if (!dataValue && dataValue3 && !dataValue4 && section.classList.contains('gridenabled')) {
-                    document.querySelectorAll('.section').forEach(section => {
-                        if (!section.classList.contains('gridenabled')) {
-                            section.classList.add('gridenabled');
+                    document.querySelectorAll('.section').forEach(sec => {
+                        if (!sec.classList.contains('gridenabled')) {
+                            sec.classList.add('gridenabled');
                         }
                     });
                     checkbox0.checked = true;
                 }
                 if (!dataValue && dataValue4 && !dataValue3 && !section.classList.contains('autocompleteenabled') && !document.querySelector('.section.autocompleteenabled')) {
-                    document.querySelectorAll('.section').forEach(section => {
-                        if (section.classList.contains('autocompleteenabled')) {
-                            section.classList.remove('autocompleteenabled');
+                    document.querySelectorAll('.section').forEach(sec => {
+                        if (sec.classList.contains('autocompleteenabled')) {
+                            sec.classList.remove('autocompleteenabled');
                         }
                     });
                     checkbox0.checked = false;
                 } else if (!dataValue && dataValue4 && !dataValue3 && !section.classList.contains('autocompleteenabled') && document.querySelector('.section.autocompleteenabled')) {
-                    document.querySelectorAll('.section').forEach(section => {
-                        if (!section.classList.contains('autocompleteenabled')) {
-                            section.classList.add('autocompleteenabled');
+                    document.querySelectorAll('.section').forEach(sec => {
+                        if (!sec.classList.contains('autocompleteenabled')) {
+                            sec.classList.add('autocompleteenabled');
                         }
                     });
                     checkbox0.checked = true;
                 } else if (!dataValue && dataValue4 && !dataValue3 && section.classList.contains('autocompleteenabled')) {
-                    document.querySelectorAll('.section').forEach(section => {
-                        if (!section.classList.contains('autocompleteenabled')) {
-                            section.classList.add('autocompleteenabled');
+                    document.querySelectorAll('.section').forEach(sec => {
+                        if (!sec.classList.contains('autocompleteenabled')) {
+                            sec.classList.add('autocompleteenabled');
                         }
                     });
                     checkbox0.checked = true;
@@ -24756,7 +24916,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             updateUniqueVals();
         }, 4500);
         function updateUniqueVals() {
-            if (!section) return;
+            if (!section || section.classList.contains('viewcontainer')) return;
             if (document.querySelector('.suggestuniquevalues input[type="checkbox"]').checked == true && editorIndex && editorIndex != "forview" && section.classList.contains('autocompleteenabled')) {
                 uniquevalues = extractUniqueValues([...editorFiles[editorIndex]].map(val => val.text).join(''));
                 if (!uniqueValCheckInterval) {
@@ -24783,7 +24943,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 uniqueValCheckInterval = null;
             }
         }
-        
+        recoverUniqueValuesForSuggestionsEnabledToggleSelection();
         function setupAutocomplete(inputElement) {
             if (!section || !section.classList.contains('autocompleteenabled') || !inputElement || !inputElement.parentElement || inputElement.textContent == "" || !editorIndex){
                 return;
