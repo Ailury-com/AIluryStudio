@@ -23466,6 +23466,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     return;
                 }
                 
+                updateimportantpinClasses();
+                
                 lines.forEach(line => {
                     if (!line || !line.classes || !Array.isArray(line.classes)) return;
                     
@@ -23520,29 +23522,15 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 const lines = editorFiles[editorIndex];
                 if (!lines) return;
                 
-                let allselectedlines = lines.filter(el => el.classes.includes('importantpin'));
+                const pinClasses = ['topimportantpin', 'bottomimportantpin', 'middleimportantpin', 'singleimportantpin'];
                 
-                allselectedlines.forEach(line => {
-                    const index = lines.indexOf(line);
-                    const isSelected = line.classes.includes('importantpin');
+                lines.forEach((line, index) => {
+                    const theLine = lines[index];
+                    theLine.classes = line.classes.filter(cls => !pinClasses.includes(cls));
                     
-                    const hasAbove = index > 0 && lines[index - 1].classes.includes('importantpin') && !lines[index - 1].classes.includes('selected');
-                    const hasBelow = index < lines.length - 1 && lines[index + 1].classes.includes('importantpin') && !lines[index + 1].classes.includes('selected');
-                    const theLine = editorFiles[editorIndex][index];
-                    if (line.classes.includes('topimportantpin')) {
-                        theLine.classes.splice(theLine.classes.indexOf('topimportantpin'), 1);
-                    }
-                    if (line.classes.includes('bottomimportantpin')) {
-                        theLine.classes.splice(theLine.classes.indexOf('bottomimportantpin'), 1);
-                    }
-                    if (line.classes.includes('middleimportantpin')) {
-                        theLine.classes.splice(theLine.classes.indexOf('middleimportantpin'), 1);
-                    }
-                    if (line.classes.includes('singleimportantpin')) {
-                        theLine.classes.splice(theLine.classes.indexOf('singleimportantpin'), 1);
-                    }
-                    
-                    if (isSelected) {
+                    if (theLine.classes.includes('importantpin')) {
+                        const hasAbove = index > 0 && lines[index - 1].classes.includes('importantpin');
+                        const hasBelow = index < lines.length - 1 && lines[index + 1].classes.includes('importantpin');
                         if (!hasAbove && !hasBelow) {
                             theLine.classes.push('singleimportantpin');
                         } else if (!hasAbove && hasBelow) {
@@ -23554,6 +23542,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         }
                     }
                 });
+                
                 refreshEditorLines(inputDiv, editorIndex);
             }, 0);
         }
