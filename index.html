@@ -8513,6 +8513,10 @@
                 //document.querySelector(".navdotc3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11").scrollIntoView({ block: 'center', inline: "end", block: "center" });
             }, 1000);
         });
+        const theNavBarForScrollAmount2 = document.getElementById("nav-bar");
+        if (theNavBarForScrollAmount2) {
+            theNavBarForScrollAmount2.scrollLeft = theNavBarForScrollAmount2.getBoundingClientRect().width;
+        }
         var filetypes = {
             "html": "HyperText Markup Language",
             "css": "Cascading Style Sheets",
