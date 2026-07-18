@@ -2104,6 +2104,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             transition: var(--tr);
             animation: popupOverlayAnimation 0.4s ease;
+            z-index: 10;
         }
         .resultnum {
             color: var(--linenumber-color);
@@ -8366,9 +8367,9 @@
                             <option value="100">100× limit</option>
                             <option value="150">150× limit</option>
                         </select>
-                        <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="clearpasttoundo()">clear file past</button>
-                        <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="clearallpasttoundo()">clear all file's pasts</button>
-                        <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="cleareverypasttoundo()">clear all file's pasts in all projects</button>
+                        <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="clearpasttoundo()">clear current file's history</button>
+                        <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="clearallpasttoundo()">clear all files history</button>
+                        <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="cleareverypasttoundo()">clear all files history in all projects</button>
                     </div>
                 </div>
             </div>
@@ -17236,10 +17237,10 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         });
         function clearpasttoundo() {
             if (pastevents[editorIndex]) {
-                askConfirm("Are you sure you want to delete this files past ? This can not be undone!", (yonAnswer) => {
+                askConfirm("Are you sure you want to delete this files history ? This can not be undone!", (yonAnswer) => {
                     if (yonAnswer) {
                         const steps = [
-                            { percent: 0, text: 'deleting past' },
+                            { percent: 0, text: 'deleting current file\'s history' },
                             { percent: 90, text: 'past deleted' },
                             { percent: 100, text: 'Clearing complete' },
                         ];
@@ -17255,10 +17256,10 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         }
         function clearallpasttoundo() {
             if (Object.keys(pastevents).length > 0) {
-                askConfirm("Are you sure you want to delete all file's pasts ? This can not be undone!", (yonAnswer) => {
+                askConfirm("Are you sure you want to delete all files history ? This can not be undone!", (yonAnswer) => {
                     if (yonAnswer) {
                         const steps = [
-                            { percent: 0, text: 'deleting all file\'s pasts, in this project' },
+                            { percent: 0, text: 'deleting all files history, in this project' },
                             { percent: 90, text: 'pasts deleted' },
                             { percent: 100, text: 'Clearing complete' },
                         ];
@@ -17271,14 +17272,14 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     }
                 });
             } else {
-                showAlert('None of the files in this project have file pasts!');
+                showAlert('None of the files in this project have histories!');
             }
         }
         function cleareverypasttoundo() {
-            askConfirm("Are you sure you want to delete all file's pasts in all projects ? This can not be undone!", (yonAnswer) => {
+            askConfirm("Are you sure you want to delete all files history in all projects ? This can not be undone!", (yonAnswer) => {
                 if (yonAnswer) {
                     const steps = [
-                        { percent: 0, text: 'deleting all file\'s pasts, in all projects' },
+                        { percent: 0, text: 'deleting all files history, in all projects' },
                         { percent: 90, text: 'pasts deleted' },
                         { percent: 100, text: 'Clearing complete' },
                     ];
