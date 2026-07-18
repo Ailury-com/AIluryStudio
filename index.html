@@ -660,7 +660,7 @@
             font-weight: bold;
         }
         
-        .section.gridenabled .code-editor-line.selected::after {
+        .gridenabled .code-editor-line.selected::after {
             color: var(--checkmark-color);
         }
         .code-editor-line.selected.bottomSelected::after {
@@ -671,7 +671,7 @@
             border-bottom: 1px solid var(--border-color);
             border-bottom-left-radius: 5px;
         }
-        .section.gridenabled .code-editor-line.selected.bottomSelected::after {
+        .gridenabled .code-editor-line.selected.bottomSelected::after {
             border-left: 1px solid var(--caret-color);
             border-bottom: 1px solid var(--caret-color);
         }
@@ -681,7 +681,7 @@
             width: 15px;
             border-left: 1px solid var(--border-color);
         }
-        .section.gridenabled .code-editor-line.selected.middleSelected::after {
+        .gridenabled .code-editor-line.selected.middleSelected::after {
             border-left: 1px solid var(--caret-color);
         }
         .code-editor-line.selected.topSelected::after {
@@ -693,7 +693,7 @@
             border-top: 1px solid var(--border-color);
             border-top-left-radius: 5px;
         }
-        .section.gridenabled .code-editor-line.selected.topSelected::after {
+        .gridenabled .code-editor-line.selected.topSelected::after {
             border-left: 1px solid var(--caret-color);
             border-top: 1px solid var(--caret-color);
         }
@@ -3115,7 +3115,7 @@
             top: 0;
             background: rgba(150, 150, 150, 0.1);
         }
-        .section.gridenabled {
+        .gridenabled {
             background-size: 15px 15px;
             background-image: radial-gradient(var(--griddot-color) 1px, transparent 1px);
         }
@@ -7455,13 +7455,13 @@
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
-                            <input type="checkbox" class="switchbox" data-update-class="gridenabled" onchange="updategridenabledordisabledcheckbox(this);saveGridEnabledOrDisabled(this);" id="enablegridcheckbox" checked>
+                            <input type="checkbox" class="switchbox" data-update-class="gridenabled" onchange="updategridenabledordisabledcheckbox(this);saveGridEnabledOrDisabled(this);" id="enablegridcheckbox">
                             <span class="slider"></span>
                         </label> <div class="symbolspancontainer"> grid <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('grid')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
-                            <input type="checkbox" class="switchbox" id="suggestionToggleEl" data-update-aceclass="autocompleteenabled" onchange="updateautocompleteenabledordisabledcheckbox(this);saveAutoCompleteToggle(this);" checked>
+                            <input type="checkbox" class="switchbox" id="suggestionToggleEl" data-update-aceclass="autocompleteenabled" onchange="updateautocompleteenabledordisabledcheckbox(this);saveAutoCompleteToggle(this);">
                             <span class="slider"></span>
                         </label> <div class="symbolspancontainer"> suggestions <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('suggestions')">></button></div>
                     </div>
@@ -8663,7 +8663,7 @@
                 selector: "#temporaryDisplaySwitch",
                 storageKey: "AIluryStudioTemporaryDisplay",
                 onFound: (el, isChecked) => {
-                    el.checked = isChecked;
+                    el.checked = isChecked ? true : false;
                     updateNoteTemporraryDisplay(el);
                 },
                 onFailure: (el) => {
@@ -8691,9 +8691,8 @@
                 selector: "#enablegridcheckbox",
                 storageKey: "AIluryStudioGridEnabled",
                 onFound: (el, isChecked) => {
-                    el.checked = isChecked;
+                    el.checked = isChecked ? true : false;
                     updategridenabledordisabledcheckbox(el);
-                    recoverGridSelection();
                 },
                 onFailure: (el) => {
                     el.checked = false;
@@ -8719,7 +8718,7 @@
                 selector: "#spaceIndentationDisplayToggleCheckboxEl",
                 storageKey: "AIluryStudioIndentDisplayEnabled",
                 onFound: (el, isChecked) => {
-                    el.checked = isChecked;
+                    el.checked = isChecked ? true : false;
                     toggleClass('.divcodeeditor-container', 'syntaxspaceienabled', isChecked ? true : false);
                 },
                 onFailure: (el) => {
@@ -8744,12 +8743,10 @@
         
         function recoverGridSelection() {
             _localRecover({
-                selector: "#spaceIndentationDisplayToggleCheckboxEl",
+                selector: "#enablegridcheckbox",
                 storageKey: "AIluryStudioGridSelection",
                 onFound: (el, gridop) => {
-                    if (el.checked) {
-                        selectthisgrid(gridop);
-                    }
+                    selectthisgrid(gridop);
                 },
                 onFailure: (el) => {
                     selectthisgrid('gridop1');
@@ -8758,6 +8755,8 @@
                 removeWarnMsg: "something went wrong while trying to remove saved grid selection after an error during the recovery process. Local storage error."
             });
         }
+        
+        recoverGridSelection();
         
         function saveGridSelection(val) {
             _localSave({
@@ -8768,14 +8767,13 @@
                 removeFailMsg: "something went wrong while trying to update grid selection. Local storage error."
             });
         }
-        recoverGridEnabledDisabled();
         
         function recoverAutoCompleteSelection() {
             _localRecover({
                 selector: "#suggestionToggleEl",
                 storageKey: "AIluryStudioSuggestionsEnabled",
                 onFound: (el, isChecked) => {
-                    el.checked = isChecked;
+                    el.checked = isChecked ? true : false;
                     updateautocompleteenabledordisabledcheckbox(el);
                 },
                 onFailure: (el) => {
@@ -8803,7 +8801,7 @@
                 selector: "#wordselectswitch",
                 storageKey: "AIluryStudioWordHighlightEnabled",
                 onFound: (el, isChecked) => {
-                    el.checked = isChecked;
+                    el.checked = isChecked ? true : false;
                 },
                 onFailure: (el) => {
                     el.checked = false;
@@ -10684,12 +10682,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         
         
         function selectthisgrid(gridop = null) {
-            let gridSections = document.querySelectorAll('.section.gridenabled');
+            const containerEl = document.getElementById('container');
             
-            if (gridSections.length == 0) {
-                if (gridop) {
-                    showAlert('Make sure you have "grid" enabled');
-                }
+            if (!containerEl) {
                 return;
             }
             const gridopEl = document.querySelector('.gridop.cyselected');
@@ -10701,26 +10696,13 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
             document.querySelector(".gridop." + gridop)?.classList.add('cyselected');
             
-            gridSections.forEach(sg => {
-                sg.classList.add(gridop);
-                
-                if (sg._gridObserver) {
-                    sg._gridObserver.disconnect();
-                }
-                
-                sg._gridObserver = new MutationObserver((mutations, observer) => {
-                    mutations.forEach(mutation => {
-                        if (mutation.attributeName === "class" && !sg.classList.contains('gridenabled')) {
-                            sg.classList.remove("gridop1", "gridop2", "gridop3", "gridop4", "gridop5", "gridop6");
-                            observer.disconnect();
-                            sg._gridObserver = null;
-                        }
-                    });
-                });
-                
-                sg._gridObserver.observe(sg, { attributes: true });
-            });
+            containerEl.classList.remove("gridop1", "gridop2", "gridop3", "gridop4", "gridop5", "gridop6");
+            if (containerEl.classList.contains('gridenabled')) {
+                containerEl.classList.add(gridop);
+            }
         }
+        
+        recoverGridEnabledDisabled();
 
         
         var m__up = 1;
@@ -19725,17 +19707,17 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         function updategridenabledordisabledcheckbox(checkbox) {
             const dataValue = checkbox.getAttribute('data-update-class');
             if (dataValue) {
-                document.querySelectorAll('.section').forEach(sec => {
-                    if (checkbox.checked == false) {
-                        if(sec.classList.contains('gridenabled')){
-                            sec.classList.remove('gridenabled');
-                        }
-                    } else if (checkbox.checked == true) {
-                        if(!sec.classList.contains('gridenabled')){
-                            sec.classList.add('gridenabled');
-                        }
+                const containerEl = document.getElementById('container');
+                if (!containerEl) return;
+                if (checkbox.checked == false) {
+                    if (containerEl.classList.contains('gridenabled')) {
+                        containerEl.classList.remove('gridenabled');
                     }
-                });
+                } else if (checkbox.checked == true) {
+                    if (!containerEl.classList.contains('gridenabled')) {
+                        containerEl.classList.add('gridenabled');
+                    }
+                }
                 selectthisgrid();
             }
         }
@@ -19743,17 +19725,16 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         function updateautocompleteenabledordisabledcheckbox(checkbox) {
             const dataValue = checkbox.getAttribute('data-update-aceclass');
             if (dataValue) {
-                document.querySelectorAll('.section').forEach(aSec => {
-                    if (checkbox.checked == false) {
-                        if (aSec.classList.contains('autocompleteenabled')) {
-                            aSec.classList.remove('autocompleteenabled');
-                        }
-                    } else if (checkbox.checked == true) {
-                        if (!aSec.classList.contains('autocompleteenabled')) {
-                            aSec.classList.add('autocompleteenabled');
-                        }
+                const containerEl = document.getElementById('container');
+                if (checkbox.checked == false) {
+                    if (containerEl.classList.contains('autocompleteenabled')) {
+                        containerEl.classList.remove('autocompleteenabled');
                     }
-                });
+                } else if (checkbox.checked == true) {
+                    if (!containerEl.classList.contains('autocompleteenabled')) {
+                        containerEl.classList.add('autocompleteenabled');
+                    }
+                }
                 if (section && !section.classList.contains('viewcontainer')) {
                     updateUniqueVals();
                 }
@@ -19790,77 +19771,28 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             }
             document.querySelectorAll('.switchbox').forEach(checkbox0 => {
                 const dataValue = checkbox0.getAttribute('data-checked');
-
-                section.querySelectorAll(`#${dataValue}`).forEach(btn0 => {
-                    const displayStyle = btn0.style.display;
-
-                    if (displayStyle == "none") {
-                        checkbox0.checked = false;
-                    } else {
-                        checkbox0.checked = true;
+                if (dataValue) {
+                    section.querySelectorAll(`#${dataValue}`).forEach(btn0 => {
+                        const displayStyle = btn0.style.display;
+                        if (displayStyle == "none") {
+                            checkbox0.checked = false;
+                        } else {
+                            checkbox0.checked = true;
+                        }
+                    });
+                } else {
+                    const dataValue2 = checkbox0.getAttribute('data-update-id');
+                    if (inputDiv){
+                        if (dataValue2 && inputDiv.id == "linenumberingoff"){
+                            checkbox0.checked = false;
+                        }else if (dataValue2 && inputDiv.id == "linenumberingon"){
+                            checkbox0.checked = true;
+                        }
                     }
-                });
-                const dataValue2 = checkbox0.getAttribute('data-update-id');
-                const dataValue3 = checkbox0.getAttribute('data-update-class');
-                const dataValue4 = checkbox0.getAttribute('data-update-aceclass');
-                if (inputDiv){
-                    if (!dataValue && dataValue2 && inputDiv.id == "linenumberingoff"){
-                        checkbox0.checked = false;
-                    }else if (!dataValue && dataValue2 && inputDiv.id == "linenumberingon"){
-                        checkbox0.checked = true;
-                    }
-                }
-                if (!dataValue && dataValue3 && !dataValue4 && !section.classList.contains('gridenabled') && !document.querySelector('.section.gridenabled')) {
-                    document.querySelectorAll('.section').forEach(sec => {
-                        if (sec.classList.contains('gridenabled')) {
-                            sec.classList.remove('gridenabled');
-                        }
-                    });
-                    checkbox0.checked = false;
-                } else if (!dataValue && dataValue3 && !dataValue4 && !section.classList.contains('gridenabled') && document.querySelector('.section.gridenabled')) {
-                    document.querySelectorAll('.section').forEach(sec => {
-                        if (!sec.classList.contains('gridenabled')) {
-                            sec.classList.add('gridenabled');
-                        }
-                    });
-                    checkbox0.checked = true;
-                } else if (!dataValue && dataValue3 && !dataValue4 && section.classList.contains('gridenabled')) {
-                    document.querySelectorAll('.section').forEach(sec => {
-                        if (!sec.classList.contains('gridenabled')) {
-                            sec.classList.add('gridenabled');
-                        }
-                    });
-                    checkbox0.checked = true;
-                }
-                if (!dataValue && dataValue4 && !dataValue3 && !section.classList.contains('autocompleteenabled') && !document.querySelector('.section.autocompleteenabled')) {
-                    document.querySelectorAll('.section').forEach(sec => {
-                        if (sec.classList.contains('autocompleteenabled')) {
-                            sec.classList.remove('autocompleteenabled');
-                        }
-                    });
-                    checkbox0.checked = false;
-                } else if (!dataValue && dataValue4 && !dataValue3 && !section.classList.contains('autocompleteenabled') && document.querySelector('.section.autocompleteenabled')) {
-                    document.querySelectorAll('.section').forEach(sec => {
-                        if (!sec.classList.contains('autocompleteenabled')) {
-                            sec.classList.add('autocompleteenabled');
-                        }
-                    });
-                    checkbox0.checked = true;
-                } else if (!dataValue && dataValue4 && !dataValue3 && section.classList.contains('autocompleteenabled')) {
-                    document.querySelectorAll('.section').forEach(sec => {
-                        if (!sec.classList.contains('autocompleteenabled')) {
-                            sec.classList.add('autocompleteenabled');
-                        }
-                    });
-                    checkbox0.checked = true;
                 }
             });
         }
-    
-        checkboxupdatefunction();
-
-
-
+        
         navBar.addEventListener('mousedown', (e) => {
             startNavDragY = e.clientY;
             if (startNavDragY >= window.innerHeight - 25) {
@@ -24977,8 +24909,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             updateUniqueVals();
         }, 4500);
         function updateUniqueVals() {
-            if (!section || section.classList.contains('viewcontainer')) return;
-            if (document.querySelector('.suggestuniquevalues input[type="checkbox"]').checked == true && editorIndex && editorIndex != "forview" && section.classList.contains('autocompleteenabled')) {
+            const containerEl = document.getElementById('container');
+            if (!section || section.classList.contains('viewcontainer') || !containerEl) return;
+            if (document.querySelector('.suggestuniquevalues input[type="checkbox"]').checked == true && editorIndex && editorIndex != "forview" && containerEl.classList.contains('autocompleteenabled')) {
                 uniquevalues = extractUniqueValues([...editorFiles[editorIndex]].map(val => val.text).join(''));
                 if (!uniqueValCheckInterval) {
                     uniqueValCheckInterval = setInterval(() => {
@@ -24994,8 +24927,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         }
         
         function updateSuggestionInterval(el) {
-            if (!el || !section) return;
-            if (el.checked == true && section.classList.contains('autocompleteenabled')) {
+            const containerEl = document.getElementById('container');
+            if (!el || !section || !containerEl) return;
+            if (el.checked == true && containerEl.classList.contains('autocompleteenabled')) {
                 uniqueValCheckInterval = setInterval(() => {
                     updateUniqueVals();
                 }, 4500);
@@ -25006,7 +24940,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         }
         recoverUniqueValuesForSuggestionsEnabledToggleSelection();
         function setupAutocomplete(inputElement) {
-            if (!section || !section.classList.contains('autocompleteenabled') || !inputElement || !inputElement.parentElement || inputElement.textContent == "" || !editorIndex){
+            const containerEl = document.getElementById('container');
+            if (!section || !containerEl || !containerEl.classList.contains('autocompleteenabled') || !inputElement || !inputElement.parentElement || inputElement.textContent == "" || !editorIndex){
                 return;
             }
             const celineEIndex = inputElement.getAttribute("line-index");
