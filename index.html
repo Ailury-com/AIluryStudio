@@ -3115,10 +3115,7 @@
             top: 0;
             background: rgba(150, 150, 150, 0.1);
         }
-        .gridenabled {
-            background-size: 15px 15px;
-            background-image: radial-gradient(var(--griddot-color) 1px, transparent 1px);
-        }
+        
         .testregexcontainer label, .replacecontainer label {
             display: block;
             margin: 10px 0 5px;
@@ -4197,48 +4194,48 @@
             outline: 2px solid var(--switchcheckedbackground-color);
         }
         
-        .gridop1 {
+        .gridop1:not(#container), #container.gridop1 > .section {
             background-size: 15px 15px !important;
             background-image: radial-gradient(var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showFalseGridTone .gridop1 {
+        .showFalseGridTone .gridop1:not(#container) {
             background-image: radial-gradient(var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
-        .gridop2 {
+        .gridop2:not(#container), #container.gridop2 > .section {
             background-size: 15px 15px !important;
             background-image: linear-gradient(90deg, var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showFalseGridTone .gridop2 {
+        .showFalseGridTone .gridop2:not(#container) {
             background-image: linear-gradient(90deg, var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
-        .gridop3 {
+        .gridop3:not(#container), #container.gridop3 > .section {
             background-size: 40px 40px !important;
             background-image: radial-gradient(circle, transparent 90%, var(--griddot-color) 2%) !important;
         }
-        .showFalseGridTone .gridop3 {
+        .showFalseGridTone .gridop3:not(#container) {
             background-image: radial-gradient(circle, transparent 90%, var(--overlaycolor-color) 2%) !important;
         }
-        .gridop4 {
+        .gridop4:not(#container), #container.gridop4 > .section {
             background-size: 15px 15px !important;
             background-image: linear-gradient(var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showFalseGridTone .gridop4 {
+        .showFalseGridTone .gridop4:not(#container) {
             background-image: linear-gradient(var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
-        .gridop5 {
+        .gridop5:not(#container), #container.gridop5 > .section {
             background-size: 20px 20px !important;
             background-image: linear-gradient(var(--griddot-color) 1px, transparent 1px),
                 linear-gradient(90deg, var(--griddot-color) 1px, transparent 1px) !important;
         }
-        .showFalseGridTone .gridop5 {
+        .showFalseGridTone .gridop5:not(#container) {
             background-image: linear-gradient(var(--overlaycolor-color) 1px, transparent 1px),
                 linear-gradient(90deg, var(--overlaycolor-color) 1px, transparent 1px) !important;
         }
-        .gridop6 {
+        .gridop6:not(#container), #container.gridop6 > .section {
             background-size: 50px 50px !important;
             background-image: radial-gradient(var(--griddot-color) 10%, transparent 10%) !important;
         }
-        .showFalseGridTone .gridop6 {
+        .showFalseGridTone .gridop6:not(#container) {
             background-image: radial-gradient(var(--overlaycolor-color) 10%, transparent 10%) !important;
         }
         .sidebarbardiv h1 {
