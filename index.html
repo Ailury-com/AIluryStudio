@@ -1507,7 +1507,7 @@
         }
         .seccontainer-line.specialbtn {
             display: flex;
-            width: calc(100vw - var(--sibebar-width));
+            width: calc(100% - 20px);
             font-size: 1.5em;
             margin-top: 2dvh;
             border-radius: 10px;
@@ -1522,7 +1522,7 @@
             -webkit-user-select: none;
         }
         .sidebarenabled .seccontainer-line.specialbtn {
-            width: 68vw;
+            width: calc(100vw - 20px - var(--sibebar-width));
         }
         .seccontainer-line.specialbtn:active{
             background: var(--lightgrey-color);
@@ -2215,6 +2215,9 @@
             border-bottom-right-radius: 0;
             transition: var(--tr);
             cursor: default;
+        }
+        .codesearchresults .result:last-of-type {
+            border-bottom: none;
         }
         .codesearchresults .result:hover {
             background: rgba(150, 150, 150, 0.1);
