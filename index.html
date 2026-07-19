@@ -1520,9 +1520,7 @@
             color: var(--contrast-color);
             user-select: none;
             -webkit-user-select: none;
-        }
-        .sidebarenabled .seccontainer-line.specialbtn {
-            width: calc(100vw - 20px - var(--sibebar-width));
+            max-width: 620px;
         }
         .seccontainer-line.specialbtn:active{
             background: var(--lightgrey-color);
@@ -2536,6 +2534,8 @@
             border-radius: 8px;
             overflow-y: scroll;
             overflow-x: hidden;
+            width: calc(100% - 20px);
+            max-width: 620px;
         }
         .seccontainer-line-container {
             height: 70%;
@@ -2565,12 +2565,7 @@
             font-family: 'Courier New', monospace;
             font-size: 16px;
             color: var(--contrast-color);
-            width: calc(100vw - var(--sibebar-width));
-            max-width: 620px;
-        }
-
-        .sidebarenabled .seccontainer-line, .sidebarenabled .oneinfoc{
-            width: calc(98vw - var(--sibebar-width));
+            width: 100%;
         }
 
         .command-list li:last-child {
