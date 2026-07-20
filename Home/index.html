@@ -2288,8 +2288,8 @@
                         </div>
                         
                         <div class="aboutSecRep" style="display: flex; height: 90%; flex: 1; justify-content: center; align-items: center; padding: 10px;">
-                            <div class="secEl" style="width: 80%; height: 90%; min-height: 375px; border: 12px solid rgba(120, 120, 120, 0.5); border-radius: 25px; background: transparent; align-items: flex-start; flex-direction: column;">
-                                <div class="secEl" style="width: 100%; padding: 5px; flex-direction: row; gap: 5px; background: transparent; border-bottom: 1px solid var(--border-color); border-radius: 0;">
+                            <div class="secEl" style="width: 80%; height: 90%; min-height: 375px; border: 8px solid rgba(120, 120, 120, 0.5); border-radius: 32px; background: transparent; align-items: flex-start; flex-direction: column;">
+                                <div class="secEl" style="width: 100%; padding: 7px 10px 5px 10px; flex-direction: row; gap: 5px; background: transparent; border-bottom: 1px solid var(--border-color); border-radius: 0;">
                                     <div class="expandEl" style="color: #06b6d4; font-size: 1rem; margin-right: 5px;"><</div>
                                     <div class="secEl" style="flex: 1; background: transparent; font-size: 0.8rem; text-align: center; border: none; padding: 4px 6px; font-weight: normal; justify-content: center;">index.html</div>
                                     <div class="secEl" style="color: white; background: #06b6d4; border-radius: 5px; font-size: 0.7rem; font-weight: normal; padding: 4px 8px;">⌕</div>
@@ -2314,7 +2314,7 @@
                             <div class="secEl" style="padding: 4px 10px; font-size: 0.85rem; color: var(--text-color); justify-content: space-between; background: transparent; font-weight: normal; border-bottom: 1px solid var(--border-color); border-radius: 0;">
                                 <span>Status: Inactive</span>
                                 <div style="display: flex; width: fit-content; flex-direction: row; gap: 11px; font-family: system-ui; align-items: center;">
-                                    <div class="secEl" style="color: white; background: #06b6d4; border-radius: 5px; font-size: 0.7rem; font-weight: bold; padding: 4px 8px;">Run</div>
+                                    <div class="secEl" style="color: white; background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; font-size: 0.7rem; font-weight: bold; padding: 4px 8px;">Run</div>
                                     <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">⌧</span>
                                     <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">×</span>
                                 </div>
@@ -2922,7 +2922,7 @@
                 <hr class="section-divider">
                 <div class="feature-con card-border-pink elWithEaseinAnimation" id="deleteCommentsSec">
                     <i class="fa-solid fa-comment" style="color: #ec4899; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> in HTML, CSS, Python, or JavaScript files and it allows you to to delete all comments from the current file. The supported comment types are: HTML, CSS, JavaScript, and Python. Although this tool can be useful, it is not fully fleshed out and relies on 2 factors; these factors are: no strings that can be confused with comments, and comments that go over multiple lines have to have been rendered at least once to be correctly deleted.</p>
+                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> of HTML, CSS, Python, or JavaScript files and it allows you to to delete all comments from the current file except for those in <button class="openSecRef" onclick="scrollToToolInToolSec('disableAndEnableTool')">disabled ↗</button> lines. The supported comment types are: HTML, CSS, JavaScript, and Python. Although this tool can be useful, it is not fully fleshed out and relies on 2 factors; these factors are: no strings that can be confused with comments, and comments that go over multiple lines have to have been rendered at least once to be correctly deleted.</p>
                     <div class="fileSettingsFeature">delete comments</div>
                 </div>
             </div>
@@ -3423,6 +3423,12 @@
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #393A43;"></span>
                                     <span>gray</span>
+                                    <span class="deleteThemeBtn">⌧</span>
+                                </div>
+                                
+                                <div class="secEl theme-list-el">
+                                    <span class="theme-color-el" style="background: #1A1A1C;"></span>
+                                    <span>dark gray</span>
                                     <span class="deleteThemeBtn">⌧</span>
                                 </div>
                                 
