@@ -23647,11 +23647,24 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
 
         const undolimitnum = document.querySelector('.undolimitnum');
         const undolimit = document.querySelector('.undolimit input[type="checkbox"]');
-        function updateHistorySize(lepsalternative = section?.id) {
+        function updateHistorySize(lepsalternative = null, minusVal = null) {
             if (!lepsalternative) return;
-            const limit = parseInt(undolimitnum.value, 10);
-            if (pastevents[lepsalternative] && Array.isArray(pastevents[lepsalternative]) && undolimit.checked == true && pastevents[lepsalternative].length > limit) {
-                pastevents[lepsalternative] = pastevents[lepsalternative].slice(-(limit - 1));
+            let limit = parseInt(undolimitnum.value, 10);
+            if (minusVal) {
+                limit = limit - minusVal;
+            }
+            if (undolimit.checked == true) {
+                if (lepsalternative) {
+                    if (pastevents[lepsalternative] && Array.isArray(pastevents[lepsalternative]) && pastevents[lepsalternative].length > limit) {
+                        pastevents[lepsalternative] = pastevents[lepsalternative].slice(-limit);
+                    }
+                } else {
+                    Object.keys(pastevents).forEach(key => {
+                        if (Array.isArray(pastevents[key]) && pastevents[key].length > limit) {
+                            pastevents[key] = pastevents[key].slice(-limit);
+                        }
+                    });
+                }
             }
         }
         function pasteventPrep(lepsalternative = lasteventsparentsection?.id) {
@@ -23663,7 +23676,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 delete futureevents[lepsalternative];
             }
             disablefuturebtn();
-            updateHistorySize(lepsalternative);
+            updateHistorySize(lepsalternative, 1);
         }
         
         function updateSelectedClasses(offset, callback, capturedEditorIndex = editorIndex) {
