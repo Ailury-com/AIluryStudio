@@ -8438,12 +8438,12 @@
                         <button class="cfscscspaceindentation cfscscf equalizeIndentSizeBtn" id="equalizeIndentSizeBtn" onclick="equalizeIndentSize()" style="justify-content: center;">Equalize Indent Size</button>
                         <div class="cfscscundo cfscscf undolimit">
                             <label class="switch">
-                                <input type="checkbox" id="undoLimitToggleEl" onchange="saveUndoLimitToggle(this)" checked>
+                                <input type="checkbox" id="undoLimitToggleEl" onchange="saveUndoLimitToggle(this);updateHistorySize();updateSaveFile();" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">undo limit</span>
                         </div>
-                        <select name="undolimitnum" class="cfscscundo cfscscf undolimitnum dropDownOpCon" onchange="saveUndoLimit(this)">
+                        <select name="undolimitnum" class="cfscscundo cfscscf undolimitnum dropDownOpCon" onchange="saveUndoLimit(this);updateHistorySize();updateSaveFile();">
                             <option value="5">5× limit</option>
                             <option value="10">10× limit</option>
                             <option value="20">20× limit</option>
@@ -23647,6 +23647,13 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
 
         const undolimitnum = document.querySelector('.undolimitnum');
         const undolimit = document.querySelector('.undolimit input[type="checkbox"]');
+        function updateHistorySize(lepsalternative = section?.id) {
+            if (!lepsalternative) return;
+            const limit = parseInt(undolimitnum.value, 10);
+            if (pastevents[lepsalternative] && Array.isArray(pastevents[lepsalternative]) && undolimit.checked == true && pastevents[lepsalternative].length > limit) {
+                pastevents[lepsalternative] = pastevents[lepsalternative].slice(-(limit - 1));
+            }
+        }
         function pasteventPrep(lepsalternative = lasteventsparentsection?.id) {
             if (!lepsalternative) return;
             if (!pastevents[lepsalternative]) {
@@ -23656,10 +23663,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 delete futureevents[lepsalternative];
             }
             disablefuturebtn();
-            const limit = parseInt(undolimitnum.value, 10);
-            if (undolimit.checked == true && pastevents[lepsalternative].length > limit) {
-                pastevents[lepsalternative] = pastevents[lepsalternative].slice(-(limit - 1));
-            }
+            updateHistorySize(lepsalternative);
         }
         
         function updateSelectedClasses(offset, callback, capturedEditorIndex = editorIndex) {
