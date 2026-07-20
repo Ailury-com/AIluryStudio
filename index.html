@@ -8438,7 +8438,7 @@
                         <button class="cfscscspaceindentation cfscscf equalizeIndentSizeBtn" id="equalizeIndentSizeBtn" onclick="equalizeIndentSize()" style="justify-content: center;">Equalize Indent Size</button>
                         <div class="cfscscundo cfscscf undolimit">
                             <label class="switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="undoLimitToggleEl" onchange="saveUndoLimitToggle(this)" checked>
                                 <span class="slider"></span>
                             </label>
                             <span class="cfscscswitchdesname">undo limit</span>
@@ -9009,6 +9009,31 @@
                 valueToStore: true,
                 saveFailMsg: "something went wrong while trying to save if unique values are added to suggestions, selection. You might have run out of local storage.",
                 removeFailMsg: "something went wrong while trying to update if unique values are added to suggestions, selection. Local storage error."
+            });
+        }
+        function recoverUndoLimitEnabledDisabledToggle() {
+            _localRecover({
+                selector: "#undoLimitToggleEl",
+                storageKey: "AIluryStudioUndoLimitDisabled",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked ? false : true;
+                },
+                onFailure: (el) => {
+                    el.checked = true;
+                },
+                recoverWarnMsg: "something went wrong while trying to recover undo limit enabled/disabled toggle selection.",
+                removeWarnMsg: "something went wrong while trying to remove undo limit enabled/disabled toggle selection. Local storage error."
+            });
+        }
+        recoverUndoLimitEnabledDisabledToggle();
+        
+        function saveUndoLimitToggle(el) {
+            _localSave({
+                shouldStore: el.checked != true,
+                storageKey: "AIluryStudioUndoLimitDisabled",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save undo limit enabled/disabled toggle selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update undo limit enabled/disabled toggle selection. Local storage error."
             });
         }
         function clearClosestSearchCon(clearSearchInputEl) {
