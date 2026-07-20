@@ -8443,7 +8443,7 @@
                             </label>
                             <span class="cfscscswitchdesname">undo limit</span>
                         </div>
-                        <select name="undolimitnum" class="cfscscundo cfscscf undolimitnum dropDownOpCon">
+                        <select name="undolimitnum" class="cfscscundo cfscscf undolimitnum dropDownOpCon" onchange="saveUndoLimit(this)">
                             <option value="5">5× limit</option>
                             <option value="10">10× limit</option>
                             <option value="20">20× limit</option>
@@ -8671,6 +8671,80 @@
                 }
             }
         }
+        function recoverUndoLimit() {
+            _localRecover({
+                selector: ".undolimitnum",
+                storageKey: "AIluryStudioUndoLimit",
+                onFound: (el, val) => {
+                    if ([...el.options].some(option => option.value == val)) {
+                        el.value = val;
+                    }
+                },
+                onFailure: (el) => {
+                    el.value = "50";
+                },
+                recoverWarnMsg: "something went wrong while trying to recover the undo limit.",
+                removeWarnMsg: "something went wrong while trying to remove the selected undo limit."
+            });
+        }
+        
+        recoverUndoLimit();
+        
+        function saveUndoLimit(el) {
+            _localSave({
+                shouldStore: el.value != "50",
+                storageKey: "AIluryStudioUndoLimit",
+                valueToStore: el.value,
+                saveFailMsg: "something went wrong while trying to save selected undo limit. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update the undo limit. Local storage error."
+            });
+        }
+        
+        function recoverCount(count, countVar) {
+            _localRecover({
+                selector: "#container",
+                storageKey: count,
+                onFound: (el, val) => {
+                    const intVal = parseInt(val);
+                    if (intVal >= 1) {
+                        if (countVar == "m__up") {
+                            m__up = intVal;
+                        } else if (countVar == "m__down") {
+                            m__down = intVal;
+                        } else if (countVar == "m__right") {
+                            m__right = intVal;
+                        } else if (countVar == "m__left") {
+                            m__left = intVal;
+                        }
+                    }
+                },
+                onFailure: (el) => {
+                    if (countVar == "m__up") {
+                        m__up = 1;
+                    } else if (countVar == "m__down") {
+                        m__down = 1;
+                    } else if (countVar == "m__right") {
+                        m__right = 1;
+                    } else if (countVar == "m__left") {
+                        m__left = 1;
+                    }
+                },
+                recoverWarnMsg: "something went wrong while trying to recover a jump size.",
+                removeWarnMsg: "something went wrong while trying to remove the selected jump size."
+            });
+        }
+        
+        function saveCount(saveVal, val) {
+            _localSave({
+                shouldStore: val > 1,
+                storageKey: saveVal,
+                valueToStore: val,
+                saveFailMsg: "something went wrong while trying to save a jump size. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update a jump size. Local storage error."
+            });
+        }
+        
+        
         
         function recoverIndentSizeSelection() {
             _localRecover({
@@ -8708,6 +8782,7 @@
                 removeWarnMsg: "something went wrong while trying to remove the selection for applying indent size when a file is rendered."
             });
         }
+        
         recoverIndentApplicationOnFileUploadSelection();
         
         function applyIndentSizeOnLoadToggle(el) {
@@ -10797,6 +10872,11 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         var m__down = 1;
         var m__right = 1;
         var m__left = 1;
+        recoverCount("AIluryStudioMoveUpJumpSize", "m__up");
+        recoverCount("AIluryStudioMoveDownJumpSize", "m__down");
+        recoverCount("AIluryStudioPushRightSpaceAmount", "m__right");
+        recoverCount("AIluryStudioRemoveSpacesLeftSpaceAmount", "m__left");
+        
         
         var functiondescriptions = {
             "copy": {
@@ -10905,56 +10985,67 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             if (functiondescriptions[type]){
                 document.querySelector('.cfsinfo').textContent = functiondescriptions[type].description;
                 document.querySelector('.cfsch3').textContent = functiondescriptions[type].title;
+                const cfscountervalue = document.querySelector('.cfscountervalue');
+                const cfscounteradd = document.querySelector('.cfscounteradd');
+                const cfscounterremove = document.querySelector('.cfscounterremove');
                 if (type == "attachnotestolines") {
                     addalllineswithnotesmanually();
                 } if (type == "delete") {
                     addallselectedlinestodeleteselectedlinesmanually();
                 } else if (type == "moveup") {
-                    document.querySelector('.cfscountervalue').textContent = m__up;
-                    document.querySelector('.cfscounteradd').onclick = () => {
+                    cfscountervalue.textContent = m__up;
+                    cfscounteradd.onclick = () => {
                         m__up++;
-                        document.querySelector('.cfscountervalue').textContent = m__up;
+                        cfscountervalue.textContent = m__up;
+                        saveCount("AIluryStudioMoveUpJumpSize", m__up);
                     };
-                    document.querySelector('.cfscounterremove').onclick = () => {
+                    cfscounterremove.onclick = () => {
                         if (m__up > 1) {
                             m__up--;
-                            document.querySelector('.cfscountervalue').textContent = m__up;
+                            cfscountervalue.textContent = m__up;
+                            saveCount("AIluryStudioMoveUpJumpSize", m__up);
                         }
                     };
                 } else if (type == "movedown") {
-                    document.querySelector('.cfscountervalue').textContent = m__down;
-                    document.querySelector('.cfscounteradd').onclick = () => {
+                    cfscountervalue.textContent = m__down;
+                    cfscounteradd.onclick = () => {
                         m__down++;
-                        document.querySelector('.cfscountervalue').textContent = m__down;
+                        cfscountervalue.textContent = m__down;
+                        saveCount("AIluryStudioMoveDownJumpSize", m__down);
                     };
-                    document.querySelector('.cfscounterremove').onclick = () => {
+                    cfscounterremove.onclick = () => {
                         if (m__down > 1) {
                             m__down--;
-                            document.querySelector('.cfscountervalue').textContent = m__down;
+                            cfscountervalue.textContent = m__down;
+                            saveCount("AIluryStudioMoveDownJumpSize", m__down);
                         }
                     };
                 } else if (type == "addspaceleft") {
-                    document.querySelector('.cfscountervalue').textContent = m__right;
-                    document.querySelector('.cfscounteradd').onclick = () => {
+                    cfscountervalue.textContent = m__right;
+                    cfscounteradd.onclick = () => {
                         m__right++;
-                        document.querySelector('.cfscountervalue').textContent = m__right;
+                        cfscountervalue.textContent = m__right;
+                        saveCount("AIluryStudioPushRightSpaceAmount", m__right);
                     };
-                    document.querySelector('.cfscounterremove').onclick = () => {
+                    cfscounterremove.onclick = () => {
                         if (m__right > 1) {
                             m__right--;
-                            document.querySelector('.cfscountervalue').textContent = m__right;
+                            cfscountervalue.textContent = m__right;
+                            saveCount("AIluryStudioPushRightSpaceAmount", m__right);
                         }
                     };
                 } else if (type == "removespaceleft") {
-                    document.querySelector('.cfscountervalue').textContent = m__left;
-                    document.querySelector('.cfscounteradd').onclick = () => {
+                    cfscountervalue.textContent = m__left;
+                    cfscounteradd.onclick = () => {
                         m__left++;
-                        document.querySelector('.cfscountervalue').textContent = m__left;
+                        cfscountervalue.textContent = m__left;
+                        saveCount("AIluryStudioRemoveSpacesLeftSpaceAmount", m__left);
                     };
-                    document.querySelector('.cfscounterremove').onclick = () => {
+                    cfscounterremove.onclick = () => {
                         if (m__left > 1) {
                             m__left--;
-                            document.querySelector('.cfscountervalue').textContent = m__left;
+                            cfscountervalue.textContent = m__left;
+                            saveCount("AIluryStudioRemoveSpacesLeftSpaceAmount", m__left);
                         }
                     };
                 } else if (type == "pin") {
@@ -17765,14 +17856,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
 
             allLines.forEach(line => {
-                let pastelement = {
-                    type: "text",
-                    text: line.text,
-                    index: allLines.indexOf(line)
-                };
-                newpast.push(pastelement);
-
-                let text = line.text;
+                if (line.classes && Array.isArray(line.classes) && line.classes.includes("disableline")) return;
+                let orTxt = removeAbbreviations(normalizeSpaces(line.text));
+                let text = orTxt;
                 if (currentFileName.endsWith(".html") || currentFileName.endsWith(".htm")) {
                     text = text.replace(/<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, '').replace(/\/\*[\s\S]*?\*\/|((?:(?!\/\*)[\s\S])*)\*\/|\/\*[\s\S]*$/g, '').replace(/\/\/.*/g, '');
                 } else if (currentFileName.endsWith(".css")) {
@@ -17782,7 +17868,15 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 } else if (currentFileName.endsWith(".py")) {
                     text = text.replace(/#(?=[\s#]).*/g, '');
                 }
-                line.text = text;
+                if (orTxt != text) {
+                    let pastelement = {
+                        type: "text",
+                        text: line.text,
+                        index: allLines.indexOf(line)
+                    };
+                    newpast.push(pastelement);
+                    line.text = replaceNormalSpaces(addAbbreviations(text));
+                }
             });
 
             if (newpast.length > 0) {
