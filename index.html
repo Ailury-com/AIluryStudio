@@ -2754,7 +2754,7 @@
             transition: var(--tr);
         }
         .sidebarbardivbuttondiv button{
-            background: var(--bg-color);
+            background: transparent;
             border: none;
             color: var(--contrast-color);
             display: flex;
@@ -2766,6 +2766,9 @@
             transition: var(--tr);
             overflow: hidden;
             position: relative;
+        }
+        .sidebarbardivbuttondiv button:hover {
+            background: var(--lightgrey-color);
         }
         .sidebarbardivbuttondiv:not(.sidebarbardivbuttondiv1) button:before {
             content: "";
