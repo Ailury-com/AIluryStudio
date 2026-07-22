@@ -22459,7 +22459,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 { regex: /(?<![\w])(?:r|R)(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
                 { regex: allExistingFilePaths, className: "syntaxfilepath" }, 
                 { regex: allExistingImgFilePaths, className: "syntaximgfilepath" },
-                { regex: /(["'])(?:(?!\1)[^\\]|\\.)*\1|f(["'])(?:(?!\2)[^\\{]|\\.)*(?:\2|\{)|`(?:[^\\`$]|\\.)*(?:`|\$\{)|\}(?:[^\\{}"'`]|\\.)*(?:["'`]|\$?\{)/g, className: "syntaxstring" },
+                { regex: /(["'])(?:(?!\1)[^\\]|\\.)*\1|f(["'])(?:(?!\2)[^\\{]|\\.)*(?:\2|\{)|`(?:[^\\`$]|\\.)*(?:`|\$\{)|(?<=\{[^{}]*)\}(?:[^\\{}"'`]|\\.)*(?:["'`]|\$?\{)/g, className: "syntaxstring" },
                 { regex: /#(?=[\s#]).*/g, className: "syntaxpycomment" },
                 { regex: indentSizeRegex, className: "syntaxspace" },
                 { regex: /<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, className: "syntaxhtmlcomment" },
