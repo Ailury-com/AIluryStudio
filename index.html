@@ -1522,6 +1522,7 @@
             user-select: none;
             -webkit-user-select: none;
             max-width: 620px;
+            cursor: pointer;
         }
         .seccontainer-line.specialbtn:active{
             background: var(--lightgrey-color);
@@ -3472,6 +3473,7 @@
             margin: 0;
             padding: 0;
             height: 100dvh;
+            z-index: 10;
         }
         #timeline-line{
             background: var(--switchcheckedbackground-color);
@@ -10139,7 +10141,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
         }
         function togglecebtnislands(thechangedswitch) {
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
             if (!divcodeeditorcontainerft) return;
             if (thechangedswitch.checked) {
                 document.querySelector('.ifislandenableddisablethis input[type="checkbox"]').checked = false;
@@ -10205,7 +10206,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
         }
         function togglesmallNavBar(toggleswitch) {
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
             if (!divcodeeditorcontainerft) return;
             if (toggleswitch.checked) {
                 divcodeeditorcontainerft.classList.add('smallNavBar');
@@ -10214,7 +10214,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
         }
         function toggleceefbrlbd(toggleswitch) {
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
             if (!divcodeeditorcontainerft) return;
             if (toggleswitch.checked) {
                 document.querySelector('.ifborderenableddisablethis input[type="checkbox"]').checked = false;
@@ -10224,11 +10223,11 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 divcodeeditorcontainerft.classList.add('ceefbrlbd');
             }
         }
-        let isResizingSidebar = false;
-        const sidebarwidthdisplaydiv = document.querySelector('.sidebarwidthdisplay');
+        var isResizingSidebar = false;
+        var sidebarwidthdisplaydiv = document.querySelector('.sidebarwidthdisplay');
+        var divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
         
         document.querySelector('.resizesidebarbar').addEventListener('touchstart', (e) => {
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
             if (divcodeeditorcontainerft) {
                 divcodeeditorcontainerft.classList.add('resizingSidebar');
             }
@@ -10251,7 +10250,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         });
         
         window.addEventListener('touchend', () => {
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
             if (divcodeeditorcontainerft) {
                 divcodeeditorcontainerft.classList.remove('resizingSidebar');
             }
@@ -10265,6 +10263,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         });
         
         document.querySelector('.resizesidebarbar').addEventListener('mousedown', (e) => {
+            if (divcodeeditorcontainerft) {
+                divcodeeditorcontainerft.classList.add('resizingSidebar');
+            }
             isResizingSidebar = true;
             if (sidebarwidthdisplaydiv) {
                 sidebarwidthdisplaydiv.style.display = "block";
@@ -16763,8 +16764,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             state.lineHeights = new Array(initialAll.length).fill(24);
             state.cumulativeHeights = [0];
             
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
-            
             function recomputeCumulativeHeights() {
                 const all = _getAllLines(editor, innum) || [];
                 if (!Array.isArray(state.lineHeights) || state.lineHeights.length !== all.length) {
@@ -22168,7 +22167,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             });
         }
         function analyzeAndHideElements(relement) {
-            const divcodeeditorcontainerft = document.querySelector('.divcodeeditor-container');
             const allLines = editorFiles[editorIndex];
             if (!relement || !allLines || !allLines.includes(relement)) return;
             const element = allLines[allLines.indexOf(relement)];
