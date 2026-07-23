@@ -23006,17 +23006,24 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
             }
         });
-        
+        function forSelectedEv(func, callBack) {
+            const fceline = section.querySelector('.code-editor-line:focus');
+            const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
+            if ((!fceline && hceline) || (hceline && fceline && fceline.id != hceline.id)) {
+                func();
+                callBack();
+            }
+        }
         document.addEventListener('keydown', event => {
             if (event.target && event.target.parentElement && event.target.parentElement.classList.contains('code-editor-container')) {
                 handleKeyDown(event);
             }
             if (section.id != "forview") {
                 const isCmdOrCtrl = event.metaKey || event.ctrlKey;
-                if ((event && event.key == "ArrowRight") || (isCmdOrCtrl && event.key == "q")) {
+                if ((event && event.key == "ArrowRight") || (isCmdOrCtrl && event.key.toLowerCase() == "q")) {
                     const fceline = section.querySelector('.code-editor-line:focus');
                     const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
-                    let celine = fceline ? fceline : hceline;
+                    let celine = hceline ? hceline : fceline;
                     if (celine) {
                         targetElementv = celine;
                         swipethislineright();
@@ -23024,10 +23031,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                if ((event && event.key == "ArrowLeft") || (isCmdOrCtrl && event.key == "f")) {
+                if ((event && event.key == "ArrowLeft") || (isCmdOrCtrl && event.key.toLowerCase() == "f")) {
                     const fceline = section.querySelector('.code-editor-line:focus');
-                    const hceline = currentHoveredElement && currentHoveredElement.classList.contains("code-editor-line");
-                    let celine = hceline ? currentHoveredElement : fceline;
+                    const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
+                    let celine = hceline ? hceline : fceline;
                     if (celine) {
                         targetElementv = celine;
                         swipethislineleft();
@@ -23035,12 +23042,103 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
+                if ((event && event.key == "ArrowUp") || (isCmdOrCtrl && event.key.toLowerCase() == "m" && !event.shiftKey)) {
+                    forSelectedEv(moveselectedlineup, () => event.preventDefault());
+                    return;
+                }
+                if ((event && event.key == "ArrowDown") || (isCmdOrCtrl && event.key.toLowerCase() == "m" && event.shiftKey)) {
+                    forSelectedEv(moveselectedlinedown, () => event.preventDefault());
+                    return;
+                }
+                
+                
+                
+                if (isCmdOrCtrl && event.key.toLowerCase() == "p" && !event.shiftKey) {
+                    forSelectedEv(importantselectedlines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "p" && event.shiftKey) {
+                    forSelectedEv(importantalllines, () => event.preventDefault());
+                    return;
+                }
+                
+                if (isCmdOrCtrl && event.key.toLowerCase() == "/") {
+                    forSelectedEv(commentallselectedlines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "p" && event.shiftKey) {
+                    forSelectedEv(importantselectedlines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "d" && event.shiftKey) {
+                    forSelectedEv(restselectedline, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "e" && event.shiftKey) {
+                    forSelectedEv(unsleepalllines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && event.shiftKey) {
+                    forSelectedEv(moveAllselectedlinetextsright, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && !event.shiftKey) {
+                    forSelectedEv(moveAllselectedlinetextsleft, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "t" && event.shiftKey) {
+                    forSelectedEv(trimAllselectedlinetexts, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "c" && !event.shiftKey && event.altKey) {
+                    forSelectedEv(copyselectedlinetexts, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "c" && event.shiftKey && event.altKey) {
+                    forSelectedEv(copyalllinetexts, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && event.shiftKey) {
+                    forSelectedEv(deleteAllLines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && !event.shiftKey) {
+                    forSelectedEv(deleteSelectedLines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "f" && event.shiftKey) {
+                    forSelectedEv(replacealllines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "f" && !event.shiftKey) {
+                    forSelectedEv(replaceselectedlines, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "enter" && event.shiftKey) {
+                    forSelectedEv(_viewcode, () => event.preventDefault());
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "n" && event.shiftKey) {
+                    const fceline = section.querySelector('.code-editor-line:focus');
+                    const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
+                    let celine = hceline ? hceline : fceline;
+                    if (celine) {
+                        targetElementv = celine;
+                        openCreateNewFileLineNoteSec();
+                        event.preventDefault();
+                    }
+                    return;
+                }
+                if (isCmdOrCtrl && event.key.toLowerCase() == "n" && event.shiftKey) {
+                    forSelectedEv(attachNotesToSelected, () => event.preventDefault());
+                    return;
+                }
                 if (isCmdOrCtrl && event.key.toLowerCase() == "u" && !event.shiftKey) {
                     gobacktolastpastevent();
                     event.preventDefault();
                     return;
                 }
-                if (isCmdOrCtrl && event.key == ";" && !event.shiftKey) {
+                if (isCmdOrCtrl && event.key == ";") {
                     gobacktolastfutureevent();
                     event.preventDefault();
                     return;
@@ -23187,8 +23285,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 event.preventDefault();
                 return;
             }
-            
-            if (event.key === 'Shift' || event.metaKey || event.ctrlKey || event.key === "CapsLock" || event.code === "CapsLock") {
+            if (event.key == undefined || event.key == null) return;
+            const isCmdOrCtrl = event.metaKey || event.ctrlKey;
+            if (event.key === 'Shift' || event.metaKey || event.ctrlKey || event.key === "CapsLock" || event.code === "CapsLock" || isCmdOrCtrl) {
                 return;
             }
             
