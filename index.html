@@ -17,11 +17,11 @@
     <meta name="twitter:title" content="Ailury Programming Studio - the mobile-first code editor.">
     <meta name="twitter:description" content="Ailury Studio is a mobile-first code editor built to let you write and test code from any device. While it fully supports desktop PCs, the environment is specifically optimized for productivity on phones and tablets, with featuring, intuitive touch gestures, and customizable layouts that make programming seamless.">
     <meta property="og:url" content="https://ailury.com" />
-    <link rel="preload" href="AIluryAppLogo196x196.png" as="image">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/AIluryAppLogo196x196.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
     <title>AIlury</title>
     <link rel="canonical" href="https://ailury.com/">
@@ -20634,9 +20634,37 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             const allselectedlines = allLines.filter(el => el.classes.includes('selected') && allLines.indexOf(el) != 0);
             if (allselectedlines.length) {
                 let newpast = [];
+                
+                const getIndentLength = (text) => {
+                    let len = 0;
+                    for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        if (char === " " || char === "\u00A0") len++;
+                        else break;
+                    }
+                    return len;
+                };
+                
+                const originalIndents = new Map();
+                allselectedlines.forEach(line => originalIndents.set(line, getIndentLength(line.text)));
+                
+                const anchorLine = allselectedlines[0];
+                const anchorOldIndex = allLines.indexOf(anchorLine);
+                let anchorDest = Math.min(Math.max(anchorOldIndex - m__up, 0), allLines.length - 1);
+                while (allLines[anchorDest] && allLines[anchorDest].classes.includes("hidden")) {
+                    anchorDest--;
+                }
+                let indentDelta = 0;
+                if (allLines[anchorDest]) {
+                    const anchorNeighbor = allLines[anchorDest - 1];
+                    if (anchorNeighbor) {
+                        indentDelta = getIndentLength(anchorNeighbor.text) - originalIndents.get(anchorLine);
+                    }
+                }
+                
                 allselectedlines.forEach(selectedline => {
                     let pastelement = {
-                        element: {...selectedline},
+                        element: { ...selectedline },
                         type: "delete",
                         index: allLines.indexOf(selectedline)
                     };
@@ -20647,24 +20675,14 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         minmaxednumber--;
                     }
                     if (allLines[minmaxednumber]) {
-                        const lineNextElementSibling = allLines[minmaxednumber - 1];
-                        if (lineNextElementSibling) {
-                            let indentLength = 0;
-                            for (let i = 0; i < lineNextElementSibling.text.length; i++) {
-                                const char = lineNextElementSibling.text[i];
-                                if (char === " " || char === "\u00A0") {
-                                    indentLength++;
-                                } else {
-                                    break;
-                                }
-                            }
-                            selectedline.text = "\u00A0".repeat(indentLength) + selectedline.text.replace(/^\s+/g, "");
-                        }
+                        const newIndent = Math.max(originalIndents.get(selectedline) + indentDelta, 0);
+                        selectedline.text = "\u00A0".repeat(newIndent) + selectedline.text.replace(/^\s+/g, "");
+                        
                         allLines.splice(oldIndex, 1);
                         allLines.splice(minmaxednumber, 0, selectedline);
                         
                         let pastelement2 = {
-                            element: {...selectedline},
+                            element: { ...selectedline },
                             type: "create",
                             index: allLines.indexOf(selectedline),
                             during: "move"
@@ -20692,9 +20710,37 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             allselectedlines.reverse();
             if (allselectedlines.length) {
                 let newpast = [];
+                
+                const getIndentLength = (text) => {
+                    let len = 0;
+                    for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        if (char === " " || char === "\u00A0") len++;
+                        else break;
+                    }
+                    return len;
+                };
+                
+                const originalIndents = new Map();
+                allselectedlines.forEach(line => originalIndents.set(line, getIndentLength(line.text)));
+                
+                const anchorLine = allselectedlines[0];
+                const anchorOldIndex = allLines.indexOf(anchorLine);
+                let anchorDest = Math.min(Math.max(anchorOldIndex + m__down, 0), allLines.length - 1);
+                while (allLines[anchorDest] && allLines[anchorDest].classes.includes("hidden")) {
+                    anchorDest++;
+                }
+                let indentDelta = 0;
+                if (allLines[anchorDest]) {
+                    const anchorNeighbor = allLines[anchorDest + 1];
+                    if (anchorNeighbor) {
+                        indentDelta = getIndentLength(anchorNeighbor.text) - originalIndents.get(anchorLine);
+                    }
+                }
+                
                 allselectedlines.forEach(selectedline => {
                     let pastelement = {
-                        element: {...selectedline},
+                        element: { ...selectedline },
                         type: "delete",
                         index: allLines.indexOf(selectedline)
                     };
@@ -20705,24 +20751,14 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         minmaxednumber++;
                     }
                     if (allLines[minmaxednumber]) {
-                        const lineNextElementSibling = allLines[minmaxednumber + 1];
-                        if (lineNextElementSibling) {
-                            let indentLength = 0;
-                            for (let i = 0; i < lineNextElementSibling.text.length; i++) {
-                                const char = lineNextElementSibling.text[i];
-                                if (char === " " || char === "\u00A0") {
-                                    indentLength++;
-                                } else {
-                                    break;
-                                }
-                            }
-                            selectedline.text = "\u00A0".repeat(indentLength) + selectedline.text.replace(/^\s+/g, "");
-                        }
+                        const newIndent = Math.max(originalIndents.get(selectedline) + indentDelta, 0);
+                        selectedline.text = "\u00A0".repeat(newIndent) + selectedline.text.replace(/^\s+/g, "");
+                        
                         allLines.splice(oldIndex, 1);
                         allLines.splice(minmaxednumber, 0, selectedline);
                         
                         let pastelement2 = {
-                            element: {...selectedline},
+                            element: { ...selectedline },
                             type: "create",
                             index: allLines.indexOf(selectedline),
                             during: "move"
@@ -20743,7 +20779,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
             }
         }
-
+        
         function restselectedline() {
             const allLines = editorFiles[editorIndex];
             const allselectedlines = allLines.filter(el => el.classes.includes('selected'));
@@ -23018,9 +23054,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (event.target && event.target.parentElement && event.target.parentElement.classList.contains('code-editor-container')) {
                 handleKeyDown(event);
             }
-            if (section.id != "forview") {
+            if (section.id != "forview" && editorIndex && editorIndex != "forview") {
                 const isCmdOrCtrl = event.metaKey || event.ctrlKey;
-                if ((event && event.key == "ArrowRight") || (isCmdOrCtrl && event.key.toLowerCase() == "q")) {
+                if ((event && event.key == "ArrowRight" && !event.shiftKey) || (isCmdOrCtrl && event.key.toLowerCase() == "q" && !event.shiftKey)) {
                     const fceline = section.querySelector('.code-editor-line:focus');
                     const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
                     let celine = hceline ? hceline : fceline;
@@ -23031,7 +23067,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                if ((event && event.key == "ArrowLeft") || (isCmdOrCtrl && event.key.toLowerCase() == "f")) {
+                else if ((event && event.key == "ArrowLeft" && !event.shiftKey) || (isCmdOrCtrl && event.key.toLowerCase() == "f" && !event.shiftKey)) {
                     const fceline = section.querySelector('.code-editor-line:focus');
                     const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
                     let celine = hceline ? hceline : fceline;
@@ -23042,83 +23078,88 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                if ((event && event.key == "ArrowUp") || (isCmdOrCtrl && event.key.toLowerCase() == "m" && !event.shiftKey)) {
+                else if ((event && event.key == "ArrowLeft" && event.shiftKey) || (isCmdOrCtrl && event.key.toLowerCase() == "f" && event.shiftKey)) {
+                    forSelectedEv(unselectalllines, () => event.preventDefault());
+                    return;
+                }
+                else if ((event && event.key == "ArrowLeft" && event.shiftKey) || (isCmdOrCtrl && event.key.toLowerCase() == "f" && event.shiftKey)) {
+                    forSelectedEv(unfoldalllines, () => event.preventDefault());
+                    return;
+                }
+                else if ((event && event.key == "ArrowUp") || (isCmdOrCtrl && event.key.toLowerCase() == "m" && !event.shiftKey)) {
                     forSelectedEv(moveselectedlineup, () => event.preventDefault());
                     return;
                 }
-                if ((event && event.key == "ArrowDown") || (isCmdOrCtrl && event.key.toLowerCase() == "m" && event.shiftKey)) {
+                else if ((event && event.key == "ArrowDown") || (isCmdOrCtrl && event.key.toLowerCase() == "m" && event.shiftKey)) {
                     forSelectedEv(moveselectedlinedown, () => event.preventDefault());
                     return;
                 }
-                
-                
-                
-                if (isCmdOrCtrl && event.key.toLowerCase() == "p" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "p" && !event.shiftKey) {
                     forSelectedEv(importantselectedlines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "p" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "p" && event.shiftKey) {
                     forSelectedEv(importantalllines, () => event.preventDefault());
                     return;
                 }
                 
-                if (isCmdOrCtrl && event.key.toLowerCase() == "/") {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "/") {
                     forSelectedEv(commentallselectedlines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "p" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "p" && event.shiftKey) {
                     forSelectedEv(importantselectedlines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "d" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "d" && event.shiftKey) {
                     forSelectedEv(restselectedline, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "e" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "e" && event.shiftKey) {
                     forSelectedEv(unsleepalllines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && event.shiftKey) {
                     forSelectedEv(moveAllselectedlinetextsright, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && !event.shiftKey) {
                     forSelectedEv(moveAllselectedlinetextsleft, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "t" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "t" && event.shiftKey) {
                     forSelectedEv(trimAllselectedlinetexts, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "c" && !event.shiftKey && event.altKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "c" && !event.shiftKey && event.altKey) {
                     forSelectedEv(copyselectedlinetexts, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "c" && event.shiftKey && event.altKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "c" && event.shiftKey && event.altKey) {
                     forSelectedEv(copyalllinetexts, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && event.shiftKey) {
                     forSelectedEv(deleteAllLines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && !event.shiftKey) {
                     forSelectedEv(deleteSelectedLines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "f" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "f" && event.shiftKey) {
                     forSelectedEv(replacealllines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "f" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "f" && !event.shiftKey) {
                     forSelectedEv(replaceselectedlines, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "enter" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "enter" && event.shiftKey) {
                     forSelectedEv(_viewcode, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "n" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "n" && event.shiftKey) {
                     const fceline = section.querySelector('.code-editor-line:focus');
                     const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
                     let celine = hceline ? hceline : fceline;
@@ -23129,29 +23170,37 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "n" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "n" && event.shiftKey) {
                     forSelectedEv(attachNotesToSelected, () => event.preventDefault());
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "u" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "r" && event.shiftKey) {
+                    if (inputDiv) {
+                        forSelectedEv(() => refreshEditorLines(inputDiv, editorIndex, 0), () => event.preventDefault());
+                        return;
+                    } else {
+                        importantnotificationmessageelement("Code container not found.");
+                    }
+                }
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "u" && !event.shiftKey) {
                     gobacktolastpastevent();
                     event.preventDefault();
                     return;
                 }
-                if (isCmdOrCtrl && event.key == ";") {
+                else if (isCmdOrCtrl && event.key == ";") {
                     gobacktolastfutureevent();
                     event.preventDefault();
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "z" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "z" && !event.shiftKey) {
                     notify("To undo changes in a file, use Ctrl/Cmd + u");
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "y") {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "y") {
                     showIfoCon(currentHoveredElement);
                     event.preventDefault();
                     return;
                 }
-                if (isCmdOrCtrl && event.key.toLowerCase() == "i") {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "i") {
                     notify("To get information about elements, use Ctrl/Cmd + y");
                 }
             }
