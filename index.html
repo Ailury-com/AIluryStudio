@@ -23176,7 +23176,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "r" && event.shiftKey) {
                     if (inputDiv) {
-                        forSelectedEv(() => refreshEditorLines(inputDiv, editorIndex, 0), () => event.preventDefault());
+                        forSelectedEv(() => {
+                            refreshEditorLines(inputDiv, editorIndex, 0);
+                            shortNotificationmessageelement("File was successfully refreshed.");
+                        }, () => event.preventDefault());
                         return;
                     } else {
                         importantnotificationmessageelement("Code container not found.");
