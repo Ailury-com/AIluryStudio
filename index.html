@@ -23484,7 +23484,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     event.preventDefault();
                     return;
                 }
-                else if (isCmdOrCtrl && event.key == ";") {
+                else if ((isCmdOrCtrl && event.key == ";") || (isCmdOrCtrl && event.key.toLowerCase() == "u" && event.shiftKey)) {
                     gobacktolastfutureevent();
                     event.preventDefault();
                     return;
