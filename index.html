@@ -21861,8 +21861,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "sleapbtn": "This allows you to enable or disable lines. Disabled lines can not be edited. You can use the enable all lines to enable disabled lines or you can go to the \"file settings\" to enable manually. The keyboard shortcut for it is: [ctr/cmd + d + shift].",
             "copybtn": "This button allows you to copy code. This button at the top copies code only from selected lines and this button at the bottom copies the entire files content. You can also open file options and copy the entire files content there. You can edit this button in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + alt + c] and [+ shift], if you want to copy the entire files content.",
             "trimbtn": "This button trims the text in selected lines. Trimming removes all spaces on both sides of the text, while leaving all the spaces in the middle. The keyboard shortcut for it is: [ctr/cmd + t + shift].",
-            "removespacesleftbtn": "This button removes indent spaces left. You can edit the removal amount in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + tab].",
-            "addspacesleftbtn": "This button adds indent spaces left. You can edit the indent size in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + tab + shift].",
+            "removespacesleftbtn": "This button removes indent spaces left. You can edit the removal amount in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + tab + shift].",
+            "addspacesleftbtn": "This button adds indent spaces left. You can edit the indent size in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + tab].",
             "replaceaslbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text only in selected lines. The keyboard shortcut for it is: [ctr/cmd + d].",
             "replacealbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text in all lines. The keyboard shortcut for it is: [ctr/cmd + d + shift].",
             "infilerunbtn": "When you click this button, a testing section will appear, that allows you to test the code in the file, to see what it's output is. The keyboard shortcut for it is: [ctr/cmd + enter + shift].",
@@ -23379,7 +23379,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     forSelectedEv(unsleepalllines, () => event.preventDefault());
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && !event.shiftKey) {
                     if (areSelectedLine) {
                         forSelectedEv(moveAllselectedlinetextsright, () => event.preventDefault());
                     } else {
@@ -23387,7 +23387,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "tab" && event.shiftKey) {
                     if (areSelectedLine) {
                         forSelectedEv(moveAllselectedlinetextsleft, () => event.preventDefault());
                     } else {
