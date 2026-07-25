@@ -7223,7 +7223,7 @@
         <div class="resizesidebarbar">></div>
         <div class="sidebarwidthdisplay">30vw</div>
         <div class="allcontainer">
-            <div class="container" id="container" class="linenumberingon">
+            <div class="container linenumberingon" id="container">
                 <div id="codeLoadingSpinner">
                     <div class="codeLoadingSpinnerSpinner" id="bigCodeLoadingSpinner"></div>
                     <div class="codeLoadingSpinnerSpinner" id="mediumCodeLoadingSpinner"></div>
@@ -9235,11 +9235,11 @@
                 storageKey: "AIluryStudioCodeFontSizeSliderVal",
                 onFound: (el, val) => {
                     el.value = val;
-                    updatefontsize(el);
+                    updatefontsize(el, false);
                 },
                 onFailure: (el) => {
                     el.value = 1;
-                    updatefontsize(el);
+                    updatefontsize(el, false);
                 },
                 recoverWarnMsg: "something went wrong while trying to recover editor code font size. Local storage error.",
                 removeWarnMsg: "something went wrong while trying to remove saved editor code font size after an error during the recovery process. Local storage error."
@@ -10559,12 +10559,14 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 theh3.style.pointerEvents = "auto";
             }, 500);
         }
-        function updatefontsize(slider) {
+        function updatefontsize(slider, showFSDE = true) {
             const value = parseFloat(slider.value);
             const clamped = Math.max(0.5, Math.min(2, value));
             const fontSize = clamped.toFixed(2) + 'em';
             document.body.style.setProperty('--editor-font-size', fontSize);
-            showFontSizeDisplayelement();
+            if (showFSDE) {
+                showFontSizeDisplayelement();
+            }
         }
         
         var transitionanimation = "swipe";
