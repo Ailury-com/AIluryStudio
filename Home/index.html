@@ -2037,6 +2037,7 @@
             padding: 15px 22px;
             background: #0071e3;
             color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             font-style: none;
             font-weight: 1.3rem;
             font-weight: bold;
@@ -2073,6 +2074,25 @@
             flex-direction: column;
             gap: 10px;
             margin-bottom: 70px;
+        }
+        .tool-command-description-container {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+        kbd {
+            padding: 2px;
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            background: var(--card-bg-light);
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        @media(max-width: 700px) {
+            .tool-command-description-container, .hideOnSmallScreens {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -2189,7 +2209,7 @@
                             </div>
                         </div>
                         <div class="aboutSecRep" style="gap: 0;">
-                            <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent;">
+                            <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent; scrollbar-width: none; -ms-overflow-style: none;">
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('undoTool')">↺</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('redoTool')">↻</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">⌧</button>
@@ -2263,7 +2283,7 @@
                                     <span><span class="token-o">&lt;/</span>html<span class="token-o">&gt;</span></span>
                                 </div>
                             </div>
-                            <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent;">
+                            <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent; scrollbar-width: none; -ms-overflow-style: none;">
                                 <button class="editor-tool">☰</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('runTool')">◁</button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">⌧</button>
@@ -2394,7 +2414,7 @@
                     </div>
                     <h3 class="font-display font-bold text-xl mb-3" style="font-size: var(--av-font-size); margin-bottom: 0.75rem;">Try It Out</h3>
                     <p style="color: var(--secondary-text-color); font-size: 0.875rem;">
-                        Test the selection mechanics with our editor integration code. To select a line swipe right on it or hover over it and click the "ArrowRight" key, to undo that simply do the same thing but the other way around. You can also double select lines, this will make it so a line is "double selected" and if you do that with 2 lines, all lines inbetween, including the double selected lines, will be selected.
+                        Test the selection mechanics with our editor integration code. To select a line swipe right on it<span class="hideOnSmallScreens"> or hover over it and click the <kbd>Arrow right</kbd> key or do <kbd>ctr/cmd</kbd> + <kbd>q</kbd></span>, and to undo that simply swipe left on the line<span class="hideOnSmallScreens"> or click the <kbd>Arrow left</kbd> key or do <kbd>ctr/cmd</kbd> + <kbd>f</kbd></span>. You can also double select lines, this will make it so a line is "double selected" and if you do that with 2 lines, all lines inbetween, including the double selected lines, will be selected.
                     </p>
                     <div class="glass-panel" style="overflow: hidden; margin-top: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;">
                         <div class="toolbar">
@@ -2620,6 +2640,7 @@
                             <p><strong>Advantages and Limitations:</strong> The editor provides you with an undo button that can undo any changes that you made to your code. Although this is a very helpful features, it has its limitations; This tool can not undo changes that where made outside the file and this feature does not give you the ability to redo what you have undone. If you want to redo what you have undone there is a redo button.</p>
                             <p><strong>The Limit:</strong> Most tools come with their unique set of settings, this one is one of the many tools that has settings. I'm not going to explain every setting but one of the settings for this tool is the "undo limit". A limit might not seem very appealing but since browsers only have a limited amount of local storage for every user, having a limit is very much necessary but we still give you the ability to remove the limit.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>u</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="redoTool">
@@ -2633,6 +2654,7 @@
                             <p><strong>Advantages and Limitations:</strong> The editor provides you with a redo button that can redo any action that you have undone in your code. Although this is a very helpful features, it has its limitations; This tool can not redo what you have undone if you edit the file after undoing changes.</p>
                             <p><strong>The Limit:</strong> Unlike the undo button, this one has no history limit, since the history is immediately erased after a change has been made in the currently open file. Although there are no history limits for the redo tool, there is a limit to how quickly you can spam it, due to its animation; you can turn this limit off though, by turning of the button animation in the file settings. </p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>;</kbd> or <kbd>ctr/cmd</kbd> + <kbd>u</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="copyTool">
@@ -2646,6 +2668,7 @@
                             <p><strong>Versions:</strong> This is one of a few tools that has 2 versions. The editor has 2 file tool-bars the top tool bar that only affects selected lines (by default located at the top) and the tool bar that affects all lines (by default located at the bottom); depending on which one you click, you either copy the entire file's text contnent or just the the text content of selected files.</p>
                             <p><strong>Clip Board:</strong> This tool also has settings but in the settings section you'll find the clip-board. The clip-board is not saved but it is preserved while you don't refresh the page and anything you copy on the page will be added to the clip-board, except if you copy the contents of an entire file, but you can turn that on in the settings.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>c</kbd> + <kbd>alt</kbd>, and + <kbd>shift</kbd>, if you want to copy the entire files code contents.</div>
                     </div>
                 </div>
                 <div class="tool-card" id="deleteTool">
@@ -2659,6 +2682,7 @@
                             <p><strong>Versions:</strong> This tool is also one of those with 2 versions. Depending on which one you click, you'll either delete all lines in a file or only the selected ones. You can also go into the settings to delete selected lines there, incase the selected lines are very spread out and you don't want to scroll through the entire file to make sure you didn't selected something by accident.</p>
                             <p><strong>Effectiveness:</strong> This is a very effective tool, since it's easy to use and anything deleted with this tool can be undone with the undo button/tool. This tool can also be set to: only delete lines content, which makes it so it doesn't delete the lines but just the text in them.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>delete</kbd>, and + <kbd>shift</kbd>, if you want to delete all lines.</div>
                     </div>
                 </div>
                 <div class="tool-card" id="commentTool">
@@ -2672,6 +2696,7 @@
                             <p><strong>Advantages:</strong> This tool allows you to comment selected lines instantly, in the current file, instantly. This tool also operates relatively to the programming language you apply it on, meaning: you won't get the wrong type of comment on supported programming languages.</p>
                             <p><strong>Limitations:</strong> This is a very useful tool, but it has its limits. This tool does not support every programming language but it supports the ones that you would use in this editor, being: HTML, CSS, JavaScript, and Python.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>/</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="moveDownTool">
@@ -2685,6 +2710,7 @@
                             <p><strong>Advantages and Limitations:</strong> This tool allows you to move selected lines down. To select a line, one just has to swipe right on a line and depending on it's state, it will go into a selected state. In the settings one can choose how many lines are skiped when moving down but it's important to note that hidden lines, due to folding, are skiped automatically regardless of the jump size.</p>
                             <p><strong>Limitations:</strong> This tool obviously does not let you move lines down past the bottom of the file, this means that it could lead to a jump cut at the bottom. This tool also only lets you move lines down, not up, although the next tool will make it possible to move lines up to. If your goal is to move a line up to undo the moving down, just click the undo button, it also undoes any moving of lines.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is the arrow down key, or: <kbd>ctr/cmd</kbd> + <kbd>m</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="moveUpTool">
@@ -2698,6 +2724,7 @@
                             <p><strong>Advantages and Limitations:</strong> This tool let's you move selected lines up. In the settings you can set the jump size (how many lines are skiped when moving a line up) but it's impartant to note that the jump size to move lines up does not apply to moving lines down and vice versa; this means when you set the jump down to 5 and jump down and then up, you are not 4 down and not where you started.</p>
                             <p><strong>The Limit:</strong> Here you can also not escape the file, so the sky is the limit; the sky being the top of the file. All the same rules of moving down apply here aswell but for moving up; this means: hidden lines, due to folding, are skipped aswell, regardless of jump size, and moving lines up can also be undone with the undo button.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is the arrow up key, or: <kbd>ctr/cmd</kbd> + <kbd>m</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="pinTool">
@@ -2711,6 +2738,7 @@
                             <p><strong>Difference:</strong> This tool is one of the tools with 2 versions, one for selected lines and one for all lines but in this case they are much different; the one for selected lines toggles the pinned state of selected lines while the one for all lines unpinnes all lines in the file but you don't need to unpin them all, nor do you have to toggle a line to remove it from the pinned state, you can also go into the settings to unpin it.</p>
                             <p><strong>Advantages:</strong> Pinned lines stand out with the bright red background color, making them easy to spot while scroll through file's but this color does not make them hard to work with, since they get the regular focused line background, when they are being edited. pinned lines are also the top search results in file searches but this can be disabled in the settings.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>p</kbd>, and + <kbd>shift</kbd>, if you want to unpin all lines in the current file.</div>
                     </div>
                 </div>
                 <div class="tool-card" id="disableAndEnableTool">
@@ -2726,6 +2754,7 @@
                             <p><strong>Advantages:</strong> This tool technically has 2 versions similar to the "pin" tool but the version that affects all, looks differnet. The one with the moon icon disables all selected lines while the one with the circle or sun icon, enables all lines, but similarly to the "pin" tool you don't need to enable all lines, you can go into the settings to enable lines individually.</p>
                             <p><strong>Effect:</strong> Disabled lines can not be edited or interacted with, you can move it by moving lines above or below around it but the line by itself can not be edited. This may seem like a disagvantage but this can be used to lock a file, for example, if you disable all lines in the file.</p>
                         </div>
+                        <div class="tool-command-description-container">The sleep/disable keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>d</kbd> + <kbd>shift</kbd>. And the awake/enable keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>e</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card elWithEaseinAnimation" id="searchTool">
@@ -2765,6 +2794,7 @@
                             <p>This tool allows you to add notes to selected lines. You can add line notes by either using this tool or you press and hold a line until you get a options popup that allows you to add a line note to the line you pressed, specifically. If you wish to remove notes from lines, simply add an empty note to the lines you want to remove the notes from, or go to the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> and open the options for this tool, there you can remove notes from lines individually. If you wish to delete an entire note from all lines, go to "project notes" and open the file you want to remove the note from, then click on the note and click "delete" on the popup. If you want to no longer have your code full of comments but still want the information present, consider applying comments as line notes. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button>, you can open this tool's options and click the button that says: "add comments as line notes", and this will add comments as line notes.</p>
                             <p><strong>Advantages and Limitations:</strong> Line notes are especially useful if your goal is to write code without comments but still want information on what your code does in certain parts, without having to write notes yourself and keep track of what index every line is at, to keep the notes up to date.  Although line notes can come in handy, they have their limits when the tools are used to apply them; Line notes are file specific and are not applied to selected lines outside of the currently opened file, this means, if you want to apply notes to lines in multiple files at once, you won't be able to and will have to apply notes for every file individually. Another limitation is that if you add multi-line comments as line notes, you have to keep in mind that you have to have rendered/seen the entire comment in the form of a comment before, to have the full comment be added as a line note, this is due to how the syntax highlighting logic works.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>n</kbd>, and if you want to target an individual line: + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card elWithEaseinAnimation" id="commandsAndShortcutsTool">
@@ -2790,6 +2820,7 @@
                         <div class="tool-description-container">
                             <p>This tool removes all spaces from the left and right of selected lines, not in the center. For example: " text here " becomes "text here".</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>t</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="unfoldTool">
@@ -2802,6 +2833,7 @@
                         <div class="tool-description-container">
                             <p>This tool unfolds all folded lines in a file. You fold a line by swiping a line in a neutral state to the left; now if the lines meets all the conditions to become a folded lines parent element, it will move to the left and display an arrow where the line number would normally be, if line numbers are enabled. Something important to note is that when a line gets folded, all lines that get hidden also get unselected, if they are selected. Also, if you are unfolding lines in order to select a code block, you can also simply double selected a line before and after a block (by swiping right on lines twice) and all lines in between the 2 double selected lines will be selected and any folded lines are unfolded and selected. Now when this tool's button is clicked, it will unfold all lines in the file, making the hidden lines visible again, this can also be achieved by swiping a folded line to the right but this will only unfold all lines hidden under that folded line, not all lines in the file.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is either: <kbd>arrow right</kbd> + <kbd>shift</kbd>, or: <kbd>ctr/cmd</kbd> + <kbd>f</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="unselectTool">
@@ -2814,6 +2846,7 @@
                         <div class="tool-description-container">
                             <p>This tool unselects all selected lines. You select a line by swiping right on a line (if it's not folded or already selected) you'll know when it's selected since it will have a different color (usually, depending on the theme).</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is either: <kbd>arrow left</kbd> + <kbd>shift</kbd>, or: <kbd>ctr/cmd</kbd> + <kbd>q</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="removeIndentTool">
@@ -2826,6 +2859,7 @@
                         <div class="tool-description-container">
                             <p>This tool removes spaces from the left of selected lines. Indents in code are spaces on the left of any text that is not a space. This tool allows you to remove these spaces and the amount of spaces it removes can be set by you in the tool settings. </p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>tab</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="addIndentTool">
@@ -2838,6 +2872,7 @@
                         <div class="tool-description-container">
                             <p>This tool does the opposite of the remove indent tool, it adds them. Indents are spaces to the left of any text that is not a space and these are added by this tool. Indents can be added manually, just how they can be removed manually but this makes it easier to add them, since it adds them to all selected lines and in the tool settings you can set how many spaces are added every time you click the tool's button.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>tab</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="replaceAllTool">
@@ -2851,6 +2886,7 @@
                             <p><strong>Functionality:</strong> This tool is one of the tools with 2 versions, one that affects only selected lines and one that affects all lines. This tool allows you to enter a replace value and a replacement value, then at the top you can decide if you want the replace value to be treated as a regex or a normal text. When you then click the replace button, the replace value will be replaced with the replacement value in either all selected lines or all lines, depending on which version you clicked.</p>
                             <p><strong>Limitations:</strong> This tool only affects the current file and it only lets you replace text within one line, not a series of lines. This tool can not replace text across lines, only text in individual lines.</p>
                         </div>
+                        <div class="tool-command-description-container">The replace in selected lines keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>d</kbd>, and the replace in all lines shortcut is: <kbd>ctr/cmd</kbd> + <kbd>d</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="runTool">
@@ -2863,6 +2899,7 @@
                         <div class="tool-description-container">
                             <p><strong>Functionality:</strong> This tool allows you to toggle the run section, directly from within the file. What makes this tool extra useful is that it shows a python console/terminal if you click this tool's button when in a ".py" file.<br><strong>Limitations:</strong> This will only make the preview section appear over the file, it won't bring you to a or the dedicated preview section.</p>
                         </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>enter</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="consoleTool" style="margin-bottom: 25%;">
@@ -4189,14 +4226,14 @@
         }
         document.addEventListener('keydown', event => {
             const isCmdOrCtrl = event.metaKey || event.ctrlKey;
-            if ((event && event.key == "ArrowRight") || (isCmdOrCtrl && event.key == "q")) {
+            if ((event && event.key == "ArrowRight" && !event.shiftKey) || (isCmdOrCtrl && event.key == "q" && !event.shiftKey)) {
                 const celine = section.querySelector('.code-line:hover, .code-line:has(*:hover)');
                 if (celine) {
                     handleSelect(celine);
                 }
                 return;
             }
-            if ((event && event.key == "ArrowLeft") || (isCmdOrCtrl && event.key == "f")) {
+            if ((event && event.key == "ArrowLeft" && !event.shiftKey) || (isCmdOrCtrl && event.key == "f" && !event.shiftKey)) {
                 const celine = section.querySelector('.code-line:hover, .code-line:has(*:hover)');
                 if (celine) {
                     handleUnselect(celine);
