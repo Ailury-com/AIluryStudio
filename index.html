@@ -2614,6 +2614,10 @@
             min-width: 40px;
             cursor: default;
         }
+        .seccontainer-line .Symbol-Span {
+            user-select: none;
+            -webkit-user-select: none;
+        }
         .shortcutcommandlist .Symbol-Span {
             background: var(--bg-color);
             color: var(--contrast-color);
@@ -4728,7 +4732,7 @@
                 border-radius: 0;
                 border-bottom: 1px solid var(--half-transparent-border-color);
             }
-            .cefbtnislands.fileSpecificNoteCon {
+            .cefbtnislands .fileSpecificNoteCon {
                 bottom: calc(6vh + 90px);
             }
             .cefbtnislands.allbtnsleft .fileSpecificNoteCon, .cefbtnislands.bothbtncleft .fileSpecificNoteCon {
@@ -7424,133 +7428,133 @@
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="pastbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">undo</span><button class="Symbol-Span">↺</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('undo')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">undo</span><button class="Symbol-Span" data-targetInfo="undo">↺</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('undo')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="futurebtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">redo</span><button class="Symbol-Span">↻</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('redo')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">redo</span><button class="Symbol-Span" data-targetInfo="redo">↻</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('redo')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="infilerunbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">run</span><button class="Symbol-Span">◁</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('run')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">run</span><button class="Symbol-Span" data-targetInfo="run">◁</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('run')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="copybtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">copy</span><button class="Symbol-Span">□</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('copy')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">copy</span><button class="Symbol-Span" data-targetInfo="copy">□</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('copy')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="deletebtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">delete</span><button class="Symbol-Span">⌧</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('delete')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">delete</span><button class="Symbol-Span" data-targetInfo="delete">⌧</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('delete')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="commentbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">comment</span><button class="Symbol-Span">#</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('comment')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">comment</span><button class="Symbol-Span" data-targetInfo="comment">#</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('comment')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="downbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">move down</span><button class="Symbol-Span">↓</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('movedown')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">move down</span><button class="Symbol-Span" data-targetInfo="movedown">↓</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('movedown')">></button></div>
                     </div> 
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="upbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">move up</span><button class="Symbol-Span">↑</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('moveup')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">move up</span><button class="Symbol-Span" data-targetInfo="moveup">↑</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('moveup')">></button></div>
                     </div> 
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="importantPinbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">pin</span><button class="Symbol-Span">⚠</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('pin')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">pin</span><button class="Symbol-Span" data-targetInfo="pin">⚠</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('pin')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="sleapbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">disable</span><button class="Symbol-Span">☾</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('disable')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">disable</span><button class="Symbol-Span" data-targetInfo="disable">☾</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('disable')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="unsleeplines" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">enable</span><button class="Symbol-Span">○</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('enable')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">enable</span><button class="Symbol-Span" data-targetInfo="enable">○</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('enable')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="code-search-input" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">search</span><button class="Symbol-Span">⌕</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('search')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">search</span><button class="Symbol-Span" data-targetInfo="search">⌕</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('search')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="line-number-input" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">teleport</span><button class="Symbol-Span">⌕</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('teleport')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">teleport</span><button class="Symbol-Span" data-targetInfo="teleport">⌕</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('teleport')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox commandsswitch" data-checked="showcommandlist-btn-element" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">commands/shortcuts</span><button class="Symbol-Span">⌘</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('commands')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">commands/shortcuts</span><button class="Symbol-Span" data-targetInfo="commands">⌘</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('commands')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="trimbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">trim</span><button class="Symbol-Span">●</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('trim')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">trim</span><button class="Symbol-Span" data-targetInfo="trim">●</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('trim')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="rightbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">unfold</span><button class="Symbol-Span">→</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('unfold')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">unfold</span><button class="Symbol-Span" data-targetInfo="unfold">→</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('unfold')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="leftbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">unselect</span><button class="Symbol-Span">←</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('unselect')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">unselect</span><button class="Symbol-Span" data-targetInfo="unselect">←</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('unselect')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="removespacesleftbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">remove indent</span><button class="Symbol-Span">↤</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('removespaceleft')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">remove indent</span><button class="Symbol-Span" data-targetInfo="removespaceleft">↤</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('removespaceleft')">></button></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="addspacesleftbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">add indent</span><button class="Symbol-Span">↦</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('addspaceleft')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">add indent</span><button class="Symbol-Span" data-targetInfo="addspaceleft">↦</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('addspaceleft')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="replaceaslbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">replace selected</span><button class="Symbol-Span">⤻</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('replaceselectedlines')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">replace selected</span><button class="Symbol-Span" data-targetInfo="replaceselectedlines">⤻</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('replaceselectedlines')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="attachnotebtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">attach note</span><button class="Symbol-Span">N</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('attachnotestolines')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">attach note</span><button class="Symbol-Span" data-targetInfo="attachnotestolines">N</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('attachnotestolines')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="replacealbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">replace all</span><button class="Symbol-Span">⤻</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('replacealllines')">></button></div>
+                        </label> <div class="symbolspancontainer"><span class="btnLabel">replace all</span><button class="Symbol-Span" data-targetInfo="replacealllines">⤻</button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('replacealllines')">></button></div>
                     </div>
                     <div class="seccontainer-line">
                         <label class="switch">
@@ -8598,6 +8602,8 @@
         var editorIndentSize = 4;
         var applyIndentSizeOnLoad = true;
         var savedDisabledTools = [];
+        var vAIluryStudioPendingFileRun = null;
+        var vAIluryStudioPendingFileName = null;
         window.addEventListener("load", () => {
             const loadingScreen = document.getElementById("loading-screen");
             if (typeof switchtotheme === "function") {
@@ -9964,6 +9970,7 @@
             "sd2b5c44_3a91_4f68_8c3a_6e5f1b2d0c77": "styles.css",
             "s4f7d2e19_1c9b_4d5a_8a63_2e6c9f0b3a52": "script.js"
         };
+        
         function createRandomFileId() {
             let returnval = "s" + crypto.randomUUID().replace(/[^a-zA-Z0-9]/g, "_");
             while (editorFiles[returnval]) {
@@ -9993,21 +10000,20 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         var projectName = "My New Project";
         var projectId = "projectId" + crypto.randomUUID();
         var isInnitialProject = true;
-        
         function addstartercodetofiles() {
-            const vAIluryStudioPendingFileName = localStorage.getItem("AIluryStudioPendingFileName");
+            vAIluryStudioPendingFileName = localStorage.getItem("AIluryStudioPendingFileName");
             const vAIluryStudioPendingFileContent = localStorage.getItem("AIluryStudioPendingFileContent");
-            const vAIluryStudioPendingFileRun = localStorage.getItem("AIluryStudioPendingFileRun");
+            vAIluryStudioPendingFileRun = localStorage.getItem("AIluryStudioPendingFileRun");
+            
             const hasValidPendingFile =
                 vAIluryStudioPendingFileName && 
-                typeof vAIluryStudioPendingFileName === "string" &&
+                typeof vAIluryStudioPendingFileName == "string" &&
                 vAIluryStudioPendingFileName.length > 0 &&
                 vAIluryStudioPendingFileContent &&
-                typeof vAIluryStudioPendingFileContent === "string" &&
+                typeof vAIluryStudioPendingFileContent == "string" &&
                 vAIluryStudioPendingFileRun &&
-                typeof vAIluryStudioPendingFileRun === "string" &&
-                (vAIluryStudioPendingFileRun === "true" || vAIluryStudioPendingFileRun === "false") &&
-                vAIluryStudioPendingFileType;
+                typeof vAIluryStudioPendingFileRun == "string" &&
+                (vAIluryStudioPendingFileRun == "true" || vAIluryStudioPendingFileRun == "false");
             if (hasValidPendingFile) {
                 let rFileContent = [];
                 const rFileContentSplit = vAIluryStudioPendingFileContent.split('\n');
@@ -10021,13 +10027,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 projectNames = {
                     "c3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11": vAIluryStudioPendingFileName
                 };
-                const cvinput = document.getElementById("computer-url-input");
-                const mvinput = document.getElementById("mobile-url-input");
-                if (vAIluryStudioPendingFileRun == "true" && cvinput && mvinput) {
-                    cvinput.value = vAIluryStudioPendingFileName;
-                    mvinput.value = vAIluryStudioPendingFileName;
-                    scrollviewintoview();
-                }
+                
                 try {
                     localStorage.removeItem("AIluryStudioPendingFileName");
                     localStorage.removeItem("AIluryStudioPendingFileContent");
@@ -10036,6 +10036,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     console.warn("Error while removing sent file info from redirect: " + theErr);
                 }
             } else {
+                vAIluryStudioPendingFileName = null;
+                vAIluryStudioPendingFileRun = null;
                 const sec0lines = sec0text.split('\n');
                 const sec1lines = sec1text.split('\n');
                 const sec2lines = sec2text.split('\n');
@@ -11141,31 +11143,38 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         var functiondescriptions = {
             "copy": {
                 title: "copy",
-                description: "Copy the text content of selected lines or all lines, at once. On click, the one in the top tool-bar copies all the code in the selected lines and merges it into one big piece of code for paste, and the one in the bottom tool-bar copies all the code in the file."
+                description: "Copy the text content of selected lines or all lines, at once. On click, the one in the top tool-bar copies all the code in the selected lines and merges it into one big piece of code for paste, and the one in the bottom tool-bar copies all the code in the file.",
+                keycomb: "[ctr/cmd + c + alt] and [+ shift] if you want to copy the entire files code content."
             },
             "delete": {
                 title: "delete",
-                description: "Delete selected lines or all lines, at once. On click, the one at the top will only delete all selected lines, and the one at the bottom will delete all lines in the file and essentially clear it. Below this text you can see a list of all selected lines. You can delete them individually here by clicking the delete button next to the lines."
+                description: "Delete selected lines or all lines, at once. On click, the one at the top will only delete all selected lines, and the one at the bottom will delete all lines in the file and essentially clear it. Below this text you can see a list of all selected lines. You can delete them individually here by clicking the delete button next to the lines.",
+                keycomb: "[ctr/cmd + delete] and [+ shift] if you want to delete all lines in the file."
             },
             "movedown": {
                 title: "move down",
-                description: "Move selected lines down. This feature allows you to make lines jump other lines. You can edit the jump size here but only for jumps down. It's important to know that when one moves lines, lines that are folded away, are skipped."
+                description: "Move selected lines down. This feature allows you to make lines jump other lines. You can edit the jump size here but only for jumps down. It's important to know that when one moves lines, lines that are folded away, are skipped.",
+                keycomb: "[arrow down] or [ctr/cmd + m + shift]"
             },
             "moveup": {
                 title: "move up",
-                description: "Move selected lines up. This feature allows you to make lines jump other lines. You can edit the jump size here but only for jumps up. It's important to know that when one moves lines, lines that are folded away are skipped."
+                description: "Move selected lines up. This feature allows you to make lines jump other lines. You can edit the jump size here but only for jumps up. It's important to know that when one moves lines, lines that are folded away are skipped.",
+                keycomb: "[arrow up] or [ctr/cmd + m]"
             },
             "pin": {
                 title: "pin",
-                description: "Pin or unpin selected lines or unpin all pined lines. Below you can see a list of all lines that have been pinned. You can unpin them here individually or you can select the line in the editor and click the pin button at the top to toggle the pin off."
+                description: "Pin or unpin selected lines or unpin all pined lines. Below you can see a list of all lines that have been pinned. You can unpin them here individually or you can select the line in the editor and click the pin button at the top to toggle the pin off.",
+                keycomb: "[ctr/cmd + p] to pin selected lines, and [+ shift] if you want to unpin all lines in the file."
             },
             "disable": {
                 title: "disable",
-                description: "Disable all selected lines. This feature puts lines in a sleep state; Lines in this state can not be edited until they are enabled again. Below you see a list of all disabled lines. You can enable each line individually here."
+                description: "Disable all selected lines. This feature puts lines in a sleep state; Lines in this state can not be edited until they are enabled again. Below you see a list of all disabled lines. You can enable each line individually here.",
+                keycomb: "[ctr/cmd + d + shift]"
             },
             "enable": {
                 title: "enable",
-                description: "Enable all lines. This feature allows you to take all lines out of the sleep state. Below you see a list of all disabled lines. If you only want to enable a few lines, you can enable each line individually here."
+                description: "Enable all lines. This feature allows you to take all lines out of the sleep state. Below you see a list of all disabled lines. If you only want to enable a few lines, you can enable each line individually here.",
+                keycomb: "[ctr/cmd + e + shift]"
             },
             "search": {
                 title: "code search",
@@ -11181,35 +11190,43 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             },
             "trim": {
                 title: "trim",
-                description: "Trim all selected lines. This feature makes it possible to quickly remove all the spaces from the left and right of selected lines text."
+                description: "Trim all selected lines. This feature makes it possible to quickly remove all the spaces from the left and right of selected lines text.",
+                keycomb: "[ctr/cmd + t + shift]"
             },
             "unfold": {
                 title: "unfold",
-                description: "Unfold all folded code blocks. This feature makes it possible to unfold all folded areas in a file, at once."
+                description: "Unfold all folded code blocks. This feature makes it possible to unfold all folded areas in a file, at once.",
+                keycomb: "[arrow right + shift] or [ctr/cmd + f + shift]"
             },
             "unselect": {
                 title: "unselect",
-                description: "Unselect all selected lines. This feature allows you to unselect all lines in the file at once. This feature also unselects double selected lines. Below you see a list of all selected lines."
+                description: "Unselect all selected lines. This feature allows you to unselect all lines in the file at once. This feature also unselects double selected lines. Below you see a list of all selected lines.",
+                keycomb: "[arrow left + shift] or [ctr/cmd + q + shift]"
             },
             "removespaceleft": {
                 title: "remove spaces",
-                description: "Delete a space left, in every selected line. This feature allows you to reduce the indent size of selected lines, by a set amount."
+                description: "Delete a space left, in every selected line. This feature allows you to reduce the indent size of selected lines, by a set amount.",
+                keycomb: "[ctr/cmd + tab + shift]"
             },
             "addspaceleft": {
                 title: "insert spaces",
-                description: "Insert a space left, in every selected line. This feature allows you to increase the indent size of selected lines, by a set amount."
+                description: "Insert a space left, in every selected line. This feature allows you to increase the indent size of selected lines, by a set amount.",
+                keycomb: "[ctr/cmd + tab]"
             },
             "replaceselectedlines": {
                 title: "replace",
-                description: "Replace text in selected lines using regex or plain text."
+                description: "Replace text in selected lines using regex or plain text.",
+                keycomb: "[ctr/cmd + d]"
             },
             "attachnotestolines": {
                 title: "attach",
-                description: "Attach Notes to selected lines. To attach a note to selected lines, just click the attach button \"N\", enter the notes content and then click \"attach\". Below you can see all lines with notes attached to them. You can click the lines below to edit the attached note of each individual line, or you can delete the attached note by clicking the delete button. You can also attach comments in the code to lines, as line notes, with the button below."
+                description: "Attach Notes to selected lines. To attach a note to selected lines, just click the attach button \"N\", enter the notes content and then click \"attach\". Below you can see all lines with notes attached to them. You can click the lines below to edit the attached note of each individual line, or you can delete the attached note by clicking the delete button. You can also attach comments in the code to lines, as line notes, with the button below.",
+                keycomb: "[ctr/cmd + n], and if you want to target an individual line: [+ shift]"
             },
             "replacealllines": {
                 title: "replace all",
-                description: "Replace text in all lines using either regex or plain text."
+                description: "Replace text in all lines using either regex or plain text.",
+                keycomb: "[ctr/cmd + d + shift]"
             },
             "grid": {
                 title: "grid",
@@ -11217,15 +11234,18 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             },
             "undo": {
                 title: "undo",
-                description: "Undo changes in your file. This feature allows you to undo your last edits of the file. Here you can clear the file history, disable button animation (to allow quicker undo spamming), and/or set a limit to how much file history is stored. The limit applies to all files but the history deletion only applies to this file (if clicked)."
+                description: "Undo changes in your file. This feature allows you to undo your last edits of the file. Here you can clear the file history, disable button animation (to allow quicker undo spamming), and/or set a limit to how much file history is stored. The limit applies to all files but the history deletion only applies to this file (if clicked).",
+                keycomb: "[ctr/cmd + u]"
             },
             "redo": {
                 title: "redo",
-                description: "Redo changes in your file. This feature allows you to redo what you have undone, in your file. Here you can disable button animation, which will allow you to more quickly spam the redo button."
+                description: "Redo changes in your file. This feature allows you to redo what you have undone, in your file. Here you can disable button animation, which will allow you to more quickly spam the redo button.",
+                keycomb: "[ctr/cmd + u + shift] or [ctr/cmd + ;]"
             },
             "comment": {
                 title: "comment",
-                description: "Comment selected lines in your file. This tool allows you to comment lines out without having to type the comments manually. This tool operates relatively to the programming language you apply it on."
+                description: "Comment selected lines in your file. This tool allows you to comment lines out without having to type the comments manually. This tool operates relatively to the programming language you apply it on.",
+                keycomb: "[ctr/cmd + /]"
             },
             "suggestions": {
                 title: "suggestions",
@@ -11237,7 +11257,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             },
             "run": {
                 title: "run",
-                description: "Show a test window to test your files code instantly."
+                description: "Show a test window to test your files code instantly.",
+                keycomb: "[ctr/cmd + enter + shift]"
             }
         };
         
@@ -16387,7 +16408,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             const projectNameInputEl = document.getElementById("projectNameInputEl");
             let newProjectName = projectNameInputEl && projectNameInputEl.value.trim() != "" ? projectNameInputEl.value : "My New Project";
             projectNames = {
-                "c3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11": "index.html",
+                "c3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11": vAIluryStudioPendingFileName ? vAIluryStudioPendingFileName : "index.html",
                 "sd2b5c44_3a91_4f68_8c3a_6e5f1b2d0c77": "styles.css",
                 "s4f7d2e19_1c9b_4d5a_8a63_2e6c9f0b3a52": "script.js"
             };
@@ -16526,6 +16547,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 toggleProgressSec();
                 renderSavedNotes();
                 recoverSavedLineNotes();
+                if (vAIluryStudioPendingFileRun && vAIluryStudioPendingFileRun == "true") {
+                    _viewcode();
+                }
             }, 900);
         }
 
@@ -16612,7 +16636,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 let newProjectId = "casual_temp_" + crypto.randomUUID(); 
                 let newProjectName = "Casual Mode Workspace";
                 projectNames = {
-                    "c3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11": "index.html",
+                    "c3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11": vAIluryStudioPendingFileName ? vAIluryStudioPendingFileName : "index.html",
                     "sd2b5c44_3a91_4f68_8c3a_6e5f1b2d0c77": "styles.css",
                     "s4f7d2e19_1c9b_4d5a_8a63_2e6c9f0b3a52": "script.js"
                 };
@@ -21910,9 +21934,12 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         function showIfoCon(targetEl = currentHoveredElement) {
             if (!targetEl) return;
             
-            const infoText = elementsWithInfos[targetEl.id.trim()];
+            const targetElDataInfo = targetEl.getAttribute("data-targetInfo");
+            const unstandardInfo = targetElDataInfo ? functiondescriptions[targetElDataInfo].keycomb : null;
+            const standardInfo = elementsWithInfos[targetEl.id.trim()]
+            const infoText = standardInfo ? standardInfo : unstandardInfo;
             
-            if (infoText == null) return;
+            if (!infoText) return;
             
             setTimeForInfo = setTimeout(() => {
                 if (!targetEl) return;
@@ -21930,7 +21957,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 infoContainer.style.transform = '';
                 
                 infoContainer.innerHTML = '';
-                infoContainer.textContent = elementsWithInfos[targetEl.id.trim()];
+                infoContainer.textContent = infoText;
                 
                 infoOverlayContainer.style.display = 'block';
                 
