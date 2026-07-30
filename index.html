@@ -23519,7 +23519,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     return;
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "z" && !event.shiftKey) {
-                    notify("To undo changes in a file, use Ctrl/Cmd + u");
+                    shortNotificationmessageelement("To undo changes in a file, use Ctrl/Cmd + u");
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "y") {
                     showIfoCon(currentHoveredElement);
@@ -23527,7 +23527,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     return;
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "i") {
-                    notify("To get information about elements, use Ctrl/Cmd + y");
+                    shortNotificationmessageelement("To get information about elements, use Ctrl/Cmd + y");
                 }
             }
         });
