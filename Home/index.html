@@ -17,6 +17,8 @@
             --card-bg-light: rgba(255, 255, 255, 0.7);
             --card-full-op-bg-light: #ffffff;
             --border-color: rgba(0, 0, 0, 0.06);
+            --accent-color: #d0d0d0;
+            --strong-accent-color: #dadada;
             --shadow-color: rgba(0, 0, 0, 0.05);
             --divider-color: #e5e7eb;
             --code-bg: rgba(255, 255, 255, 0.4);
@@ -44,6 +46,8 @@
             --card-bg-light: rgba(15, 15, 17, 0.6);
             --card-full-op-bg-light: rgb(15, 15, 17);
             --border-color: rgba(255, 255, 255, 0.08);
+            --accent-color: #1f1f1f;
+            --strong-accent-color: #404040;
             --shadow-color: rgba(0, 0, 0, 0.5);
             --divider-color: #1f2937;
             --code-bg: rgba(10, 10, 12, 0.8);
@@ -679,6 +683,10 @@
             border-radius: 10px;
             font-weight: bold;
             background: rgba(59, 130, 246, 0.05);
+            display: inline-flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 3px;
         }
         .openSecRef:hover {
             color: var(--text-color);
@@ -1020,6 +1028,11 @@
         @keyframes pop {
             50% {
                 transform: scale(1.07);
+            }
+        }
+        @keyframes iconJumpAnimation {
+            50% {
+                transform: translateY(-3px);
             }
         }
         @media(max-width: 800px) {
@@ -1455,7 +1468,7 @@
             right: 8px;
             transform: translateY(-50%);
             font-size: 1rem;
-            color: var(--border-color);
+            color: var(--accent-color);
             padding: 0;
             margin: 0;
             position: absolute;
@@ -1803,15 +1816,14 @@
             margin: 0;
             padding: 0;
             font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-            transform: scaleX(0.7) scaleY(1.5);
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .fIconCon {
-            display: flex;
-            flex-direction: row;
             gap: 7px;
             width: fit-content;
-            align-items: center;
         }
         .fileSettingsBottomOptions {
             padding: 8px;
@@ -1819,7 +1831,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.9rem;
-            background: var(--card-full-op-bg-light);
+            background: transparent;
             max-width: 350px;
             justify-content: center;
             font-weight: normal;
@@ -1834,6 +1846,18 @@
             font-size: 0.9rem;
             opacity: 0;
             transition: 0.5s;
+            display: inline-block;
+        }
+        .rightcentered {
+            display: inline-flex;
+            flex-direction: row;
+            width: fit-content;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+        .rightcentered .expandEl {
+            height: fit-content;
         }
         .filesettings-line:hover .filesettingsline-title {
             opacity: 1;
@@ -2079,6 +2103,7 @@
             width: 100%;
             border: 1px solid var(--border-color);
             border-radius: 10px;
+            line-height: 1.7;
         }
         kbd {
             padding: 2px;
@@ -2127,7 +2152,7 @@
                 <div class="max-w-content mx-auto" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     
                     <div id="topVEl" class="elWithEaseinAnimation">
-                        v3.5 Public
+                        v3.6 Public
                     </div>
                     <h1 class="font-display headline elWithEaseinAnimation" style="max-width: 58rem;">
                         Edit your code from<br>
@@ -2179,12 +2204,12 @@
                     <div style="height: 100%;">
                         <div class="glass-panel" style="padding: 0.5rem; background: rgba(6, 182, 213, 0.05); border: 1px solid rgba(6, 182, 213, 0.2);">
                             <h3 class="structureH3">Tools</h3>
-                            <p style="color: var(--secondary-text-color); font-size: 1rem;">File editing <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tools ↗</button> are at the top of the current file but can be repositioned on large screens. If you are using a computer or a tablet, you can reposition the tool bars to fit your vision of the ideal editor. You change the layout in the "layout" <button class="openSecRef" onclick="clickOnNavItem('sectionNavEl')">section ↗</button>. 
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">File editing <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tools <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> are at the top of the current file but can be repositioned on large screens. If you are using a computer or a tablet, you can reposition the tool bars to fit your vision of the ideal editor. You change the layout in the "layout" <button class="openSecRef" onclick="clickOnNavItem('sectionNavEl')">section <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>. 
                             </p>
                         </div>
                         <div class="glass-panel" style="padding: 0.5rem; margin-top: 10px;">
                             <h3 class="structureH3">Overlays</h3>
-                            <p style="color: var(--secondary-text-color); font-size: 1rem;">Overlays aka <button class="openSecRef" onclick="clickOnNavItem('sectionNavEl')">sections ↗</button>, as the name says, overlay themselves over the editor. They either display information and/or give you access to more <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tools ↗</button> to edit code or other aspects of the editor. We focus on the ability to customize the editor, therefore there will be no shortage of customization options, and since the editor is primarily for mobile devices, there will also be no shortage of editing tools or helpful overlays.</p>
+                            <p style="color: var(--secondary-text-color); font-size: 1rem;">Overlays aka <button class="openSecRef" onclick="clickOnNavItem('sectionNavEl')">sections <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>, as the name says, overlay themselves over the editor. They either display information and/or give you access to more <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tools <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> to edit code or other aspects of the editor. We focus on the ability to customize the editor, therefore there will be no shortage of customization options, and since the editor is primarily for mobile devices, there will also be no shortage of editing tools or helpful overlays.</p>
                         </div>
                     </div>
                 </div>
@@ -2209,21 +2234,115 @@
                         </div>
                         <div class="aboutSecRep" style="gap: 0;">
                             <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent; scrollbar-width: none; -ms-overflow-style: none;">
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('undoTool')">↺</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('redoTool')">↻</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">⌧</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('commentTool')">#</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('pinTool')">⚠</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('moveUpTool')">↑</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('moveDownTool')">↓</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('disableAndEnableTool')">☾</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('copyTool')">□</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('trimTool')">●</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('removeIndentTool')">↤</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('addIndentTool')">↦</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('replaceAllTool')">⤻</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('lineNoteTool')">N</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('searchTool')">⌕</button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('undoTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="9 14 4 9 9 4" />
+                                        <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('redoTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="15 14 20 9 15 4" />
+                                        <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g class="trash-lid">
+                                            <path d="M3 6h18" />
+                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                        </g>
+                                        <g class="trash-body">
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                            <line x1="10" y1="11" x2="10" y2="17" />
+                                            <line x1="14" y1="11" x2="14" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('commentTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="4" y1="9" x2="20" y2="9" />
+                                        <line x1="4" y1="15" x2="20" y2="15" />
+                                        <line x1="10" y1="3" x2="8" y2="21" />
+                                        <line x1="16" y1="3" x2="14" y2="21" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('pinTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="9" y1="3" x2="15" y2="3" />
+                                        <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
+                                        <line x1="12" y1="13" x2="12" y2="21" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('moveUpTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="19" x2="12" y2="5" />
+                                        <polyline points="5 12 12 5 19 12" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('moveDownTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <polyline points="19 12 12 19 5 12" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('disableAndEnableTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('copyTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('trimTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="6" cy="6" r="3" />
+                                        <circle cx="6" cy="18" r="3" />
+                                        <line x1="20" y1="4" x2="8.12" y2="15.88" />
+                                        <line x1="14.47" y1="14.47" x2="20" y2="20" />
+                                        <line x1="8.12" y1="8.12" x2="12" y2="12" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('removeIndentTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="3" y1="4" x2="3" y2="20" />
+                                        <line x1="21" y1="12" x2="7" y2="12" />
+                                        <polyline points="14 19 7 12 14 5" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('addIndentTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="21" y1="4" x2="21" y2="20" />
+                                        <line x1="3" y1="12" x2="17" y2="12" />
+                                        <polyline points="10 5 17 12 10 19" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('replaceAllTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 1l4 4-4 4" />
+                                        <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                        <path d="M7 23l-4-4 4-4" />
+                                        <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('lineNoteTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <line x1="10" y1="9" x2="8" y2="9" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('searchTool')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                    </svg>
+                                </button>
                             </div>
                             <div class="code-line-container">
                                 <div class="code-line">
@@ -2283,17 +2402,88 @@
                                 </div>
                             </div>
                             <div class="secEl" style="width: 100%; padding: 8px; flex-direction: row; gap: 7px; overflow: hidden; overflow-x: auto; background: transparent; scrollbar-width: none; -ms-overflow-style: none;">
-                                <button class="editor-tool">☰</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('runTool')">◁</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">⌧</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('pinTool')">⚠</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('unselectTool')">←</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('unfoldTool')">→</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('disableAndEnableTool')">○</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('copyTool')">□</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">⌘</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('replaceAllTool')">⤻</button>
-                                <button class="editor-tool" onclick="scrollToToolInToolSec('teleportTool')">⌕</button>
+                                <button class="editor-tool">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="15" height="15" rx="2" ry="2" />
+                                        <line x1="9" y1="3" x2="9" y2="21" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('runTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('deleteTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <g class="trash-lid">
+                                            <path d="M3 6h18" />
+                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                        </g>
+                                        <g class="trash-body">
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                            <line x1="10" y1="11" x2="10" y2="17" />
+                                            <line x1="14" y1="11" x2="14" y2="17" />
+                                        </g>
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('pinTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="9" y1="3" x2="15" y2="3" />
+                                        <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
+                                        <line x1="12" y1="13" x2="12" y2="21" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('unselectTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="19" y1="12" x2="5" y2="12" />
+                                        <polyline points="12 19 5 12 12 5" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('unfoldTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <polyline points="12 5 19 12 12 19" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('disableAndEnableTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('copyTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                                        <line x1="6" y1="8" x2="6.01" y2="8" />
+                                        <line x1="10" y1="8" x2="10.01" y2="8" />
+                                        <line x1="14" y1="8" x2="14.01" y2="8" />
+                                        <line x1="18" y1="8" x2="18.01" y2="8" />
+                                        <line x1="6" y1="12" x2="6.01" y2="12" />
+                                        <line x1="10" y1="12" x2="10.01" y2="12" />
+                                        <line x1="14" y1="12" x2="14.01" y2="12" />
+                                        <line x1="18" y1="12" x2="18.01" y2="12" />
+                                        <line x1="7" y1="16" x2="17" y2="16" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('replaceAllTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 1l4 4-4 4" />
+                                        <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                        <path d="M7 23l-4-4 4-4" />
+                                        <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('teleportTool')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                    </svg>
+                                </button>
                             </div>
                             <div class="secEl" style="width: 100%; height: 37px; border-radius: 0; background: rgba(120, 120, 120, 0.05); justify-content: center; color: #06b6d4;" onclick="scrollToFeatureInSec('fileNameInputSec')">index.html</div>
                         </div>
@@ -2309,9 +2499,18 @@
                         <div class="aboutSecRep" style="display: flex; height: 90%; flex: 1; justify-content: center; align-items: center; padding: 10px;">
                             <div class="secEl" style="width: 80%; height: 90%; min-height: 375px; border: 8px solid rgba(120, 120, 120, 0.5); border-radius: 32px; background: transparent; align-items: flex-start; flex-direction: column;">
                                 <div class="secEl" style="width: 100%; padding: 7px 10px 5px 10px; flex-direction: row; gap: 5px; background: transparent; border-bottom: 1px solid var(--border-color); border-radius: 0;">
-                                    <div class="expandEl" style="color: #06b6d4; font-size: 1rem; margin-right: 5px;"><</div>
+                                    <div class="expandEl" style="color: #06b6d4; font-size: 1rem; margin-right: 5px;">
+                                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="15 18 9 12 15 6" />
+                                        </svg>
+                                    </div>
                                     <div class="secEl" style="flex: 1; background: transparent; font-size: 0.8rem; text-align: center; border: none; padding: 4px 6px; font-weight: normal; justify-content: center;">index.html</div>
-                                    <div class="secEl" style="color: white; background: #06b6d4; border-radius: 5px; font-size: 0.7rem; font-weight: normal; padding: 4px 8px;">⌕</div>
+                                    <div class="secEl" style="color: white; background: #06b6d4; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; font-size: 0.7rem; font-weight: normal; padding: 4px;">
+                                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="11" cy="11" r="8" />
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                        </svg>
+                                    </div>
                                 </div>
                                 <iframe style="display: flex; flex: 1; width: 100%; height: 100%; color: var(--text-color); border: none; background: white;" srcdoc="<h1>Header</h1>"></iframe>
                             </div>
@@ -2321,7 +2520,7 @@
                 <h3 class="testingH3 elWithEaseinAnimation" style="margin-top: 130px">Python Testing: </h3>
                 <div class="engine-split elWithEaseinAnimation">
                     <p id="text-py-explanation">
-                        Every file has a run button in the bottom <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tool ↗</button> bar and when you click it in a .py file, the editor displays the Python console, in which you can run the code and see what your python code displays.
+                        Every file has a run button in the bottom <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tool <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> bar and when you click it in a .py file, the editor displays the Python console, in which you can run the code and see what your python code displays.
                     </p>
                     <div class="glass-panel py-code-view" style="overflow: hidden; box-shadow: 0 20px 25px -5px var(--code-shadow);">
                         <div class="toolbar">
@@ -2334,15 +2533,36 @@
                                 <span>Status: Inactive</span>
                                 <div style="display: flex; width: fit-content; flex-direction: row; gap: 11px; font-family: system-ui; align-items: center;">
                                     <div class="secEl" style="color: white; background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; font-size: 0.7rem; font-weight: bold; padding: 4px 8px;">Run</div>
-                                    <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">⌧</span>
-                                    <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">×</span>
+                                    <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
                             <br>
                             <br>
                             <br>
                             <div class="secEl" style="padding: 4px 10px; font-size: 0.85rem; color: var(--text-color); flex-direction: row; background: transparent; font-weight: normal; gap: 10px; border-top: 1px solid var(--border-color); border-radius: 0;">
-                                <span style="font-weight: bold;">▷</span>
+                                <span style="font-weight: bold;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -2413,7 +2633,7 @@
                     </div>
                     <h3 class="font-display font-bold text-xl mb-3" style="font-size: var(--av-font-size); margin-bottom: 0.75rem;">Try It Out</h3>
                     <p style="color: var(--secondary-text-color); font-size: 0.875rem;">
-                        Test the selection mechanics with our editor integration code. To select a line swipe right on it<span class="hideOnSmallScreens"> or hover over it and click the <kbd>Arrow right</kbd> key or do <kbd>ctr/cmd</kbd> + <kbd>q</kbd></span>, and to undo that simply swipe left on the line<span class="hideOnSmallScreens"> or click the <kbd>Arrow left</kbd> key or do <kbd>ctr/cmd</kbd> + <kbd>f</kbd></span>. You can also double select lines, this will make it so a line is "double selected" and if you do that with 2 lines, all lines inbetween, including the double selected lines, will be selected.
+                        Test the selection mechanics with our editor integration code. To select a line swipe right on it<span class="hideOnSmallScreens"> or hover over it and click the <kbd>Arrow right</kbd> key or do <kbd>ctr/cmd</kbd> + <kbd>></kbd></span>, and to undo that simply swipe left on the line<span class="hideOnSmallScreens"> or click the <kbd>Arrow left</kbd> key or do <kbd>ctr/cmd</kbd> + <kbd><</kbd></span>. You can also double select lines, this will make it so a line is "double selected" and if you do that with 2 lines, all lines inbetween, including the double selected lines, will be selected.
                     </p>
                     <div class="glass-panel" style="overflow: hidden; margin-top: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;">
                         <div class="toolbar">
@@ -2533,18 +2753,95 @@
                             Ailury Studio code editor has dozens of tools available for both small and large screens. You can also decide if you want them visible in your envirenment or not, incase you don't need or want some tools. Tools help you edit the code in your file's and are beneath and above your file's code content, by default but they can be repositioned with the "layout" section.
                         </p>
                         <div class="tool-list">
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('undoTool')">↺</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('commentTool')">#</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('copyTool')">□</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('deleteTool')">⌧</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('moveDownTool')">↓</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('moveUpTool')">↑</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">⌘</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('disableAndEnableTool')">☾</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('searchTool')">⌕</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('removeIndentTool')">↤</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('addIndentTool')">↦</button>
-                            <button class="toolListTool" onclick="scrollToToolInToolSec('consoleTool')">▷</button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('undoTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 14 4 9 9 4" />
+                                    <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('commentTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="4" y1="9" x2="20" y2="9" />
+                                    <line x1="4" y1="15" x2="20" y2="15" />
+                                    <line x1="10" y1="3" x2="8" y2="21" />
+                                    <line x1="16" y1="3" x2="14" y2="21" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('copyTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('deleteTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="trash-lid">
+                                        <path d="M3 6h18" />
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    </g>
+                                    <g class="trash-body">
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                        <line x1="10" y1="11" x2="10" y2="17" />
+                                        <line x1="14" y1="11" x2="14" y2="17" />
+                                    </g>
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('moveDownTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <polyline points="19 12 12 19 5 12" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('moveUpTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="19" x2="12" y2="5" />
+                                    <polyline points="5 12 12 5 19 12" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                                    <line x1="6" y1="8" x2="6.01" y2="8" />
+                                    <line x1="10" y1="8" x2="10.01" y2="8" />
+                                    <line x1="14" y1="8" x2="14.01" y2="8" />
+                                    <line x1="18" y1="8" x2="18.01" y2="8" />
+                                    <line x1="6" y1="12" x2="6.01" y2="12" />
+                                    <line x1="10" y1="12" x2="10.01" y2="12" />
+                                    <line x1="14" y1="12" x2="14.01" y2="12" />
+                                    <line x1="18" y1="12" x2="18.01" y2="12" />
+                                    <line x1="7" y1="16" x2="17" y2="16" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('disableAndEnableTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('searchTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('removeIndentTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="3" y1="4" x2="3" y2="20" />
+                                    <line x1="21" y1="12" x2="7" y2="12" />
+                                    <polyline points="14 19 7 12 14 5" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('addIndentTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="21" y1="4" x2="21" y2="20" />
+                                    <line x1="3" y1="12" x2="17" y2="12" />
+                                    <polyline points="10 5 17 12 10 19" />
+                                </svg>
+                            </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('consoleTool')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                     <div class="glass-panel p-8 card-border-green" style="padding: 2rem; display: flex; flex-direction: column; align-items: flex-start; cursor: default;">
@@ -2632,7 +2929,12 @@
                 <div class="tool-card" id="undoTool">
                     <div class="tool-panel card-border-purple elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'rotateleftsign')">↺</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveleft')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 14 4 9 9 4" />
+                                    <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+                                </svg>
+                            </div>
                             <h2>Undo</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2646,7 +2948,12 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-green elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'rotaterightsign')">↻</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveright')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="15 14 20 9 15 4" />
+                                    <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+                                </svg>
+                            </div>
                             <h2>Redo</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2660,7 +2967,12 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-gray elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this, '☑')">□</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                </svg>
+                            </div>
                             <h2>Copy</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2674,7 +2986,19 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-pink elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this, '☑')">⌧</div>
+                            <div class="toolIcon" onclick="aAnimationForElIn(this, 'iconJumpAnimation', undefined, '.trash-lid')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <g class="trash-lid">
+                                        <path d="M3 6h18" />
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    </g>
+                                    <g class="trash-body">
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                        <line x1="10" y1="11" x2="10" y2="17" />
+                                        <line x1="14" y1="11" x2="14" y2="17" />
+                                    </g>
+                                </svg>
+                            </div>
                             <h2>Delete</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2688,7 +3012,14 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-gray elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">#</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="4" y1="9" x2="20" y2="9" />
+                                    <line x1="4" y1="15" x2="20" y2="15" />
+                                    <line x1="10" y1="3" x2="8" y2="21" />
+                                    <line x1="16" y1="3" x2="14" y2="21" />
+                                </svg>
+                            </div>
                             <h2>Comment</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2702,7 +3033,12 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-purple elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'movedown')">↓</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'movedown')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <polyline points="19 12 12 19 5 12" />
+                                </svg>
+                            </div>
                             <h2>Move Down</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2716,7 +3052,12 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-green elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveup')">↑</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveup')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="19" x2="12" y2="5" />
+                                    <polyline points="5 12 12 5 19 12" />
+                                </svg>
+                            </div>
                             <h2>Move Up</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2730,7 +3071,13 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-pink elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">⚠</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="9" y1="3" x2="15" y2="3" />
+                                    <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
+                                    <line x1="12" y1="13" x2="12" y2="21" />
+                                </svg>
+                            </div>
                             <h2>Pin</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2744,9 +3091,18 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-purple elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">☾</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <polyline points="19 12 12 19 5 12" />
+                                </svg>
+                            </div>
                             <h2>Sleep/Disable</h2>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">○</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="9" />
+                                </svg>
+                            </div>
                             <h2>Awake/Enable</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2760,11 +3116,16 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-blue elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">⌕</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                            </div>
                             <h2>Search</h2>
                         </header>
                         <div class="tool-description-container">
-                            <p>Search, not to be confused with teleport "⌕" lets you search in your current file. This tool is with the selected tools but it searches all lines. In this tool's settings you can enable or disable the prioritization of pinned lines during search and this affects all search functions, including the separate search <button class="openSecRef" onclick="clickOnNavItem('featuresNavEl')">feature ↗</button> which is also effected by the line number toggle that is in the search settings of this tool.</p>
+                            <p>Search, not to be confused with teleport "⌕" lets you search in your current file. This tool is with the selected tools but it searches all lines. In this tool's settings you can enable or disable the prioritization of pinned lines during search and this affects all search functions, including the separate search <button class="openSecRef" onclick="clickOnNavItem('featuresNavEl')">feature <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> which is also effected by the line number toggle that is in the search settings of this tool.</p>
                             <p><strong>Limitations:</strong> This tool only allows you to search the current file. <br><strong>Advantages: </strong> It's quick to use and it comes with additional features like: regex search. In the file settings you can set a regex search string, for example: "r/" and anything written after the regex string will be treated like a regex in the search system.</p>
                         </div>
                     </div>
@@ -2773,7 +3134,12 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-green elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">⌕</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                            </div>
                             <h2>Teleport</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2786,21 +3152,42 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-gray elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">N</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <line x1="10" y1="9" x2="8" y2="9" />
+                                </svg>
+                            </div>
                             <h2>Attach Note</h2>
                         </header>
                         <div class="tool-description-container">
-                            <p>This tool allows you to add notes to selected lines. You can add line notes by either using this tool or you press and hold a line until you get a options popup that allows you to add a line note to the line you pressed, specifically. If you wish to remove notes from lines, simply add an empty note to the lines you want to remove the notes from, or go to the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> and open the options for this tool, there you can remove notes from lines individually. If you wish to delete an entire note from all lines, go to "project notes" and open the file you want to remove the note from, then click on the note and click "delete" on the popup. If you want to no longer have your code full of comments but still want the information present, consider applying comments as line notes. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button>, you can open this tool's options and click the button that says: "add comments as line notes", and this will add comments as line notes.</p>
+                            <p>This tool allows you to add notes to selected lines. You can add line notes by either using this tool or you press and hold a line until you get a options popup that allows you to add a line note to the line you pressed, specifically. If you wish to remove notes from lines, simply add an empty note to the lines you want to remove the notes from, or go to the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> and open the options for this tool, there you can remove notes from lines individually. If you wish to delete an entire note from all lines, go to "project notes" and open the file you want to remove the note from, then click on the note and click "delete" on the popup. If you want to no longer have your code full of comments but still want the information present, consider applying comments as line notes. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>, you can open this tool's options and click the button that says: "add comments as line notes", and this will add comments as line notes.</p>
                             <p><strong>Advantages and Limitations:</strong> Line notes are especially useful if your goal is to write code without comments but still want information on what your code does in certain parts, without having to write notes yourself and keep track of what index every line is at, to keep the notes up to date.  Although line notes can come in handy, they have their limits when the tools are used to apply them; Line notes are file specific and are not applied to selected lines outside of the currently opened file, this means, if you want to apply notes to lines in multiple files at once, you won't be able to and will have to apply notes for every file individually. Another limitation is that if you add multi-line comments as line notes, you have to keep in mind that you have to have rendered/seen the entire comment in the form of a comment before, to have the full comment be added as a line note, this is due to how the syntax highlighting logic works.</p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>n</kbd>, and if you want to target an individual line: + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>alt</kbd> + <kbd>n</kbd>, and if you want to target an individual line: + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card elWithEaseinAnimation" id="commandsAndShortcutsTool">
                     <hr class="section-divider">
                     <div class="tool-panel card-border-pink elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">⌘</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                                    <line x1="6" y1="8" x2="6.01" y2="8" />
+                                    <line x1="10" y1="8" x2="10.01" y2="8" />
+                                    <line x1="14" y1="8" x2="14.01" y2="8" />
+                                    <line x1="18" y1="8" x2="18.01" y2="8" />
+                                    <line x1="6" y1="12" x2="6.01" y2="12" />
+                                    <line x1="10" y1="12" x2="10.01" y2="12" />
+                                    <line x1="14" y1="12" x2="14.01" y2="12" />
+                                    <line x1="18" y1="12" x2="18.01" y2="12" />
+                                    <line x1="7" y1="16" x2="17" y2="16" />
+                                </svg>
+                            </div>
                             <h2>Commands and Short-cuts</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2813,7 +3200,15 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-green elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">●</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="6" cy="6" r="3" />
+                                    <circle cx="6" cy="18" r="3" />
+                                    <line x1="20" y1="4" x2="8.12" y2="15.88" />
+                                    <line x1="14.47" y1="14.47" x2="20" y2="20" />
+                                    <line x1="8.12" y1="8.12" x2="12" y2="12" />
+                                </svg>
+                            </div>
                             <h2>Trim</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2826,73 +3221,106 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-blue elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">→</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                    <polyline points="12 5 19 12 12 19" />
+                                </svg>
+                            </div>
                             <h2>unfold</h2>
                         </header>
                         <div class="tool-description-container">
                             <p>This tool unfolds all folded lines in a file. You fold a line by swiping a line in a neutral state to the left; now if the lines meets all the conditions to become a folded lines parent element, it will move to the left and display an arrow where the line number would normally be, if line numbers are enabled. Something important to note is that when a line gets folded, all lines that get hidden also get unselected, if they are selected. Also, if you are unfolding lines in order to select a code block, you can also simply double selected a line before and after a block (by swiping right on lines twice) and all lines in between the 2 double selected lines will be selected and any folded lines are unfolded and selected. Now when this tool's button is clicked, it will unfold all lines in the file, making the hidden lines visible again, this can also be achieved by swiping a folded line to the right but this will only unfold all lines hidden under that folded line, not all lines in the file.</p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is either: <kbd>arrow right</kbd> + <kbd>shift</kbd>, or: <kbd>ctr/cmd</kbd> + <kbd>f</kbd> + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is either: <kbd>arrow right</kbd> + <kbd>shift</kbd>, or: <kbd>ctr/cmd</kbd> + <kbd>)</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="unselectTool">
                     <hr class="section-divider">
                     <div class="tool-panel card-border-cyan elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">←</div>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="19" y1="12" x2="5" y2="12" />
+                                    <polyline points="12 19 5 12 12 5" />
+                                </svg>
+                            </div>
                             <h2>unselect</h2>
                         </header>
                         <div class="tool-description-container">
                             <p>This tool unselects all selected lines. You select a line by swiping right on a line (if it's not folded or already selected) you'll know when it's selected since it will have a different color (usually, depending on the theme).</p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is either: <kbd>arrow left</kbd> + <kbd>shift</kbd>, or: <kbd>ctr/cmd</kbd> + <kbd>q</kbd> + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is either: <kbd>arrow left</kbd> + <kbd>shift</kbd>, or: <kbd>ctr/cmd</kbd> + <kbd>(</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="removeIndentTool">
                     <hr class="section-divider">
                     <div class="tool-panel card-border-pink elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveleft')">↤</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveleft')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="3" y1="4" x2="3" y2="20" />
+                                    <line x1="21" y1="12" x2="7" y2="12" />
+                                    <polyline points="14 19 7 12 14 5" />
+                                </svg>
+                            </div>
                             <h2>Remove Indent</h2>
                         </header>
                         <div class="tool-description-container">
                             <p>This tool removes spaces from the left of selected lines. Indents in code are spaces on the left of any text that is not a space. This tool allows you to remove these spaces and the amount of spaces it removes can be set by you in the tool settings. </p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>tab</kbd> + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>[</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="addIndentTool">
                     <hr class="section-divider">
                     <div class="tool-panel card-border-green elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveright')">↦</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'moveright')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="21" y1="4" x2="21" y2="20" />
+                                    <line x1="3" y1="12" x2="17" y2="12" />
+                                    <polyline points="10 5 17 12 10 19" />
+                                </svg>
+                            </div>
                             <h2>Add Indent</h2>
                         </header>
                         <div class="tool-description-container">
                             <p>This tool does the opposite of the remove indent tool, it adds them. Indents are spaces to the left of any text that is not a space and these are added by this tool. Indents can be added manually, just how they can be removed manually but this makes it easier to add them, since it adds them to all selected lines and in the tool settings you can set how many spaces are added every time you click the tool's button.</p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>tab</kbd></div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>]</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="replaceAllTool">
                     <hr class="section-divider">
                     <div class="tool-panel card-border-purple elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">⤻</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 1l4 4-4 4" />
+                                    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                    <path d="M7 23l-4-4 4-4" />
+                                    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                                </svg>
+                            </div>
                             <h2>Replace/Replace All</h2>
                         </header>
                         <div class="tool-description-container">
                             <p><strong>Functionality:</strong> This tool is one of the tools with 2 versions, one that affects only selected lines and one that affects all lines. This tool allows you to enter a replace value and a replacement value, then at the top you can decide if you want the replace value to be treated as a regex or a normal text. When you then click the replace button, the replace value will be replaced with the replacement value in either all selected lines or all lines, depending on which version you clicked.</p>
                             <p><strong>Limitations:</strong> This tool only affects the current file and it only lets you replace text within one line, not a series of lines. This tool can not replace text across lines, only text in individual lines.</p>
                         </div>
-                        <div class="tool-command-description-container">The replace in selected lines keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>d</kbd>, and the replace in all lines shortcut is: <kbd>ctr/cmd</kbd> + <kbd>d</kbd> + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">The replace in selected lines keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>h</kbd>, and the replace in all lines shortcut is: <kbd>ctr/cmd</kbd> + <kbd>h</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="runTool">
                     <hr class="section-divider">
                     <div class="tool-panel card-border-green elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">◁</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
                             <h2>Run</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2905,7 +3333,11 @@
                     <hr class="section-divider">
                     <div class="tool-panel card-border-blue elWithEaseinAnimation">
                         <header>
-                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">▷</div>
+                            <div class="toolIcon" onclick="aAnimationFor(this, 'pop')">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
                             <h2>Console</h2>
                         </header>
                         <div class="tool-description-container">
@@ -2928,14 +3360,14 @@
                 <hr class="section-divider">
                 <div class="feature-con card-border-gray elWithEaseinAnimation" id="indentSizeSec">
                     <i class="fa-solid fa-arrows-left-right-to-line" style="color: rgb(120, 120, 120); font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">Indentations. Indentations are the spaces infront of a text in a line of code. Usually you choose an indentation size and stick with it, since changing it would be super tedious, especially in large code bases, but ailury studio provides you with features that let you easily customize the standard indent size of tge editor. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> you can scroll down until you see the space indentation option, and if you open the features details, by clicking the chevron on it's right, you get the customization options. There you can choose the standard indent size, you can decide if you want to have the standard indent size applied to uploaded files, and you can apply the standard indent size to the file that you are currently in the settings of. </p>
+                    <p class="featureDescriptionText">Indentations. Indentations are the spaces infront of a text in a line of code. Usually you choose an indentation size and stick with it, since changing it would be super tedious, especially in large code bases, but ailury studio provides you with features that let you easily customize the standard indent size of tge editor. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> you can scroll down until you see the space indentation option, and if you open the features details, by clicking the chevron on it's right, you get the customization options. There you can choose the standard indent size, you can decide if you want to have the standard indent size applied to uploaded files, and you can apply the standard indent size to the file that you are currently in the settings of. </p>
                 </div>
             </div>
             <div class="features-container">
                 <hr class="section-divider">
                 <div class="feature-con card-border-pink elWithEaseinAnimation" id="fileNameInputSec">
                     <i class="fa-solid fa-pen" style="color: #ec4899; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">These are the file nav bars, here is where you can edit a file's name but this is not all. If you hold this file nav element the "files" section will be opened, and if you swipe up on a file nav element the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> will open.</p>
+                    <p class="featureDescriptionText">These are the file nav bars, here is where you can edit a file's name but this is not all. If you hold this file nav element the "files" section will be opened, and if you swipe up on a file nav element the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> will open.</p>
                     <div id="FileNavEl"><span onclick="toggleClass('#FileNavEl', 'borderRound')">←</span>index.html<span onclick="toggleClass('#FileNavEl', 'borderRound')">→</span></div>
                 </div>
             </div>
@@ -2943,14 +3375,14 @@
                 <hr class="section-divider">
                 <div class="feature-con card-border-gray elWithEaseinAnimation" id="auto_completeSec">
                     <i class="fa-solid fa-square-poll-horizontal" style="color: rgb(120, 120, 120); font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">The <strong>suggestions</strong> feature is disabled by default but you can enable it in the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button>. This feature, when enabled, gives you code suggestions in a container below the cursor, while you type in a file. To accept a suggestion simply click on the one that you want to apply. Dynamic suggestions are also available, they are turned on by default and make it so relative values like variable names and function names are suggested, if you experience lag while typing with suggestions enabled, you might want to turn dynamic suggestions off, in the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button>.</p>
+                    <p class="featureDescriptionText">The <strong>suggestions</strong> feature is disabled by default but you can enable it in the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>. This feature, when enabled, gives you code suggestions in a container below the cursor, while you type in a file. To accept a suggestion simply click on the one that you want to apply. Dynamic suggestions are also available, they are turned on by default and make it so relative values like variable names and function names are suggested, if you experience lag while typing with suggestions enabled, you might want to turn dynamic suggestions off, in the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>.</p>
                 </div>
             </div>
             <div class="features-container">
                 <hr class="section-divider">
                 <div class="feature-con card-border-purple elWithEaseinAnimation" id="deleteAllEmptyLinesSec">
                     <i class="fa-solid fa-trash" style="color: #a855f7; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> and it allows you to delete all lines in the current file that have no text aside from spaces. </p>
+                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> and it allows you to delete all lines in the current file that have no text aside from spaces. </p>
                     <div class="fileSettingsFeature">delete empty lines</div>
                 </div>
             </div>
@@ -2958,7 +3390,7 @@
                 <hr class="section-divider">
                 <div class="feature-con card-border-pink elWithEaseinAnimation" id="deleteCommentsSec">
                     <i class="fa-solid fa-comment" style="color: #ec4899; font-size: 1.875rem; margin-bottom: 1rem;"></i>
-                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings ↗</button> of HTML, CSS, Python, or JavaScript files and it allows you to to delete all comments from the current file except for those in <button class="openSecRef" onclick="scrollToToolInToolSec('disableAndEnableTool')">disabled ↗</button> lines. The supported comment types are: HTML, CSS, JavaScript, and Python. Although this tool can be useful, it is not fully fleshed out and relies on 2 factors; these factors are: no strings that can be confused with comments, and comments that go over multiple lines have to have been rendered at least once to be correctly deleted.</p>
+                    <p class="featureDescriptionText">This feature is inside the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> of HTML, CSS, Python, or JavaScript files and it allows you to to delete all comments from the current file except for those in <button class="openSecRef" onclick="scrollToToolInToolSec('disableAndEnableTool')">disabled <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> lines. The supported comment types are: HTML, CSS, JavaScript, and Python. Although this tool can be useful, it is not fully fleshed out and relies on 2 factors; these factors are: no strings that can be confused with comments, and comments that go over multiple lines have to have been rendered at least once to be correctly deleted.</p>
                     <div class="fileSettingsFeature">delete comments</div>
                 </div>
             </div>
@@ -2984,7 +3416,20 @@
             <div id="section-container">
                 <div class="section-panel-con">
                     <div class="section-panel p-8 card-border-pink elWithEaseinAnimation">
-                        <div class="sectionElIcon" style="background: rgba(236, 72, 153, 0.05); color: #ec4899;" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">⌘</div>
+                        <div class="sectionElIcon" style="background: rgba(236, 72, 153, 0.05); color: #ec4899;" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">
+                            <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                                <line x1="6" y1="8" x2="6.01" y2="8" />
+                                <line x1="10" y1="8" x2="10.01" y2="8" />
+                                <line x1="14" y1="8" x2="14.01" y2="8" />
+                                <line x1="18" y1="8" x2="18.01" y2="8" />
+                                <line x1="6" y1="12" x2="6.01" y2="12" />
+                                <line x1="10" y1="12" x2="10.01" y2="12" />
+                                <line x1="14" y1="12" x2="14.01" y2="12" />
+                                <line x1="18" y1="12" x2="18.01" y2="12" />
+                                <line x1="7" y1="16" x2="17" y2="16" />
+                            </svg>
+                        </div>
                         <h4 class="font-display font-bold text-xl mb-2" style="font-size: var(--av-font-size); margin-bottom: 0.5rem;">commands and shortcuts</h4>
                         <p style="color: var(--secondary-text-color); font-size: 0.875rem;">
                             This is a section that allows you to see all commands and shortcuts. You create shortcuts and commands in the settings but here you see them all, including the default ones. When you enter any given command or shortcut (on the left) it will be replaced by the value next to that command (on the right) or the described shortcut output (on the right).
@@ -3072,10 +3517,6 @@
                                 <div class="secEl commandorshortcut-list-el">
                                     <span style="color: #ec4899;">/CROSSINSQUARE</span>
                                     <span class="secEl command-icon">⌧</span>
-                                </div>
-                                <div class="secEl commandorshortcut-list-el">
-                                    <span style="color: #ec4899;">/CROSSNOTINSQUARE</span>
-                                    <span class="secEl command-icon">×</span>
                                 </div>
                                 <div class="secEl commandorshortcut-list-el">
                                     <span style="color: #ec4899;">/CUTOUTCIRCLE</span>
@@ -3435,97 +3876,289 @@
                                 <div class="secEl theme-list-el active">
                                     <span class="theme-color-el" style="background: linear-gradient(to right, #F2F2F7, #0d1117);"></span>
                                     <span>none</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: linear-gradient(to right, #0156CD, #020615);"></span>
                                     <span>enhanced dark</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #011D57;"></span>
                                     <span>dark</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #E8EAEE;"></span>
                                     <span>light</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #393A43;"></span>
                                     <span>gray</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #1A1A1C;"></span>
                                     <span>dark gray</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: gray;"></span>
                                     <span>vintage</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: lightpink;"></span>
                                     <span>candy</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: green;"></span>
                                     <span>green</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: red;"></span>
                                     <span>red</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #508FCD;"></span>
                                     <span>light blue</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: lightblue;"></span>
                                     <span>deep light blue</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #5C2D91;"></span>
                                     <span>dark purple</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: yellow;"></span>
                                     <span>light yellow</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #00B600;"></span>
                                     <span>light green</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-el">
                                     <span class="theme-color-el" style="background: #acc3af;"></span>
                                     <span>blackboard</span>
-                                    <span class="deleteThemeBtn">⌧</span>
+                                    <span class="deleteThemeBtn">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span>
                                 </div>
                                 
                                 <div class="secEl theme-list-list">
@@ -3667,11 +4300,37 @@
                         <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px;">
                             <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px; width: fit-content; max-width: 100%; padding: 20px; border: 1px solid var(--border-color);">
                                 <span style="background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 6px 8px; font-size: 0.7rem; color: white; font-weight: bold; position: absolute; top: 10px; left: 10px;">Cancel</span>
-                                <span style="background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 3px 5px; font-size: 0.9rem; color: white; font-weight: bold; position: absolute; top: 10px; right: 10px;">☼</span>
+                                <span style="background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 0; font-size: 0.9rem; color: white; font-weight: bold; position: absolute; top: 10px; right: 10px; height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="5" fill="currentColor" />
+                                        <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                            <line x1="12" y1="1" x2="12" y2="3" />
+                                            <line x1="12" y1="21" x2="12" y2="23" />
+                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                            <line x1="1" y1="12" x2="3" y2="12" />
+                                            <line x1="21" y1="12" x2="23" y2="12" />
+                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                                        </g>
+                                    </svg>
+                                </span>
                                 <h4 style="color: var(--text-color); margin-top: 0;">projets</h4>
                                 <div class="secEl" style="background: transparent; flex-direction: row; gap: 8px; width: 100%; overflow: hidden; overflow-x: auto; justify-content: flex-start; padding: 3px; scrollbar-width: none; -ms-overflow-style: none;">
                                     <div class="projectConRep" style="outline: 2px solid #06b6d4; flex-direction: column; gap: 1px;"><span>NEW</span><span style="opacity: 0.7; font-size: 0.8rem; font-weight: normal;">create a new project</span></div>
-                                    <div class="projectConRep"><span class="deleteProjectConRep">⌧</span><span class="projectNameConRep">New Project</span></div>
+                                    <div class="projectConRep"><span class="deleteProjectConRep">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <g class="trash-lid">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </g>
+                                            <g class="trash-body">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                <line x1="10" y1="11" x2="10" y2="17" />
+                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                            </g>
+                                        </svg>
+                                    </span><span class="projectNameConRep">New Project</span></div>
                                 </div>
                                 <div class="secEl" style="width: 100%; background: transparent; flex-direction: row; gap: 5px; justify-content: flex-start; align-items: center; white-space: nowrap; overflow: hidden; overflow-x: auto; font-weight: normal; scrollbar-width: none; -ms-overflow-style: none;">
                                     <div id="projectNameInputConRep">Project name: <input type="text" class="secEl" placeholder="My New Project"></div> casual use: <span class="switchEl"><span class="switchedDot"></span></span>
@@ -3691,7 +4350,7 @@
                             <strong>How do I disable/hide a tool ?:</strong> You hide a tool by switching the toggle switch, to the left of the tool's icon, off. <br>
                             <strong>How do I open tool settings ?:</strong> You open tool settings by clicking the sign to the right of the icon of the tool. It's important to note though, that some tools don't have settings that can be edited and in those cases, the edit window will only give you the tool's description. <br>
                             <strong>How do I change the editor's font size ?:</strong> You can change the editor's font size by scrolling down in the top section of the file settings, and sliding the font-size-slider; while you slide you'll get a live notification at the top that tells you how large the font is.<br>
-                            <strong>What are the features for ?:</strong> You can find information on them in the <button class="openSecRef" onclick="scrollToFeatureInSec('deleteAllEmptyLinesSec')">features ↗</button> section.
+                            <strong>What are the features for ?:</strong> You can find information on them in the <button class="openSecRef" onclick="scrollToFeatureInSec('deleteAllEmptyLinesSec')">features <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> section.
                         </p>
                         <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px; padding: 10px; padding-top: 47px;">
                             <div class="secEl" style="width: 100%; height: 37px; border-radius: 0; background: rgba(236, 72, 153, 0.05); justify-content: center; color: #ec4899; position: absolute; top: 0; left: 0;" onclick="scrollToFeatureInSec('fileNameInputSec')">index.html</div>
@@ -3718,8 +4377,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">undo</span>
-                                        <span class="secEl function-icon">↺</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('undoTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 14 4 9 9 4" />
+                                                    <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('undoTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3727,8 +4397,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">redo</span>
-                                        <span class="secEl function-icon">↻</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('redoTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="15 14 20 9 15 4" />
+                                                    <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('redoTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3736,8 +4417,18 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">run</span>
-                                        <span class="secEl function-icon">◁</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('runTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('runTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3745,8 +4436,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">copy</span>
-                                        <span class="secEl function-icon">□</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('copyTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('copyTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3754,8 +4456,26 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">delete</span>
-                                        <span class="secEl function-icon">⌧</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('deleteTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <g class="trash-lid">
+                                                        <path d="M3 6h18" />
+                                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                    </g>
+                                                    <g class="trash-body">
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                        <line x1="10" y1="11" x2="10" y2="17" />
+                                                        <line x1="14" y1="11" x2="14" y2="17" />
+                                                    </g>
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('deleteTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3763,8 +4483,21 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">comment</span>
-                                        <span class="secEl function-icon">#</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('commentTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="4" y1="9" x2="20" y2="9" />
+                                                    <line x1="4" y1="15" x2="20" y2="15" />
+                                                    <line x1="10" y1="3" x2="8" y2="21" />
+                                                    <line x1="16" y1="3" x2="14" y2="21" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('commentTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3772,8 +4505,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">move down</span>
-                                        <span class="secEl function-icon">↓</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('moveDownTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                                    <polyline points="19 12 12 19 5 12" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('movedownTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3781,8 +4525,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">move up</span>
-                                        <span class="secEl function-icon">↑</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('moveUpTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="12" y1="19" x2="12" y2="5" />
+                                                    <polyline points="5 12 12 5 19 12" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('moveupTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3790,8 +4545,20 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">pin</span>
-                                        <span class="secEl function-icon">⚠</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('pinTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="9" y1="3" x2="15" y2="3" />
+                                                    <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
+                                                    <line x1="12" y1="13" x2="12" y2="21" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('pinTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3799,8 +4566,18 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">disable</span>
-                                        <span class="secEl function-icon">☾</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('disableAndEnableTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('disableTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3808,8 +4585,18 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">enable</span>
-                                        <span class="secEl function-icon">○</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('disableAndEnableTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="9" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('enableTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3817,8 +4604,14 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">search</span>
-                                        <span class="secEl function-icon">⌕</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('searchTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">⌕</span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('searchTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3826,8 +4619,14 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">teleport</span>
-                                        <span class="secEl function-icon">⌕</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('teleportTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">⌕</span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('teleportTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3835,8 +4634,27 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">commands/shortcuts</span>
-                                        <span class="secEl function-icon">⌘</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('commandsAndShortcutsTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                                                    <line x1="6" y1="8" x2="6.01" y2="8" />
+                                                    <line x1="10" y1="8" x2="10.01" y2="8" />
+                                                    <line x1="14" y1="8" x2="14.01" y2="8" />
+                                                    <line x1="18" y1="8" x2="18.01" y2="8" />
+                                                    <line x1="6" y1="12" x2="6.01" y2="12" />
+                                                    <line x1="10" y1="12" x2="10.01" y2="12" />
+                                                    <line x1="14" y1="12" x2="14.01" y2="12" />
+                                                    <line x1="18" y1="12" x2="18.01" y2="12" />
+                                                    <line x1="7" y1="16" x2="17" y2="16" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('commandsTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3844,8 +4662,22 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">trim</span>
-                                        <span class="secEl function-icon">●</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('trimTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="6" cy="6" r="3" />
+                                                    <circle cx="6" cy="18" r="3" />
+                                                    <line x1="20" y1="4" x2="8.12" y2="15.88" />
+                                                    <line x1="14.47" y1="14.47" x2="20" y2="20" />
+                                                    <line x1="8.12" y1="8.12" x2="12" y2="12" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('trimTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3853,8 +4685,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">unfold</span>
-                                        <span class="secEl function-icon">→</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('unfoldTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                                    <polyline points="12 5 19 12 12 19" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('unfoldTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3862,8 +4705,19 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">unselect</span>
-                                        <span class="secEl function-icon">←</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('unselectTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="19" y1="12" x2="5" y2="12" />
+                                                    <polyline points="12 19 5 12 12 5" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('unselectTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3871,8 +4725,20 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">remove indent</span>
-                                        <span class="secEl function-icon">↤</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('removeIndentTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="3" y1="4" x2="3" y2="20" />
+                                                    <line x1="21" y1="12" x2="7" y2="12" />
+                                                    <polyline points="14 19 7 12 14 5" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('removespaceleftTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3880,8 +4746,20 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">add indent</span>
-                                        <span class="secEl function-icon">↦</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('addIndentTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="21" y1="4" x2="21" y2="20" />
+                                                    <line x1="3" y1="12" x2="17" y2="12" />
+                                                    <polyline points="10 5 17 12 10 19" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('addspaceleftTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3889,8 +4767,21 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">replace selected</span>
-                                        <span class="secEl function-icon">⤻</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('replaceAllTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M17 1l4 4-4 4" />
+                                                    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                                    <path d="M7 23l-4-4 4-4" />
+                                                    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('replaceselectedlinesTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3898,8 +4789,22 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">attach note</span>
-                                        <span class="secEl function-icon">N</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('lineNoteTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                    <polyline points="14 2 14 8 20 8" />
+                                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                                    <line x1="10" y1="9" x2="8" y2="9" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('attachnotestolinesTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3907,8 +4812,21 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span class="filesettingsline-title">replace all</span>
-                                        <span class="secEl function-icon">⤻</span>
-                                        <span class="expandEl" onclick="scrollToToolInToolSec('replaceAllTool')">></span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M17 1l4 4-4 4" />
+                                                    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                                    <path d="M7 23l-4-4 4-4" />
+                                                    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('replacealllinesTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
                                     </span>
                                 </div>
                                 
@@ -3921,7 +4839,11 @@
                                     <span class="switchEl on"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span>grid</span>
-                                        <span class="expandEl">></span>
+                                        <span class="expandEl">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="9 18 15 12 9 6" />
+                                            </svg>
+                                        </span>
                                     </span>
                                 </div>
                                 
@@ -3929,7 +4851,11 @@
                                     <span class="switchEl"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span>suggestions</span>
-                                        <span class="expandEl" onclick="scrollToFeatureInSec('auto_completeSec')">></span>
+                                        <span class="expandEl" onclick="scrollToFeatureInSec('auto_completeSec')">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="9 18 15 12 9 6" />
+                                            </svg>
+                                        </span>
                                     </span>
                                 </div>
                                 
@@ -3937,7 +4863,11 @@
                                     <span class="switchEl"><span class="switchedDot"></span></span>
                                     <span class="fIconCon">
                                         <span>space indentation</span>
-                                        <span class="expandEl">></span>
+                                        <span class="expandEl">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="9 18 15 12 9 6" />
+                                            </svg>
+                                        </span>
                                     </span>
                                 </div>
                                 
@@ -4004,8 +4934,7 @@
                         </p>
                         <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px;">
                             <div class="secEl" style="justify-content: space-between; width: 100%; gap: 1px; background: transparent; overflow: hidden; flex-direction: row;">
-                                <div class="secEl secTopBtn" id="closeWithCross">×</div>
-                                <div class="secEl secTopBtn" id="closeWithoutCross">close</div>
+                                <div class="secEl secTopBtn">close</div>
                                 <div class="secEl secTopBtn">add file</div>
                             </div>
                             <div style="width: 100%">
@@ -4027,7 +4956,7 @@
                         </p>
                         <ol>
                             <li>Click the "+"/plus button, next to the note section header. After you click that button, a creation overlay will pop-up, where you can now create your note.</li>
-                            <li>Choose the note type. At the top of the creation overlay you'll get to choose what note type you want. You can choose between a checkable note and a non-checkable note.<br><strong>what's the difference between a checkable and a non-checkable note ?:</strong> A checkable note will be displayed with a checkbox next to it, while a non-checkable note will appear with just a dash "-" next to it.</li>
+                            <li>Choose the note type. At the top of the creation overlay you'll get to choose what note type you want. You can choose between a checkable note and a non-checkable note.<br><strong>what's the difference between a checkable and a non-checkable note ?:</strong> A checkable note will be displayed with a checkbox next to it that moves the note down when it's checked (if the note is not pinned to the top), while a non-checkable note will appear with just a dash "-" next to it that doesn't have any functionality.</li>
                             <li>Choose the font. Next or below the note type selection element you'll find a font selection element, here you can choose what font you want this note to have. This can be edited later, so don't worry about choosing the right font immediately.</li>
                             <li>Enter a note title. Below the note type selection and font selection, you get to enter a note title with up to 150 characters. The title is the only text of the note that is visible unless the note is expanded; use it to summarize the contents of the note description or treat the title as the note itself, in case the note is not that long.</li>
                             <li>Enter a note discription. This is optional but critical for extensive notes. Since the note title only allows up to 150 characters, the discription allows you to type out your note in more detail.</li>
@@ -4039,14 +4968,32 @@
                             <strong>How do I edit a note ?:</strong> To edit a note, click the chevron to the right of the note that you want to edit, in the notes section, and this will open the notes editing section.<br>
                             <strong>How do I expand a note ?:</strong> To expand a note in the notes section, you simply click the note and an overlay will appear from below that displays the notes content.<br>
                             <strong>How do I expand a note in the notes area of a file ?:</strong> To expand a note that is in the notes area of a file, first expand the notes area by clicking the symbol in its top right corner and then click the chevron next to the note you want to expand; now you should be able to see the notes title and discription. To close that section, simply click the chevron in the top left corner of the expanded note.<br>
-                            <strong>How do I pin a note ?:</strong> To pin a note, open the notes editing section, by clicking the chevron to the right of the note in the notes section, and then click the pin simbol "⚠" in the top right corner of the editing section. To unpin it again, simply click it a second time.<br>
+                            <strong>How do I pin a note ?:</strong> To pin a note, open the notes editing section, by clicking the chevron to the right of the note in the notes section, and then click the pin symbol "<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="3" x2="15" y2="3" /><path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" /><line x1="12" y1="13" x2="12" y2="21" /></svg> " in the top right corner of the editing section. To unpin it again, simply click it a second time.<br>
                             <strong>How do I delete a note ?:</strong> To delete a note, open the notes editing section by clicking on the chevron to the right of the note in the notes section, and click the delete button at the bottom of it.<br><br>
-                            <strong>What about line notes ?:</strong> Line notes are notes that are attached to individual lines, you can attach a note to a line with the <button class="openSecRef" onclick="scrollToToolInToolSec('lineNoteTool')">"N"/ Attach note</button> <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tool ↗</button> and here you can see what files have line notes and on the left of every displayed file, you can click the chevron to see what notes exactly are attached to that file. If you then click on the notes, you can edit them and you will get a list of line numbers that have a note attached. If you want to see a list of all lines with notes attached, you have to go to the file settings of the file you want to see the lines of with notes attached, and open the "N"/(attach note) tool settings.
+                            <strong>What about line notes ?:</strong> Line notes are notes that are attached to individual lines, you can attach a note to a line with the <button class="openSecRef" onclick="scrollToToolInToolSec('lineNoteTool')">"
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <line x1="10" y1="9" x2="8" y2="9" />
+                            </svg>"/ Attach note</button> <button class="openSecRef" onclick="clickOnNavItem('toolsNavEl')">tool <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> and here you can see what files have line notes and on the left of every displayed file, you can click the chevron to see what notes exactly are attached to that file. If you then click on the notes, you can edit them and you will get a list of line numbers that have a note attached. If you want to see a list of all lines with notes attached, you have to go to the file settings of the file you want to see the lines of with notes attached, and open the "<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <line x1="10" y1="9" x2="8" y2="9" />
+                            </svg>"/(attach note) tool settings.
                         </p>
                         <div class="sectionSecRep elWithEaseinAnimation" style="flex-direction: column; gap: 10px; justify-content: flex-start;">
                             <div id="closeSecRep"></div>
                             <div id="closeSecRep" style="left: auto; right: 5px;"></div>
-                            <h4 style="display: flex; align-items: center; flex-direction: row; gap: 7px;">Notes <div class="secEl" style="display: flex; height: 30px; width: 30px; border-radius: 50%; align-items: center; justify-content: center; background: #22c55e; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 0.9rem; font-weight: bold; padding: 0; line-height: 1; color: white;">+</div></h4>
+                            <h4 style="display: flex; align-items: center; flex-direction: row; gap: 7px;">Notes <div class="secEl" style="display: flex; height: 30px; width: 30px; border-radius: 50%; align-items: center; justify-content: center; background: #22c55e; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 0.9rem; font-weight: bold; padding: 0; line-height: 1; color: white;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </div></h4>
                             <div class="secEl projectNotesSwitchConRep" style="padding: 8px; max-width: 300px;">Temporary display <span class="switchEl"><span class="switchedDot"></span></span></div>
                             <div class="secEl" style="width: 100%; max-width: 300px; padding: 4px 10px; font-size: 0.9rem; font-weight: normal; background: transparent; border: 1px solid var(--border-color); border-radius: 5px; flex-direction: row; gap: 12px; align-items: center;"><span style="font-size: 1.3rem;">⌕</span><span style="opacity: 0.5;">search for note...</span></div>
                             <div class="secEl" style="width: 100%; max-width: 300px; padding: 8px; font-size: 0.9rem; justify-content: center; font-weight: normal; background: transparent; border: 1px solid var(--border-color); border-radius: 5px;">No List Items</div>
@@ -4060,7 +5007,14 @@
                 <div class="section-panel-con">
                     <hr class="section-divider">
                     <div class="section-panel p-8 card-border-purple elWithEaseinAnimation">
-                        <div class="sectionElIcon" style="background: rgba(168, 85, 247, 0.05); color: #a855f7;" onclick="scrollToToolInToolSec('replaceAllTool')">⤻</div>
+                        <div class="sectionElIcon" style="background: rgba(168, 85, 247, 0.05); color: #a855f7;" onclick="scrollToToolInToolSec('replaceAllTool')">
+                            <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 1l4 4-4 4" />
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                <path d="M7 23l-4-4 4-4" />
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                            </svg>
+                        </div>
                         <h4 class="font-display font-bold text-xl mb-2" style="font-size: var(--av-font-size); margin-bottom: 0.5rem;">Replace/Replace all</h4>
                         <p style="color: var(--secondary-text-color); font-size: 0.875rem;">
                             This section allows you to enter the replacement type (regex or text), then enter the replace value below, then the replacement value below the arrow, and at the end click the replace button at the bottom to replace the replacement value with the replace value, in the current open file.
@@ -4071,7 +5025,12 @@
                             <div class="secEl" style="padding-left: 10px; width: 100%; height: 25px; max-width: 300px;">regex</div>
                             <div class="secEl" style="padding-left: 10px; width: 100%; height: 25px; max-width: 300px;">[<{(]</div>
                             <br>
-                            <div style="font-family: system-ui; font-weight: bold; display: flex; justify-content: center; font-size: 1.2rem; color: rgba(120, 120, 120, 0.7);">↓</div>
+                            <div style="font-family: system-ui; font-weight: bold; display: flex; justify-content: center; color: var(--strong-accent-color);">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <polyline points="19 12 12 19 5 12" />
+                                </svg>
+                            </div>
                             <br>
                             <div class="secEl" style="padding-left: 10px; width: 100%; height: 25px; max-width: 300px;">Hello World</div>
                             <div class="secEl" style="width: 100%; height: 25px; max-width: 300px; justify-content: center; background: #a855f7; color: white; border: 1px solid rgba(255, 255, 255, 0.2);" onclick="scrollToToolInToolSec('replaceAllTool')">replace</div>
@@ -4276,6 +5235,7 @@
             }
             
             let isDragging = false;
+            let isActive = false;
             let lastTouchTime = 0;
             
             let startX = 0;
@@ -4300,7 +5260,6 @@
             const originalTransform = container.style.transform || '';
             
             function shouldTransform() {
-                if (!container.classList) return false;
                 return container.classList.contains('transformAllowed');
             }
             
@@ -4392,13 +5351,16 @@
             }
             
             function start(e) {
-                if (e.type === 'touchstart') {
+                if (e.type === 'touchstart' || e.type === 'touchmove') {
                     lastTouchTime = Date.now();
                 }
                 
                 if (e.type === 'mouseenter' && Date.now() - lastTouchTime < 1000) {
                     return;
                 }
+                
+                if (isActive) return;
+                isActive = true;
                 
                 syncElementContainer();
                 
@@ -4415,10 +5377,6 @@
                 
                 window.addEventListener('mousemove', move, true);
                 window.addEventListener('mouseleave', end, true);
-                window.addEventListener('touchmove', move, {
-                    passive: true,
-                    capture: true
-                });
                 window.addEventListener('touchend', end, true);
                 window.addEventListener('touchcancel', end, true);
             }
@@ -4427,6 +5385,9 @@
                 if (e && (e.type === 'touchend' || e.type === 'touchcancel')) {
                     lastTouchTime = Date.now();
                 }
+                
+                if (!isActive) return;
+                isActive = false;
                 
                 thehoverel.classList.remove('visibleOp');
                 
@@ -4440,19 +5401,49 @@
                 
                 window.removeEventListener('mousemove', move, true);
                 window.removeEventListener('mouseleave', end, true);
-                window.removeEventListener('touchmove', move, true);
                 window.removeEventListener('touchend', end, true);
                 window.removeEventListener('touchcancel', end, true);
+            }
+            
+            function isPointOverContainer(point) {
+                const rect = container.getBoundingClientRect();
+                
+                const withinBounds =
+                    point.clientX >= rect.left && point.clientX <= rect.right &&
+                    point.clientY >= rect.top && point.clientY <= rect.bottom;
+                
+                if (!withinBounds) return false;
+                
+                const topElement = document.elementFromPoint(point.clientX, point.clientY);
+                
+                return !!topElement && (topElement === container || container.contains(topElement));
+            }
+            
+            function handleGlobalTouchMove(e) {
+                const point = getPoint(e);
+                const inside = isPointOverContainer(point);
+                
+                if (inside) {
+                    if (!isActive) start(e);
+                    move(e);
+                } else if (isActive) {
+                    end(e);
+                }
             }
             
             syncElementContainer();
             animate();
             
             container.addEventListener('mouseenter', start);
+            container.addEventListener('mouseleave', end);
             container.addEventListener('touchstart', start, {
                 passive: true
             });
             container.addEventListener('mousemove', move);
+            window.addEventListener('touchmove', handleGlobalTouchMove, {
+                passive: true,
+                capture: true
+            });
             
             function destroy() {
                 cancelAnimationFrame(animationFrame);
@@ -4462,12 +5453,13 @@
                 elementContainer.style.willChange = '';
                 
                 container.removeEventListener('mouseenter', start);
+                container.removeEventListener('mouseleave', end);
                 container.removeEventListener('touchstart', start);
                 container.removeEventListener('mousemove', move);
+                window.removeEventListener('touchmove', handleGlobalTouchMove, true);
                 
                 window.removeEventListener('mousemove', move, true);
                 window.removeEventListener('mouseleave', end, true);
-                window.removeEventListener('touchmove', move, true);
                 window.removeEventListener('touchend', end, true);
                 window.removeEventListener('touchcancel', end, true);
             }
@@ -4541,28 +5533,44 @@
                 button.classList.remove("animationState");
             }, 400);
         }
-        function changeBtnTextOnClick(button, replaceSign = "✓") {
-            const initialsign = button.textContent;
-            button.style.animation = "none";
-            void button.offsetWidth;
-            button.style.animation = "rotatesign 0.5s ease-out";
-            button.disabled = true;
-            button.classList.add("animationState");
+        function changeBtnTextOnClick(deletebtnnnn) {
+            const initialsign = deletebtnnnn.innerHTML;
+            deletebtnnnn.style.animation = "none";
+            void deletebtnnnn.offsetWidth;
+            deletebtnnnn.style.animation = "rotatesign 0.5s ease-out";
+            deletebtnnnn.disabled = true;
             setTimeout(() => {
-                button.textContent = replaceSign;
+                deletebtnnnn.innerHTML = `
+        <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17L4 12" />
+        </svg>`;
             }, 250);
             setTimeout(() => {
-                button.style.animation = "none";
-                void button.offsetWidth;
-                button.style.animation = "rotatesign 0.5s ease-out";
+                deletebtnnnn.style.animation = "none";
+                void deletebtnnnn.offsetWidth;
+                deletebtnnnn.style.animation = "rotatesign 0.5s ease-out";
                 setTimeout(() => {
-                    button.textContent = initialsign;
-                    button.disabled = false;
-                    button.style.animation = "none";
-                    void button.offsetWidth;
-                    button.classList.remove("animationState");
+                    deletebtnnnn.innerHTML = initialsign;
+                    deletebtnnnn.disabled = false;
+                    deletebtnnnn.style.animation = "none";
+                    void deletebtnnnn.offsetWidth;
                 }, 250);
             }, 1000);
+        }
+        function aAnimationForElIn(el, animation, disable = true, sp = null) {
+            const svg = el.querySelector(sp ? sp : "svg");
+            if (!svg) return;
+            svg.style.animation = "none";
+            void svg.offsetWidth;
+            svg.style.animation = animation + " 1s ease";
+            if (disable) {
+                el.disabled = true;
+            }
+            setTimeout(() => {
+                svg.style.animation = "none";
+                void svg.offsetWidth;
+                el.disabled = false;
+            }, 400);
         }
         function toggleClass(idVal, classVal) {
             const editEl = document.querySelector(idVal);
