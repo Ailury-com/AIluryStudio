@@ -1214,6 +1214,10 @@
             justify-content: center;
             overflow: hidden;
         }
+        .code-search-input svg, .line-number-input svg {
+            user-select: none;
+            -webkit-user-select: none;
+        }
         .code-search-input input, .line-number-input input {
             outline: none;
             background: transparent;
@@ -7828,7 +7832,7 @@
                                 <circle cx="11" cy="11" r="8" />
                                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
                             </svg>
-                            <input type="text" oninput="searchcode(this)" onfocus="searchcode(this)" onkeydown="checkiflinenumberinputkeydownisenter(event)" placeholder="line number...">
+                            <input type="text" onkeydown="checkiflinenumberinputkeydownisenter(event)" placeholder="line number...">
                         </div>
                     </div>
                 </div>
@@ -12378,12 +12382,12 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             "unfold": {
                 title: "unfold",
                 description: "Unfold all folded code blocks. This feature makes it possible to unfold all folded areas in a file, at once.",
-                keycomb: "[arrow right + shift] or [ctr/cmd + (]"
+                keycomb: "[arrow right + shift] or [ctr/cmd + )]"
             },
             "unselect": {
                 title: "unselect",
                 description: "Unselect all selected lines. This feature allows you to unselect all lines in the file at once. This feature also unselects double selected lines. Below you see a list of all selected lines.",
-                keycomb: "[arrow left + shift] or [ctr/cmd + )]"
+                keycomb: "[arrow left + shift] or [ctr/cmd + (]"
             },
             "removespaceleft": {
                 title: "remove spaces",
@@ -17018,7 +17022,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                 <circle cx="11" cy="11" r="8" />
                                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
                             </svg>
-                            <input type="text" oninput="searchcode(this)" onfocus="searchcode(this)" onkeydown="checkiflinenumberinputkeydownisenter(event)" placeholder="line number...">
+                            <input type="text" onkeydown="checkiflinenumberinputkeydownisenter(event)" placeholder="line number...">
                         </div>
                     </div>`;
             container.appendChild(newSection);
