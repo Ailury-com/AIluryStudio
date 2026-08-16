@@ -592,16 +592,21 @@
             counter-increment: lineNumber selectedLineNumber;
         }
         .code-line.selected::after {
-            content: '✓';
+            content: '';
             position: absolute;
             left: -50px;
             top: 0;
             padding: 0;
             margin: 0;
-            color: var(--secondary-text-color);
-            font-size: 1rem;
+            background: var(--secondary-text-color);
             transition: 0.5s;
-            font-weight: bold;
+            height: 1.4rem;
+            width: 1rem;
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17L4 12" /></svg>') center / contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17L4 12" /></svg>') center / contain no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            background-repeat: no-repeat;
             opacity: 0.5;
         }
         .code-line::before {
@@ -627,19 +632,24 @@
         .code-line.doubleselected {
             border-radius: 5px;
             background: #28a745;
-            transform: translateX(15px);
+            transform: translateX(22px);
         }
         .code-line.doubleselected::after {
-            content: '→';
+            content: '';
             position: absolute;
-            left: -50px;
+            left: -57px;
             top: 0;
             padding: 0;
             margin: 0;
-            color: #28a745;
-            font-size: 1rem;
+            background: #28a745;
+            height: 1.4rem;
+            width: 1rem;
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>') center / contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>') center / contain no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            background-repeat: no-repeat;
             transition: 0.5s;
-            font-weight: bold;
         }
         .code-line.selected:first-of-type, .code-line:not(.selected) + .code-line.selected {
             border-top-left-radius: 3px;
@@ -653,6 +663,9 @@
             content: '';
             height: 100%;
             width: 15px;
+            background: transparent;
+            mask: none;
+            -webkit-mask: none;
             border-left: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
             border-bottom-left-radius: 3px;
@@ -662,6 +675,9 @@
             content: '';
             height: 100%;
             width: 15px;
+            background: transparent;
+            mask: none;
+            -webkit-mask: none;
             border-left: 1px solid var(--border-color);
             opacity: 1;
         }
@@ -669,6 +685,9 @@
             content: '';
             height: 100%;
             width: 15px;
+            background: transparent;
+            mask: none;
+            -webkit-mask: none;
             border-left: 1px solid var(--border-color);
             border-top: 1px solid var(--border-color);
             border-top-left-radius: 3px;
@@ -3009,7 +3028,7 @@
                             <p><strong>Versions:</strong> This tool is also one of those with 2 versions. Depending on which one you click, you'll either delete all lines in a file or only the selected ones. You can also go into the settings to delete selected lines there, incase the selected lines are very spread out and you don't want to scroll through the entire file to make sure you didn't selected something by accident.</p>
                             <p><strong>Effectiveness:</strong> This is a very effective tool, since it's easy to use and anything deleted with this tool can be undone with the undo button/tool. This tool can also be set to: only delete lines content, which makes it so it doesn't delete the lines but just the text in them.</p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>delete</kbd>, and + <kbd>shift</kbd>, if you want to delete all lines.</div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>backspace</kbd>, and + <kbd>shift</kbd>, if you want to delete all lines.</div>
                     </div>
                 </div>
                 <div class="tool-card" id="commentTool">
@@ -3171,7 +3190,7 @@
                             <p>This tool allows you to add notes to selected lines. You can add line notes by either using this tool or you press and hold a line until you get a options popup that allows you to add a line note to the line you pressed, specifically. If you wish to remove notes from lines, simply add an empty note to the lines you want to remove the notes from, or go to the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button> and open the options for this tool, there you can remove notes from lines individually. If you wish to delete an entire note from all lines, go to "project notes" and open the file you want to remove the note from, then click on the note and click "delete" on the popup. If you want to no longer have your code full of comments but still want the information present, consider applying comments as line notes. In the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>, you can open this tool's options and click the button that says: "add comments as line notes", and this will add comments as line notes.</p>
                             <p><strong>Advantages and Limitations:</strong> Line notes are especially useful if your goal is to write code without comments but still want information on what your code does in certain parts, without having to write notes yourself and keep track of what index every line is at, to keep the notes up to date.  Although line notes can come in handy, they have their limits when the tools are used to apply them; Line notes are file specific and are not applied to selected lines outside of the currently opened file, this means, if you want to apply notes to lines in multiple files at once, you won't be able to and will have to apply notes for every file individually. Another limitation is that if you add multi-line comments as line notes, you have to keep in mind that you have to have rendered/seen the entire comment in the form of a comment before, to have the full comment be added as a line note, this is due to how the syntax highlighting logic works.</p>
                         </div>
-                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>alt</kbd> + <kbd>n</kbd>, and if you want to target an individual line: + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>alt</kbd> + <kbd>n</kbd>, and if you want to target an individual line: + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card elWithEaseinAnimation" id="commandsAndShortcutsTool">
@@ -3313,7 +3332,7 @@
                             <p><strong>Functionality:</strong> This tool is one of the tools with 2 versions, one that affects only selected lines and one that affects all lines. This tool allows you to enter a replace value and a replacement value, then at the top you can decide if you want the replace value to be treated as a regex or a normal text. When you then click the replace button, the replace value will be replaced with the replacement value in either all selected lines or all lines, depending on which version you clicked.</p>
                             <p><strong>Limitations:</strong> This tool only affects the current file and it only lets you replace text within one line, not a series of lines. This tool can not replace text across lines, only text in individual lines.</p>
                         </div>
-                        <div class="tool-command-description-container">The replace in selected lines keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>h</kbd>, and the replace in all lines shortcut is: <kbd>ctr/cmd</kbd> + <kbd>h</kbd> + <kbd>shift</kbd></div>
+                        <div class="tool-command-description-container">The replace in selected lines keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>k</kbd>, and the replace in all lines shortcut is: <kbd>ctr/cmd</kbd> + <kbd>k</kbd> + <kbd>shift</kbd></div>
                     </div>
                 </div>
                 <div class="tool-card" id="runTool">
