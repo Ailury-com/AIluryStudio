@@ -44,7 +44,6 @@
             --contrast-color: #000;
             --full-opacity-contrast-color: #000;
             --contrast-opacity: 1;
-            --linenumber-color: #999999;
             --drakgrey-color: #F2F2F7;
             --selected-color: rgba(0, 122, 255, 0.2);
             --safariheader-color: #dcdcdc;
@@ -105,7 +104,6 @@
                 --lightdarkgrey-color: #4f4f4f;
                 --contrast-color: #fff;
                 --full-opacity-contrast-color: #fff;
-                --linenumber-color: #555555;
                 --drakgrey-color: #161b22;
                 --selected-color: #0a8927;
                 --caret-color: #28A745;
@@ -660,7 +658,7 @@
             font-weight: bold;
             font-size: 0.7em;
             border: none;
-            color: var(--linenumber-color);
+            color: var(--contrast-color);
             opacity: 0.5;
         }
         .linenumberingon .code-editor-line.selected::before {
@@ -668,23 +666,31 @@
         }
         
         .code-editor-line.selected::after {
-            content: '✓';
+            content: '';
             position: absolute;
             left: -3em;
             top: 0;
-            color: var(--lightgrey-color);
-            font-size: 1.2em;
+            background: var(--lightgrey-color);
+            height: 1.4em;
+            width: 1em;
             transition: var(--aftr);
-            font-weight: bold;
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17L4 12" /></svg>') center / contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17L4 12" /></svg>') center / contain no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            background-repeat: no-repeat;
         }
         
         .gridenabled .code-editor-line.selected::after {
-            color: var(--checkmark-color);
+            background: var(--checkmark-color);
         }
         .code-editor-line.selected.bottomSelected::after {
             content: '';
             height: 100%;
             width: 15px;
+            background: transparent;
+            mask: none;
+            -webkit-mask: none;
             border-left: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
             border-bottom-left-radius: 5px;
@@ -697,6 +703,9 @@
             content: '';
             height: 100%;
             width: 15px;
+            background: transparent;
+            mask: none;
+            -webkit-mask: none;
             border-left: 1px solid var(--border-color);
         }
         .gridenabled .code-editor-line.selected.middleSelected::after {
@@ -706,6 +715,9 @@
             content: '';
             height: 100%;
             width: 15px;
+            background: transparent;
+            mask: none;
+            -webkit-mask: none;
             transform: translateX(-2px);
             border-left: 1px solid var(--border-color);
             border-top: 1px solid var(--border-color);
@@ -783,14 +795,22 @@
             transform: translateX(1.5em);
         }
         .code-editor-line.superselected::after {
-            content: '→';
+            content: '';
+            height: 1.4em;
+            width: 1em;
             position: absolute;
             left: -3.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             top: 0;
-            color: var(--leftarrow-color);
-            font-size: 1.2em;
+            background: var(--leftarrow-color);
             transition: var(--aftr);
-            font-family: system-ui;
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>') center / contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>') center / contain no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            background-repeat: no-repeat;
         }
 
         .editor-selected-line-btns{
@@ -876,8 +896,16 @@
             transform: translateX(-1.5em);
         }
         .linenumberingon .code-editor-line.hiddenlinesparent:before {
-            content: "→";
-            font-family: system-ui;
+            content: "";
+            width: 1em;
+            height: 1.4em;
+            opacity: 0.5;
+            background: var(--full-opacity-contrast-color);
+            mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>') center / contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>') center / contain no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            background-repeat: no-repeat;
         }
         
         @keyframes Hide {
@@ -2243,7 +2271,8 @@
             z-index: 10;
         }
         .resultnum {
-            color: var(--linenumber-color);
+            color: var(--contrast-color);
+            opacity: 0.7;
             font-size: 0.8em;
         }
         .codesearchresults .result{
@@ -6747,10 +6776,10 @@
             border-radius: 3px;
         }
         .searchAllResultLineIndex {
-            color: var(--linenumber-color);
+            color: var(--contrast-color);
             font-size: 0.65em;
             font-weight: bold;
-            font-family: system-ui;
+            opacity: 0.7;
         }
         .searchResultMatch {
             color: var(--switchcheckedbackground-color);
@@ -12335,7 +12364,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             "delete": {
                 title: "delete",
                 description: "Delete selected lines or all lines, at once. On click, the one at the top will only delete all selected lines, and the one at the bottom will delete all lines in the file and essentially clear it. Below this text you can see a list of all selected lines. You can delete them individually here by clicking the delete button next to the lines.",
-                keycomb: "[ctr/cmd + delete] and [+ shift] if you want to delete all lines in the file."
+                keycomb: "[ctr/cmd + backspace] and [+ shift] if you want to delete all lines in the file."
             },
             "movedown": {
                 title: "move down",
@@ -12402,17 +12431,17 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             "replaceselectedlines": {
                 title: "replace",
                 description: "Replace text in selected lines using regex or plain text.",
-                keycomb: "[ctr/cmd + h]"
+                keycomb: "[ctr/cmd + k]"
             },
             "attachnotestolines": {
                 title: "attach",
                 description: "Attach Notes to selected lines. To attach a note to selected lines, just click the attach button \"N\", enter the notes content and then click \"attach\". Below you can see all lines with notes attached to them. You can click the lines below to edit the attached note of each individual line, or you can delete the attached note by clicking the delete button. You can also attach comments in the code to lines, as line notes, with the button below.",
-                keycomb: "[alt + n], and if you want to target an individual line: [+ shift]"
+                keycomb: "[ctr/cmd + alt + n], and if you want to target an individual line: [+ shift]"
             },
             "replacealllines": {
                 title: "replace all",
                 description: "Replace text in all lines using either regex or plain text.",
-                keycomb: "[ctr/cmd + h + shift]"
+                keycomb: "[ctr/cmd + k + shift]"
             },
             "grid": {
                 title: "grid",
@@ -15224,7 +15253,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             themetoedit.style.removeProperty('--griddot-color');
             themetoedit.style.removeProperty('--drakgrey-color');
             themetoedit.style.removeProperty('--overlaycolor-color');
-            themetoedit.style.removeProperty('--linenumber-color');
             themetoedit.style.removeProperty('--caret-color');
         }
         
@@ -15278,7 +15306,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             themetoedit.style.setProperty('--full-opacity-contrast-color', selectedColor);
             themetoedit.style.setProperty('--contrast-opacity', alpha);
             themetoedit.style.setProperty('--overlaycolor-color', rgba2);
-            themetoedit.style.setProperty('--linenumber-color', rgba);
             generateCustomThemeCode();
         }
 
@@ -23498,7 +23525,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "commentbtn": "This button allows you to comment out code in selected lines. Depending on the supported programming language, it will comment the code out appropriately. The keyboard shortcut for it is: [ctr/cmd + /].",
             "pin-listitem-btn": "This is a toggle button. When this button is toggled on, this note will be put at the top of the notes list, both in the notes list section and file overlay (the list visible on the file when a note is pinned to a file.",
             "noteDisplayTimeSwitch": "This switch lets you decide if you want your file notes overlay to be permanently visible or only visible for a short amount of time after opening a file that has notes attached to it.",
-            "deletebtn": "This is the delete button. You can delete lines in your code with this. You can undo this action any time. You can edit this button in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + delete] and [+ shift] if you want to delete all lines.",
+            "deletebtn": "This is the delete button. You can delete lines in your code with this. You can undo this action any time. You can edit this button in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + backspace] and [+ shift] if you want to delete all lines.",
             "importantPinbtn": "This is for pinning and unpinning. You can pin and unpin lines with this button. This button at the top is a toggle button, and this button at the bottom is a unpin all button. You can also unselect manually in the \"file settings\". You can also edit pinning behavior in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + p] and [+ shift] if you want to unpin all lines.",
             "upbtn": "This button allows you to move selected lines up. You can edit the jump size in the \"file settings\". The keyboard shortcut for it is: the arrow up key, or [ctr/cmd + m].",
             "downbtn": "This button allows you to move selected lines down. You can edit the jump size in the \"file settings\". The keyboard shortcut for it is: the arrow up key, or [ctr/cmd + m + shift].",
@@ -23507,8 +23534,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "trimbtn": "This button trims the text in selected lines. Trimming removes all spaces on both sides of the text, while leaving all the spaces in the middle. The keyboard shortcut for it is: [ctr/cmd + t + shift].",
             "removespacesleftbtn": "This button removes indent spaces left. You can edit the removal amount in the \"file settings\". The keyboard shortcut for it is: (ctr/cmd + [).",
             "addspacesleftbtn": "This button adds indent spaces left. You can edit the indent size in the \"file settings\". The keyboard shortcut for it is: (ctr/cmd + ]).",
-            "replaceaslbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text only in selected lines. The keyboard shortcut for it is: [ctr/cmd + h].",
-            "replacealbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text in all lines. The keyboard shortcut for it is: [ctr/cmd + h + shift].",
+            "replaceaslbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text only in selected lines. The keyboard shortcut for it is: [ctr/cmd + k].",
+            "replacealbtn": "You can replace text in your code with other text, with either a regex or normal text. This replaces text in all lines. The keyboard shortcut for it is: [ctr/cmd + k + shift].",
             "infilerunbtn": "When you click this button, a testing section will appear, that allows you to test the code in the file, to see what it's output is. The keyboard shortcut for it is: [ctr/cmd + enter + shift].",
             "code-search-input": "You can search your file with this. results will appear below this input field.",
             "showcommandlist-btn-element": "By clicking this you'll get a list of all existing commands and shortcuts. You can add commands and shortcuts in the \"file settings\".",
@@ -23541,7 +23568,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "clearconsole": "When you click this button, the js console will be cleared.",
             "clearpyconsole": "When you click this button, the python console will be cleared.",
             "addCommentsAsLineNotesBtn": "This button makes it so the currently open file is analyzed and comments are extracted and added as line notes. It's important to keep in mind that if you have multi-line comments in your file, that they have to have been rendered in the form of a comment, at least once, to be properly extracted.",
-            "attachnotebtn": "This button lets you add a note to all selected line at once. You can view the note in the project notes section, under this file. You can view all lines with notes in the \"file settings\", under this tool. The keyboard shortcut for it is: [alt + n] and [+ shift] if you want to target an individual line."
+            "attachnotebtn": "This button lets you add a note to all selected line at once. You can view the note in the project notes section, under this file. You can view all lines with notes in the \"file settings\", under this tool. The keyboard shortcut for it is: [ctr/cmd + alt + n] and [+ shift] if you want to target an individual line."
         };
         var savedSelection = {
             hadSelection: false,
@@ -25077,11 +25104,11 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }, () => event.preventDefault());
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.code?.toLowerCase() == "backspace" && event.shiftKey) {
                     forSelectedEv(deleteAllLines, () => event.preventDefault());
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "delete" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.code?.toLowerCase() == "backspace" && !event.shiftKey) {
                     if (areSelectedLine) {
                         forSelectedEv(deleteSelectedLines, () => event.preventDefault());
                     } else {
@@ -25089,11 +25116,11 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "h" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "k" && event.shiftKey) {
                     forSelectedEv(replacealllines, () => event.preventDefault());
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "h" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "k" && !event.shiftKey) {
                     if (areSelectedLine) {
                         forSelectedEv(replaceselectedlines, () => event.preventDefault());
                     } else {
@@ -25101,11 +25128,11 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "enter" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.code?.toLowerCase() == "enter" && event.shiftKey) {
                     forSelectedEv(_viewcode, () => event.preventDefault());
                     return;
                 }
-                else if (!isCmdOrCtrl && event.altKey && event.code?.toLowerCase() == "keyn" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.altKey && event.code?.toLowerCase() == "keyn" && event.shiftKey) {
                     const fceline = section.querySelector('.code-editor-line:focus');
                     const hceline = section.querySelector('.code-editor-line:hover, .code-editor-line:has(*:hover)');
                     let celine = hceline ? hceline : fceline;
@@ -25116,7 +25143,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                else if (!isCmdOrCtrl && event.altKey && event.code?.toLowerCase() == "keyn" && !event.shiftKey) {
+                else if (isCmdOrCtrl && event.altKey && event.code?.toLowerCase() == "keyn" && !event.shiftKey) {
                     if (areSelectedLine) {
                         forSelectedEv(attachNotesToSelected, () => event.preventDefault());
                     } else {
@@ -27274,10 +27301,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (!celineEIndex) return;
             const lineIndex = parseInt(celineEIndex);
             if (lineIndex == null || lineIndex == undefined || isNaN(lineIndex)) return;
-        
-            // Snapshot everything needed to validate later. Never trust the closed-over
-            // `inputElement` once time has passed - scrolling can recycle this exact
-            // DOM node for a completely different line.
+            
             const setupSection = section;
             const setupEditorIndex = editorIndex;
             const editorContainerEl = inputElement.closest('.code-editor-container');
@@ -27354,11 +27378,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 container.style.left = `${rect.left}px`;
                 container.style.top = `${rect.top + window.innerHeight * 0.03 + scrollOffset}px`;
             }
-        
-            // Returns the DOM node currently rendering `lineIndex`, but only if it's
-            // genuinely still that line - guards against virtualization having
-            // recycled this node for a different line, or dropped it while scrolled
-            // out of view, or the user having switched files/sections entirely.
+            
             function resolveLiveLineElement() {
                 if (editorIndex !== setupEditorIndex || section !== setupSection) return null;
                 if (!editorFiles[setupEditorIndex] || !editorFiles[setupEditorIndex][lineIndex]) return null;
@@ -27374,10 +27394,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 const lastWord = getLastWordBeforeCursor();
                 const suggestions = filterSuggestions(lastWord);
                 const container = createSuggestionsContainer();
-        
-                // The popup element is shared/reused across keystrokes and lines, so
-                // tear down whatever staleness-watcher a previous invocation left
-                // running on it before wiring up this invocation's own.
+                
                 if (typeof container._autocompleteCleanup === "function") {
                     container._autocompleteCleanup();
                 }
@@ -27420,9 +27437,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     option.addEventListener("click", () => {
                         const liveLineEl = resolveLiveLineElement();
                         if (!liveLineEl) {
-                            // The line scrolled out of view / was recycled since this
-                            // suggestion was generated - bail out safely instead of
-                            // erroring or editing whatever line now sits in this node.
                             dismissSuggestions();
                             return;
                         }
