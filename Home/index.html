@@ -1612,7 +1612,7 @@
             border: 2px solid #a855f7;
             border-radius: 50%;
         }
-        .layoutSwitchCon, .projectNotesSwitchConRep {
+        .layoutSwitchCon, .projectNotesSwitchConRep, .themeSwitchConRep {
             padding: 3px 7px;
             display: flex;
             width: 100%;
@@ -1622,6 +1622,9 @@
             align-items: center;
             font-weight: normal;
             background: transparent;
+        }
+        .themeSwitchConRep {
+            padding: 3px 5px !important;
         }
         .switchEl {
             width: 33px;
@@ -2175,7 +2178,7 @@
                 <div class="max-w-content mx-auto" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     
                     <div id="topVEl" class="elWithEaseinAnimation">
-                        v3.6 Public
+                        v3.7 Public
                     </div>
                     <h1 class="font-display headline elWithEaseinAnimation" style="max-width: 58rem;">
                         Edit your code from<br>
@@ -2318,6 +2321,14 @@
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                    </svg>
+                                </button>
+                                <button class="editor-tool" onclick="scrollToToolInToolSec('duplicateTool')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                        <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                        <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
                                     </svg>
                                 </button>
                                 <button class="editor-tool" onclick="scrollToToolInToolSec('trimTool')">
@@ -2558,6 +2569,11 @@
                                     <div class="secEl" style="color: white; background: #06b6d4; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; font-size: 0.7rem; font-weight: bold; padding: 4px 8px;">Run</div>
                                     <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">
                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="18 15 12 9 6 15" />
+                                        </svg>
+                                    </span>
+                                    <span style="color: var(--text-color); background: transparent; border-radius: 5px; font-size: 0.9rem; font-weight: normal;">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <g class="trash-lid">
                                                 <path d="M3 6h18" />
                                                 <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -2796,6 +2812,16 @@
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                                 </svg>
                             </button>
+                            <button class="toolListTool" onclick="scrollToToolInToolSec('duplicateTool')">
+                                <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                        <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                        <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
+                                    </svg>
+                                </div>
+                            </button>
                             <button class="toolListTool" onclick="scrollToToolInToolSec('deleteTool')">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <g class="trash-lid">
@@ -3003,6 +3029,27 @@
                             <p><strong>Clip Board:</strong> This tool also has settings but in the settings section you'll find the clip-board. The clip-board is not saved but it is preserved while you don't refresh the page and anything you copy on the page will be added to the clip-board, except if you copy the contents of an entire file, but you can turn that on in the settings.</p>
                         </div>
                         <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>c</kbd> + <kbd>alt</kbd>, and + <kbd>shift</kbd>, if you want to copy the entire files code contents.</div>
+                    </div>
+                </div>
+                <div class="tool-card" id="duplicateTool">
+                    <hr class="section-divider">
+                    <div class="tool-panel card-border-green elWithEaseinAnimation">
+                        <header>
+                            <div class="toolIcon" onclick="changeBtnTextOnClick(this)">
+                                <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                    <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                    <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
+                                </svg>
+                            </div>
+                            <h2>Duplicate</h2>
+                        </header>
+                        <div class="tool-description-container">
+                            <p><strong>Advantages:</strong> This tool lets you duplicate code without having to copy and paste, keeping your clipboard clean while still doing the task at hand. There are also 2 duplication methods! 1. Group duplication, 2. Individual duplication. Group duplication deplicates all selected line groups (lines that are next to each other, with no interruptions), and Individual duplication duplicates every line individually and inserts the copy right after itself. You can toggle between the methods in the <button class="openSecRef" onclick="scrollToSecInSec('fileSettingsSecExplenation')">file settings <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></button>.</p>
+                            <p><strong>Limitations:</strong> The duplicates are always inserted after the group or individual (depending on the duplication method), that means the insert area can not be manually set. You can still move the lines with the move tools though. </p>
+                        </div>
+                        <div class="tool-command-description-container">This tool's keyboard shortcut is: <kbd>ctr/cmd</kbd> + <kbd>d</kbd> + <kbd>alt</kbd>.</div>
                     </div>
                 </div>
                 <div class="tool-card" id="deleteTool">
@@ -3887,7 +3934,7 @@
                         <i class="fa-solid fa-palette" style="color: #a855f7; font-size: 1.875rem; margin-bottom: 1rem;" onclick="openAiluryDotCom()"></i>
                         <h4 class="font-display font-bold text-xl mb-2" style="font-size: var(--av-font-size); margin-bottom: 0.5rem;">Theme</h4>
                         <p style="color: var(--secondary-text-color); font-size: 0.875rem;">
-                            This section allows you to choose the code editor's theme and if you don't like any of the default theme options, you can create your own theme, below the theme options. You can also modify a default theme by clicking a default theme and them editing it in the theme creation section, below the default theme options. You can also delete default theme temporarily or perminently delete themes that you have created. You can open this section by clicking the "theme" button in the sidebar. <br>
+                            This section allows you to choose the code editor's theme and if you don't like any of the default theme options, you can create your own theme, below the theme options. You can also modify a default theme by clicking a default theme and then editing it in the theme creation section, below the default theme options. You can also delete default theme temporarily or perminently delete themes that you have created. You can also give elements in the editor shadows, by toggling the shadow switch on. Lastly you can make the top border of elements thicker, to give the illusion of light hitting the elements from above, by toggling the "Light Cast" switch on. You can open this section by clicking the "theme" button in the sidebar. <br>
                             <strong>How to delete a theme ?:</strong> You can delete themes by clicking the delete botton in the themes container, at the very right of it. It is important to note though, that default themes can only be temporarily deleted.<br>
                             <strong>How to undo the deletion of themes ?:</strong> You can undo the deletion of themes by clicking the button in the top right corner of the themes section; this will restore any theme you deleted during the editor's runtime, if you at any point refresh the editor or close it, the deleted themes (that are not default themes) are lost and can not be restored by the editor.
                         </p>
@@ -3896,6 +3943,9 @@
                             <div id="closeSecRep" style="left: auto; right: 5px;"></div>
                             <h4>theme</h4>
                             <div class="secEl" style="background: transparent; flex-direction: column; gap: 3px; width: 100%; max-width: 300px; max-height: 400px;">
+                                <div class="secEl themeSwitchConRep" style="padding: 8px; max-width: 300px;"><span class="switchEl"><span class="switchedDot"></span></span> Shadows</div>
+                                <div class="secEl themeSwitchConRep" style="padding: 8px; max-width: 300px;"><span class="switchEl"><span class="switchedDot"></span></span> Light Cast</div>
+                                <br>
                                 <div class="secEl theme-list-el active">
                                     <span class="theme-color-el" style="background: linear-gradient(to right, #F2F2F7, #0d1117);"></span>
                                     <span>none</span>
@@ -4467,6 +4517,28 @@
                                                 </svg>
                                             </span>
                                             <span class="expandEl" onclick="scrollToToolInToolSec('copyTool')">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 18 15 12 9 6" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </span>
+                                </div>
+                                
+                                <div class="secEl filesettings-line">
+                                    <span class="switchEl on"><span class="switchedDot"></span></span>
+                                    <span class="fIconCon">
+                                        <span class="filesettingsline-title">duplicate</span>
+                                        <div class="rightcentered">
+                                            <span class="secEl function-icon">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                                    <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                                    <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
+                                                </svg>
+                                            </span>
+                                            <span class="expandEl" onclick="scrollToToolInToolSec('duplicateTool')">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <polyline points="9 18 15 12 9 6" />
                                                 </svg>
