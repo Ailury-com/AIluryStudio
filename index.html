@@ -113,7 +113,7 @@
                 --spencialbtncolor-color: #fff;
                 --overlayborder-color: #161b22;
                 --overlaycolor-color: #666;
-                --border-color: #161b22;
+                --border-color: #20252C;
                 --half-transparent-border-color: rgba(22, 27, 34, 0.2);
                 --overlaybackground-color: rgba(0, 0, 0, 0.1);
                 --checkmark-color: #28a745;
@@ -148,7 +148,7 @@
                 --syntaxhtmlcomment-color: #5C6370;
                 --syntaxregex-color: #E06C75;
                 --syntaxhtmltagcontent-color: #fff;
-                --griddot-color: rgba(170, 170, 170, 0.1);
+                --griddot-color: rgba(22, 27, 34, 0.5);
             }
         }
 
@@ -515,6 +515,27 @@
             height: 21px;
             min-height: 21px;
         }
+        .switchCon {
+            width: 51px;
+            height: 31px;
+            border-radius: 30px;
+            padding: 0;
+            margin: 0;
+        }
+        .shadow .switchCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        #switchCon {
+            width: 41px;
+            height: 21px;
+            border-radius: 30px;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .shadow #switchCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
 
         .switch input, .cuswitch input {
             opacity: 0;
@@ -535,6 +556,10 @@
             transition: var(--tr);
             border: 1px solid var(--border-color);
         }
+        
+        .depth .slider, .depth .cuslider {
+            border-top-width: 2px;
+        }
 
         .slider:before, .cuslider:before {
             position: absolute;
@@ -550,6 +575,10 @@
             border: 1px solid var(--border-color);
         }
         
+        .depth .slider:before, .depth .cuslider:before {
+            border-top-width: 2px;
+        }
+        
         .cuslider:before {
             left: 0;
             bottom: 0;
@@ -562,6 +591,10 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
+        .depth input:checked + .slider, .depth input:checked + .cuslider {
+            border-top-width: 2px;
+        }
+        
         input:checked + .cuslider {
             box-shadow: -10px 10px 10px rgba(255, 255, 255, 0.1) inset,
                 10px -10px 10px rgba(0, 0, 0, 0.1) inset;
@@ -572,11 +605,15 @@
             transition: var(--tr);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
+        .depth input:checked + .slider:before, .depth input:checked + .cuslider:before {
+            border-top-width: 2px;
+        }
 
         .code-editor-container:not(.viewport) {
             position: relative;
             height: calc(100dvh - 50px);
-            width: 90vw;
+            width: 100vw;
             border-radius: 5px;
             padding: 5px 4.5em;
             overflow-y: scroll;
@@ -1073,6 +1110,10 @@
             align-items: center;
             height: 75%;
         }
+        
+        .depth .safari-header .action-btn {
+            border-top-width: 2px;
+        }
 
         .iframe-container {
             flex-grow: 1;
@@ -1156,15 +1197,27 @@
             background-color: #f96256;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
+        
+        .depth .close-btn {
+            border-top-width: 2px;
+        }
 
         .minimize-btn {
             background-color: #fdbc40;
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
+        
+        .depth .maximize-btn {
+            border-top-width: 2px;
+        }
 
         .maximize-btn {
             background-color: #34c84a;
             border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .depth .maximize-btn {
+            border-top-width: 2px;
         }
 
         .url-bar {
@@ -1214,6 +1267,9 @@
             border-radius: 4px;
             cursor: pointer;
             transition: var(--tr);
+        }
+        .depth .btn-group button {
+            border-top-width: 2px;
         }
 
         .iframe-container {
@@ -1304,6 +1360,12 @@
             .nothingOpen.smallNavBar .sidebarbardiv {
                 border-radius: 30px;
                 transform: scale(0.98);
+            }
+            .depth .nothingOpen.smallNavBar .sidebarbardiv {
+                border-top-width: 2px;
+            }
+            .shadow .nothingOpen.smallNavBar .sidebarbardiv {
+                box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
             }
             .sbtnpossettingsoverlay, #togglelayoutcontainerbtn {
                 display: flex;
@@ -1589,6 +1651,12 @@
             max-width: 620px;
             cursor: pointer;
         }
+        .depth .seccontainer-line.specialbtn {
+            border-top-width: 2px;
+        }
+        .shadow .seccontainer-line.specialbtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .seccontainer-line.specialbtn:active{
             background: var(--lightgrey-color);
             color: var(--contrast-color);
@@ -1700,7 +1768,7 @@
             margin-top: 5px;
         }
         
-        .sidebarenabled .content-container, .sidebarenabled #template_container{
+        .sidebarenabled .content-container, .sidebarenabled #template_container {
             width: calc(100vw - var(--sibebar-width));
             overflow-y: auto;
             right: 0;
@@ -1736,6 +1804,9 @@
             border-left: none;
             border-radius: 0;
             transition: var(--tr);
+        }
+        .depth .sidebarenabled #commandsdisplay_container {
+            border-top-width: 2px;
         }
         .theme-overlay, #commandsoverlay_container, #testregexoverlay, .userregulationsandconditionsoverlay, .replaceoverlay, .codefunctionssettingsoverlay, .chooseanimationoverlay, .chooseceebtnposoverlay, #checklist_overlay{
             position: fixed;
@@ -1824,8 +1895,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            overflow: hidden;
             font-size: 1em;
             transition: var(--tr);
+        }
+        
+        .depth .searchforafilename-container {
+            border-top-width: 2px;
+        }
+        .shadow .searchforafilename-container {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         
         .searchforafilename {
@@ -1842,6 +1921,11 @@
             outline: none;
         }
         
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(100%);
+            }
+        }
         .searchforafilenamereadybtn {
             color: var(--switchcheckedbackground-color);
             height: 100%;
@@ -1853,6 +1937,7 @@
             border-radius: 0px;
             border-left: 1px solid var(--border-color);
             display: none;
+            animation: slideInFromLeft 0.5s ease;
         }
 
         .overlay-back-btn, .upload-btn, .viewthisfile, .create-file-btn, .overlay-close-btn, .overlay5-close-btn {
@@ -1868,6 +1953,14 @@
             font-size: 0.8em;
             user-select: none;
             -webkit-user-select: none;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .depth .overlay-back-btn, .depth .upload-btn, .depth .viewthisfile, .depth .create-file-btn, .depth .overlay-close-btn, .depth .overlay5-close-btn {
+            border-top-width: 2px;
+        }
+        .shadow .overlay-back-btn, .shadow .upload-btn, .shadow .viewthisfile, .shadow .create-file-btn, .shadow .overlay-close-btn, .shadow .overlay5-close-btn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .viewthisfileExpanded {
             animation: none;
@@ -1884,13 +1977,14 @@
         .create-file-btn {
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
+            border-right: 1px solid var(--border-color);
         }
         
         .overlay-close-btn, .overlay5-close-btn {
             display: inline-block;
-            border-left: 0;
             border-top-left-radius: 5px;
             border-bottom-left-radius: 5px;
+            border-left: 1px solid var(--border-color);
         }
         
         .overlay-back-btn{
@@ -1917,7 +2011,7 @@
             justify-content: center;
             align-items: center;
             height: 200px;
-            border-radius: 5px;
+            border-radius: 10px;
             color: var(--rectanglecolorcolor-color);
             font-size: 18px;
             position: relative;
@@ -1930,6 +2024,11 @@
             max-width: 300px;
             animation: popslidein 1s ease;
             flex-shrink: 0;
+        }
+        .shadow .rectangle, .shadow .rectanglep {
+            box-shadow: 1px 2px 0px var(--border-color) inset,
+                -1px -1px 0px var(--border-color) inset,
+                0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .image-rectangle {
             overflow: hidden;
@@ -1950,10 +2049,13 @@
             border-top-left-radius: 10px;
             border-top-right-radius: 20px;
         }
+        .depth .rectangle:not(.image-rectangle):not(.enlarged):after, .depth .rectanglep:not(.image-rectangle):not(.enlarged):after {
+            border-top-width: 2px;
+        }
         .halfrectagle {
             background: var(--full-opacity-bg-color);
             box-shadow: 1px 1px 0px var(--border-color) inset,
-            -1px -1px 0px var(--border-color) inset;
+                -1px -1px 0px var(--border-color) inset;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1974,6 +2076,11 @@
             max-width: 400px;
             padding: 10px;
             flex-shrink: 0;
+        }
+        .shadow .halfrectagle {
+            box-shadow: 1px 2px 0px var(--border-color) inset,
+                -1px -1px 0px var(--border-color) inset,
+                0 5px 0 rgba(0, 0, 0, 0.2);
         }
         @media(max-width: 650px) {
             .rectangle, .rectanglep {
@@ -2066,6 +2173,9 @@
             border-top-right-radius: 5px;
             box-shadow: 5px -4px 0px var(--full-opacity-bg-color);
             animation: easeinanimationfrb 0.3s;
+        }
+        .depth .rectangle:not(.image-rectangle):not(.enlarged) .rectangle-buttons:after {
+            border-top-width: 2px;
         }
         .rectangle:not(.image-rectangle):not(.enlarged) .rectangle-buttons:before {
             content: "";
@@ -2304,6 +2414,9 @@
             word-break: break-word;
             transition: var(--tr);
         }
+        .depth .comtiniueresultsbtn, .depth .continiueallresultsbtn {
+            border-top-width: 2px;
+        }
         .continiueallresultsbtn {
             font-size: 0.9em;
         }
@@ -2316,6 +2429,9 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             transition: var(--tr);
+        }
+        .depth .codesearchresults .result .highlight {
+            border-top-width: 2px;
         }
         @media(max-width: 700px){
             .codesearchresults{
@@ -2555,7 +2671,14 @@
             font-size: 16px;
             transition: 0.3s ease;
         }
-
+        
+        .depth #close-alert, .depth #submit-prompt, .depth .submitTimeButton {
+            border-top-width: 2px;
+        }
+        .shadow #close-alert, .shadow #submit-prompt, .shadow .submitTimeButton {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        
         @keyframes fadeInOverlay {
             from {
                 opacity: 0;
@@ -2589,6 +2712,12 @@
             top: 5px;
             left: 5px;
         }
+        .depth .defaultCloseSecBtn {
+            border-top-width: 2px;
+        }
+        .shadow .defaultCloseSecBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .defaultCloseSecBtn svg {
             color: var(--full-opacity-contrast-color);
             opacity: 0.5;
@@ -2613,6 +2742,12 @@
             border-radius: 8px;
             overflow: hidden;
         }
+        .depth .command-list {
+            border-top-width: 2px;
+        }
+        .shadow .command-list {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .seccontainer-line-container, .fileinfo{
             list-style: none;
             padding: 0;
@@ -2624,6 +2759,12 @@
             overflow-x: hidden;
             width: calc(100% - 20px);
             max-width: 620px;
+        }
+        .depth .seccontainer-line-container, .depth .fileinfo {
+            border-top-width: 2px;
+        }
+        .shadow .seccontainer-line-container, .shadow .fileinfo {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .seccontainer-line-container {
             height: 70%;
@@ -2688,6 +2829,12 @@
             transition: background-color 0.3s, transform 0.2s;
             min-width: 40px;
             cursor: default;
+        }
+        .depth .Symbol-Span {
+            border-top-width: 2px;
+        }
+        .shadow .Symbol-Span {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .seccontainer-line .Symbol-Span {
             user-select: none;
@@ -2849,12 +2996,13 @@
             padding: 5px;
             transition: var(--tr);
         }
-        .sidebarbardivbuttondiv button{
+        .sidebarbardivbuttondiv button {
             background: transparent;
-            border: none;
+            border: 1px solid transparent;
             color: var(--contrast-color);
             display: flex;
-            padding: 10px;
+            padding: 8px;
+            padding-top: 7px;
             text-align: left;
             font-size: 1em;
             border-radius: 5px;
@@ -2863,6 +3011,9 @@
             overflow: hidden;
             position: relative;
             align-items: center;
+        }
+        .depth .sidebarbardivbuttondiv button {
+            border-top-width: 2px;
         }
         .sidebarbardivbuttondiv button:hover {
             background: var(--lightgrey-color);
@@ -2901,7 +3052,6 @@
         }
         #closemenuforsmallscreen, #closeSearchAllSec{
             background: var(--bg-color);
-            border: 1px solid var(--border-color);
             color: var(--contrast-color);
             padding: 10px;
             text-align: left;
@@ -2942,6 +3092,13 @@
             justify-content: flex-start;
             cursor: pointer;
             position: relative;
+        }
+        .depth .themeoption {
+            border-top-width: 2px;
+        }
+        .shadow .themeoption {
+            margin-bottom: 10px;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .deleteThemeOp {
             position: absolute;
@@ -2991,10 +3148,20 @@
             width: calc(100% - 10px);
             box-sizing: border-box;
         }
+        .shadow .themeoption2 button {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .switchtothememaincolorspan{
             width: 1.2em;
             height: 1.2em;
             border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .shadow .switchtothememaincolorspan {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        .depth .switchtothememaincolorspan {
+            border-top-width: 2px;
         }
         .switchtothememaincolorspan2 {
             margin-right: 10px;
@@ -3017,7 +3184,7 @@
             text-align: left;
             font-size: 1em;
             border-radius: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             transition: var(--tr);
             overflow: hidden;
             justify-content: center;
@@ -3026,6 +3193,12 @@
             max-width: 450px;
             margin-left: 50%;
             transform: translateX(-50%);
+        }
+        .depth .themeoption2 {
+            border-top-width: 2px;
+        }
+        .shadow .themeoption2 {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .themeoption2 .themeoption:not(.customtextthemeoption) {
             border-radius: 19px;
@@ -3343,6 +3516,12 @@
             background: var(--bg-color);
             color: var(--contrast-color);
         }
+        .depth .testregexcontainer input, .depth .testregexcontainer textarea, .depth .replacecontainer input {
+            border-top-width: 2px;
+        }
+        .shadow .testregexcontainer input, .shadow .testregexcontainer textarea, .shadow .replacecontainer input {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .testregexcontainer input:focus, .testregexcontainer textarea:focus, .replacecontainer input:focus {
             outline: none;
         }
@@ -3361,12 +3540,23 @@
             -webkit-user-select: none;
             transition: var(--tr);
         }
+        .depth .replacecontainer #replacebtn, .depth .codefunctionssettingscontainer #clearclipboardbtn, .depth .codefunctionssettingscontainer #addcommandbtn, .depth .codefunctionssettingscontainer #addshortcutbtn, .depth .codefunctionssettingscontainer #clearpasttoundobtn, .depth .codefunctionssettingscontainer #applyNewIndentSizesBtn, .depth .codefunctionssettingscontainer #equalizeIndentSizeBtn, .depth .codefunctionssettingscontainer #addCommentsAsLineNotesBtn {
+            border-top-width: 2px;
+        }
+        .shadow .replacecontainer #replacebtn, .shadow .codefunctionssettingscontainer #clearclipboardbtn, .shadow .codefunctionssettingscontainer #addcommandbtn, .shadow .codefunctionssettingscontainer #addshortcutbtn, .shadow .codefunctionssettingscontainer #clearpasttoundobtn, .shadow .codefunctionssettingscontainer #applyNewIndentSizesBtn, .shadow .codefunctionssettingscontainer #equalizeIndentSizeBtn, .shadow .codefunctionssettingscontainer #addCommentsAsLineNotesBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .replacecontainer #replacebtn:hover, .codefunctionssettingscontainer #clearclipboardbtn:hover, .codefunctionssettingscontainer #addcommandbtn:hover, .codefunctionssettingscontainer #addshortcutbtn:hover, .codefunctionssettingscontainer #clearpasttoundobtn:hover, .codefunctionssettingscontainer #applyNewIndentSizesBtn:hover, .codefunctionssettingscontainer #equalizeIndentSizeBtn:hover, .codefunctionssettingscontainer #addCommentsAsLineNotesBtn:hover {
             color: white;
             background: var(--switchcheckedbackground-color);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .testregexresults {
+        
+        .depth .replacecontainer #replacebtn:hover, .depth .codefunctionssettingscontainer #clearclipboardbtn:hover, .depth .codefunctionssettingscontainer #addcommandbtn:hover, .depth .codefunctionssettingscontainer #addshortcutbtn:hover, .depth .codefunctionssettingscontainer #clearpasttoundobtn:hover, .depth .codefunctionssettingscontainer #applyNewIndentSizesBtn:hover, .depth .codefunctionssettingscontainer #equalizeIndentSizeBtn:hover, .depth .codefunctionssettingscontainer #addCommentsAsLineNotesBtn:hover {
+            border-top-width: 2px;
+        }
+        
+        .testregexresults, .testregexshowresults {
             margin-top: 20px;
             margin-bottom: 20px;
             padding: 15px;
@@ -3377,17 +3567,14 @@
             color: var(--contrast-color);
             font-size: 1.3em;
         }
-        .testregexshowresults {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: var(--lightgrey-color);
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            font-family: monospace;
-            color: var(--contrast-color);
-            font-size: 1.3em;
+        
+        .depth .testregexresults, .depth .testregexshowresults {
+            border-top-width: 2px;
         }
+        .shadow .testregexresults, .shadow .testregexshowresults {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        
         .testregexshowoutput{
             letter-spacing: 2px;
             font-size: 1.5em;
@@ -3402,6 +3589,12 @@
             margin-bottom: 20px;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
+        }
+        .depth .regexTopContainer, .depth .regexBottomContainer {
+            border-top-width: 2px;
+        }
+        .shadow .regexTopContainer, .shadow .regexBottomContainer {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .regexBottomContainer {
             border-radius: 10px;
@@ -3428,6 +3621,12 @@
             transition: var(--tr);
             position: relative;
             overflow: hidden;
+        }
+        .depth .testregexcontainer #useButton {
+            border-top-width: 2px;
+        }
+        .shadow .testregexcontainer #useButton {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .testregexcontainer #useButton:hover {
             color: transparent;
@@ -3493,6 +3692,9 @@
             animation: bgMoveAnimation 3s ease infinite;
             transition: var(--tr);
         }
+        .shadow .testregexcontainer #testButton {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .testregexcontainer #testButton:hover {
             animation: none;
             background: var(--lightgrey-color);
@@ -3526,7 +3728,14 @@
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 5px;
+            overflow: hidden;
             z-index: 10000;
+        }
+        .depth .notificationmessage {
+            border-top-width: 2px;
+        }
+        .shadow .notificationmessage {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .notificationmessage .messagespan{
             font-size: 1em;
@@ -3578,7 +3787,7 @@
             margin: 0;
             padding: 0;
             height: 100dvh;
-            z-index: 10;
+            z-index: 100;
         }
         #timeline-line{
             background: var(--switchcheckedbackground-color);
@@ -3589,7 +3798,7 @@
             transition: 2s;
         }
         .functionsbbdbdb.Active{
-            background: var(--lightgrey-color);
+            background: transparent;
             color: var(--switchcheckedbackground-color);
         }
         .functionsbbdbdb.Active svg {
@@ -3637,6 +3846,9 @@
             height: fit-content;
             margin: 10px;
         }
+        .depth .userregulationsandconditions {
+            border-top-width: 2px;
+        }
         .definitionOfYaW {
             font-size: 1em;
             color: var(--contrast-color);
@@ -3664,6 +3876,9 @@
             border: 1px solid var(--border-color);
             border-radius: 5px;
             transition: all 0.2s ease-in-out;
+        }
+        .depth .userregulationsandconditions li {
+            border-top-width: 2px;
         }
         .userregulationsandconditions li::marker {
             color: var(--switchcheckedbackground-color);
@@ -3725,6 +3940,12 @@
             transition: transform 0.5s;
             -webkit-user-select: none;
         }
+        .depth .userregulationsandconditions #acceptBtn, .depth .userregulationsandconditions #startCodingBtn {
+            border-top-width: 2px;
+        }
+        .shadow .userregulationsandconditions #acceptBtn, .shadow .userregulationsandconditions #startCodingBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #consoleconteiner, #pythonConsole{
             display: none;
             flex-direction: column;
@@ -3738,6 +3959,19 @@
             padding-bottom: 50px;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            transition: var(--tr);
+        }
+        
+        #consoleconteiner.expandedConsole, #pythonConsole.expandedConsole {
+            height: calc(90dvh - 50px);
+        }
+        
+        .expandedConsole #toggleExplandConsole, .expandedConsole #toggleExplandPyConsole {
+            transform: rotate(180deg);
+        }
+        
+        .depth #consoleconteiner, .depth #pythonConsole {
+            border-top-width: 2px;
         }
         
         #consoletopbar, #py_consoletopbar{
@@ -3759,6 +3993,11 @@
             font-size: 1em;
             color: var(--contrast-color);
             padding: 10px;
+        }
+        #py_consoletitle {
+            max-width: 50%;
+            overflow: hidden;
+            overflow-x: auto;
         }
         .consolebtn{
             background: transparent;
@@ -3793,7 +4032,7 @@
             font-size: 1em;
             color: var(--contrast-color);
             background: var(--lightgrey-color);
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             display: flex;
             flex-direction: column;
@@ -3803,6 +4042,29 @@
         
         .consolemessagecontainer.consoleGroupToggle {
             background: transparent;
+            border: none;
+        }
+        @keyframes popupOverlayAnimationForConsoleGroupEnd {
+            0% {
+                transform: translateY(-10%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+        }
+        .consolemessagecontainer.consoleGroupEndBreak {
+            opacity: 0.5;
+            animation: popupOverlayAnimationForConsoleGroupEnd 0.5s ease;
+        }
+        
+        .depth .consolemessagecontainer:not(.consoleGroupToggle) {
+            border-top-width: 2px;
+        }
+        
+        .shadow .consolemessagecontainer:not(.consoleGroupToggle) {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         
         .consolemessageinfoco {
@@ -3833,18 +4095,33 @@
             color: var(--contrast-color);
             padding: 0;
             font-weight: bold;
+            transition: 0.5s;
+            height: 18px;
+            width: 18px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .consolegroupcollapsed .consolemessageicon {
+            transform: rotate(-180deg);
         }
         .visablegroupelement{
             display: none;
         }
         .consolestatuserror{
             background: rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 0, 0, 0.4);
         }
         .consolestatuswarn{
             background: rgba(255, 165, 0, 0.3);
+            border: 1px solid rgba(255, 165, 0, 0.4);
         }
         .consolestatusdebug{
             background: rgba(0, 255, 0, 0.3);
+            border: 1px solid rgba(0, 255, 0, 0.4);
+        }
+        .depth .consolestatuserror, .depth .consolestatuswarn, .depth .consolestatusdebug {
+            border-top-width: 2px;
         }
         .consolestatuserror .consolemessageicon{
             color: red;
@@ -3906,6 +4183,12 @@
             border-radius: 50%;
             z-index: 10;
         }
+        .depth .showconsolebtn {
+            border-top-width: 2px;
+        }
+        .shadow .showconsolebtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #forview{
             display: none;
         }
@@ -3921,8 +4204,12 @@
                 font-weight: normal;
                 background: var(--bg-color);
                 border: 1px solid var(--border-color);
+                box-shadow: none;
                 border-radius: 5px;
                 padding: 10px;
+            }
+            .depth .showconsolebtn {
+                border-top-width: 2px;
             }
             .showconsolebtn svg {
                 opacity: var(--contrast-opacity);
@@ -3957,12 +4244,19 @@
             width: 100%;
             height: 2.5em;
             font-size: 1em;
+            appearance: none;
             background: var(--lightgrey-color);
             color: var(--contrast-color);
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             margin-bottom: 10px;
             padding: 10px;
+        }
+        .depth #replaceoptions {
+            border-top-width: 2px;
+        }
+        .shadow #replaceoptions {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #replaceoptions:focus {
             outline: none;
@@ -4074,10 +4368,20 @@
             background: transparent;
             display: flex;
             border-radius: 8px;
-            margin-top: 5px;
+            margin-bottom: 10px;
             transition: var(--tr);
             overflow-wrap: break-word;
             word-break: break-word;
+        }
+        .depth .cfscscf {
+            border-top-width: 2px;
+        }
+        select.cfscscf {
+            appearance: none;
+        }
+        
+        .shadow div.cfscscf, .shadow input.cfscscf, .shadow button.cfscscf, .shadow select.cfscscf {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         
         .scrollableInfoSec {
@@ -4206,11 +4510,18 @@
             padding: 10px;
             font-weight: bold;
             background: var(--lightgrey-color);
+            border: 1px solid var(--border-color);
             color: var(--switchcheckedbackground-color);
-            border: none;
             margin-left: 5px;
             border-radius: 5px;
             margin-bottom: 5px;
+        }
+        
+        .depth .leidresult button {
+            border-top-width: 2px;
+        }
+        .shadow .leidresult button {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         
         .gridop, .caexample {
@@ -4219,12 +4530,22 @@
             display: flex;
             border: 1px solid var(--border-color);
             border-radius: 5px;
-            margin-top: 10px;
+            margin-bottom: 10px;
             width: 100%;
             transition: var(--tr);
             outline: 0px solid var(--border-color);
         }
         
+        .depth .gridop, .depth .caexample {
+            border-top-width: 2px;
+        }
+        .shadow .gridop, .shadow .caexample {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .gridop:last-of-type, .caexample:last-of-type {
+            margin-bottom: 5px;
+        }
         .caexample.selectedanimation {
             border: 1px solid var(--switchcheckedbackground-color);
             outline: 2px solid var(--switchcheckedbackground-color);
@@ -4496,12 +4817,15 @@
         }
         .cffuncinfo {
             background: var(--lightgrey-color);
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 15px;
             padding: 20px;
             width: 100%;
             max-width: 620px;
             margin-bottom: 10px;
+        }
+        .depth .cffuncinfo {
+            border-top-width: 2px;
         }
         .cffuncinfo .cfsch2 {
             border: none;
@@ -4521,6 +4845,9 @@
         .sidebarfilelinklink.currentfile {
             background: var(--lightgrey-color);
             color: var(--filepathinput-color);
+        }
+        .shadow .sidebarfilelinklink.currentfile {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .sidebarfilelinklink.currentfile .threedots {
             color: var(--contrast-color);
@@ -4619,11 +4946,18 @@
             width: 100%;
             max-width: 40vw;
             border: 1px solid var(--border-color);
-            border-radius: 5px;
-            margin-top: 5px;
+            border-radius: 10px;
+            margin-bottom: 10px;
             text-align: center;
             font-weight: bold;
             font-size: 1.2em;
+            overflow: hidden;
+        }
+        .depth .ceebtnposexample {
+            border-top-width: 2px;
+        }
+        .shadow .ceebtnposexample {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .ceebtnposexample span {
             justify-content: center;
@@ -4631,6 +4965,7 @@
         }
         
         #ceebtnposexample0 {
+            margin-top: 5px;
             flex-direction: column;
         }
         #ceebtnposexample0 > span:nth-child(1) {
@@ -4764,8 +5099,14 @@
             font-family: 'Courier New', monospace;
             font-size: 16px;
             color: var(--contrast-color);
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             outline: 0px solid var(--border-color);
+        }
+        .depth .chooseceebtnposopcontainerswitchcontainer {
+            border-top-width: 2px;
+        }
+        .shadow .chooseceebtnposopcontainerswitchcontainer {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .ceebtnposexampleselected{
             border: 1px solid var(--switchcheckedbackground-color);
@@ -4787,6 +5128,13 @@
                 -webkit-mask-image: none !important;
                 overflow: hidden;
                 overflow-x: auto;
+            }
+            .depth .cefbtnislands .editor-selected-line-btns, .depth .cefbtnislands .code-editor-btns {
+                border-top-width: 2px;
+            }
+            .shadow .cefbtnislands .editor-selected-line-btns, .shadow .cefbtnislands .code-editor-btns {
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.03),
+                    0 5px 0 rgba(0, 0, 0, 0.2);
             }
             .cefbtnislands .editor-selected-line-btns {
                 transform: scale(0.8) translateY(50px);
@@ -4818,6 +5166,12 @@
                 margin-bottom: 0;
                 overflow: hidden;
                 overflow-y: auto;
+            }
+            .depth .cefbtnislands.allbtnsleft .code-editor-btns, .depth .cefbtnislands.selectedbtnsleft .editor-selected-line-btns, .depth .cefbtnislands.bothbtncleft.allbtnsleft.selectedbtnsleft .code-editor-btns, .depth .cefbtnislands.bothbtncleft.selectedbtnsleft.allbtnsleft .editor-selected-line-btns {
+                border-top-width: 2px;
+            }
+            .shadow .cefbtnislands.allbtnsleft .code-editor-btns, .shadow .cefbtnislands.selectedbtnsleft .editor-selected-line-btns, .shadow .cefbtnislands.bothbtncleft.allbtnsleft.selectedbtnsleft .code-editor-btns, .shadow .cefbtnislands.bothbtncleft.selectedbtnsleft.allbtnsleft .editor-selected-line-btns {
+                box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
             }
             .cefbtnislands.allbtnsleft .code-editor-btns, .cefbtnislands.bothbtncleft.allbtnsleft.selectedbtnsleft .code-editor-btns {
                 margin-left: 20px;
@@ -4932,6 +5286,12 @@
             font-weight: normal;
             margin-bottom: 15px;
         }
+        .depth .divcodeeditor-container:not(.sidebarfilebtnssectionextexternalsidebar) .maximizetogglebtn {
+            border-top-width: 2px;
+        }
+        .shadow .divcodeeditor-container:not(.sidebarfilebtnssectionextexternalsidebar) .maximizetogglebtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .divcodeeditor-container:not(.sidebarfilebtnssectionextexternalsidebar) .maximizetogglebtn:hover {
             background: var(--lightgrey-color);
         }
@@ -4940,7 +5300,7 @@
             padding: 0;
             font-size: 1.1em;
             color: var(--switchcheckedbackground-color);
-            border: 1px solid transparent;
+            border: 1px solid var(--border-color);
             border-radius: 50%;
             position: absolute;
             justify-content: center;
@@ -4952,10 +5312,19 @@
             background: var(--lightgrey-color);
             transition: var(--tr);
         }
+        .depth #runCodeBtn {
+            border-top-width: 2px;
+        }
+        .shadow #runCodeBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #runCodeBtn:hover {
             background: var(--switchcheckedbackground-color);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--lightgrey-color);
+            color: white;
+        }
+        .depth #runCodeBtn:hover {
+            border-top-width: 2px;
         }
         .divcodeeditor-container:not(.sidebarfilebtnssectionextexternalsidebar) .maximizetogglebtn .closefilesection, .divcodeeditor-container:not(.sidebarfilebtnssectionextexternalsidebar) #runCodeBtn {
             display: none;
@@ -5049,6 +5418,9 @@
             min-width: 40vw;
             z-index: 5000;
         }
+        .importantnotificationmessageelement {
+            z-index: 6000;
+        }
         .shortNotification, .showFontSizeResize {
             border: 2px solid var(--border-color);
             background: var(--bg-color);
@@ -5133,10 +5505,24 @@
         .sidebarlooksbtnssection button.ActiveOverlay, .sidebarfuncbtnssection button.ActiveOverlay, #showallfilescontainerbtn.ActiveOverlay, #showalltemplatescontainerbtn.ActiveOverlay {
             background: var(--lightgrey-color);
             color: var(--switchcheckedbackground-color);
+            border: 1px solid var(--border-color);
+        }
+        .depth .sidebarlooksbtnssection button.ActiveOverlay, .depth .sidebarfuncbtnssection button.ActiveOverlay, .depth #showallfilescontainerbtn.ActiveOverlay, .depth #showalltemplatescontainerbtn.ActiveOverlay {
+            border-top-width: 2px;
+        }
+        .shadow .sidebarlooksbtnssection button.ActiveOverlay, .shadow .sidebarfuncbtnssection button.ActiveOverlay, .shadow #showallfilescontainerbtn.ActiveOverlay, .shadow #showalltemplatescontainerbtn.ActiveOverlay {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #scrollviewintoviewbtn.isviewing {
             background: var(--lightgrey-color);
             color: var(--switchcheckedbackground-color);
+            border: 1px solid var(--border-color);
+        }
+        .depth #scrollviewintoviewbtn.isviewing {
+            border-top-width: 2px;
+        }
+        .shadow #scrollviewintoviewbtn.isviewing {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .halfrectagle span {
             z-index: 2;
@@ -5163,6 +5549,12 @@
             transition: var(--tr);
             z-index: 2;
             opacity: 0;
+        }
+        .depth .sidebarwidthdisplay {
+            border-top-width: 2px;
+        }
+        .shadow .sidebarwidthdisplay {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .highlighted {
             background: rgba(from var(--caret-color) r g b / 0.5);
@@ -5213,7 +5605,6 @@
         }
         .explanationContainer {
             max-height: 200px;
-            border: 1px solid var(--border-color);
             border-radius: 35px;
             padding: 17px;
             position: absolute;
@@ -5263,10 +5654,17 @@
             text-align: center;
             background: var(--bg-color);
         }
+        .depth .FileSettingsMoreBtn {
+            border-top-width: 2px;
+        }
         .FileSettingsMoreBtn:hover {
             background: var(--switchcheckedbackground-color);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .depth .FileSettingsMoreBtn:hover {
+            border-top-width: 2px;
         }
         
         #termsandconditionstoprivacypolicyNavBar {
@@ -5286,10 +5684,15 @@
             background: var(--bg-color);
             font-size: 1em;
             color: var(--switchcheckedbackground-color);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 0;
             white-space: nowrap;
-            transition: 1s;
+            transition: 0.6s;
+        }
+        .depth #termsandconditionstoprivacypolicyNavBar button {
+            border-top-width: 2px;
+        }
+        .shadow #termsandconditionstoprivacypolicyNavBar button {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #termsandconditionstoprivacypolicyNavBar button:first-child {
             margin-right: 10px;
@@ -5297,8 +5700,11 @@
         #termsandconditionstoprivacypolicyNavBar button.selectedSection {
             transform: translateY(-5px);
             background: var(--lightgrey-color);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
             color: var(--contrast-color);
+        }
+        .shadow #termsandconditionstoprivacypolicyNavBar button.selectedSection {
+            box-shadow: 0 10px 0 rgba(0,0,0,0.2);
         }
         .privacyPolicySection {
             display: none;
@@ -5325,6 +5731,7 @@
         }
         #projectNameInput {
             margin-top: 20px;
+            padding-bottom: 7px;
             font-size: 1em;
             color: var(--contrast-color);
             display: flex;
@@ -5362,10 +5769,19 @@
             padding: 0 20px;
             transition: var(--tr);
         }
+        .depth #projectNameInputConEl {
+            border-top-width: 2px;
+        }
+        .shadow #projectNameInputConEl {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #projectNameInputConEl:has(input:focus) {
             background: var(--switchcheckedbackground-color);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .depth #projectNameInputConEl:has(input:focus) {
+            border-top-width: 2px;
         }
         #projectNameInput label {
             font-weight: normal;
@@ -5429,6 +5845,12 @@
             outline: 0px solid var(--border-color);
             gap: 5px;
         }
+        .depth #defaultNewProjectCon {
+            border-top-width: 2px;
+        }
+        .shadow #defaultNewProjectCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #defaultNewProjectCon p {
             font-size: 1em;
             font-weight: normal;
@@ -5468,6 +5890,12 @@
             border-radius: 15px;
             transition: var(--tr);
             outline: 0px solid var(--border-color);
+        }
+        .depth .projectCon {
+            border-top-width: 2px;
+        }
+        .shadow .projectCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .deleteProjectConBtn {
             font-size: 1em;
@@ -5538,10 +5966,19 @@
             width: 37px;
             height: 37px;
         }
+        .depth #lowerProjectConBrightnessbtn {
+            border-top-width: 2px;
+        }
+        .shadow #lowerProjectConBrightnessbtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .lowerBrightness #lowerProjectConBrightnessbtn {
             background: var(--bg-color);
             color: var(--contrast-color);
             border: 1px solid var(--border-color);
+        }
+        .depth .lowerBrightness #lowerProjectConBrightnessbtn {
+            border-top-width: 2px;
         }
         #projectsclosesecbtn {
             position: absolute;
@@ -5560,6 +5997,12 @@
             justify-content: center;
             width: fit-content;
             height: 37px;
+        }
+        .depth #projectsclosesecbtn {
+            border-top-width: 2px;
+        }
+        .shadow #projectsclosesecbtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .projectCon .projectIframe {
             position: absolute;
@@ -5580,6 +6023,12 @@
             position: relative;
             transition: var(--tr);
         }
+        .depth .leftToggleContainer {
+            border-top-width: 2px;
+        }
+        .shadow .leftToggleContainer {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .leftToggleDot {
             width: 16px;
             height: 16px;
@@ -5591,15 +6040,19 @@
             top: 2px;
             left: 3px;
         }
-        .functionsbbdbdb.Active .leftToggleContainer {
-            background: var(--lightgrey-color);
-            border: 1px solid var(--bg-color);
+        .depth .leftToggleDot {
+            top: 1px;
         }
         .functionsbbdbdb.Active .leftToggleDot {
             left: 19px;
             background: var(--switchcheckedbackground-color);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
+        .depth .functionsbbdbdb.Active .leftToggleDot {
+            border-top-width: 2px;
+        }
+        
         @keyframes openedSectionArrowAnimation {
             0%, 100% {
                 transform: translate(0, 0) scale(1);
@@ -5668,6 +6121,14 @@
             border-radius: 3px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
+        .depth #updatedPPAndURToggleSecNotifier {
+            border-top-width: 2px;
+        }
+        .shadow #updatedPPAndURToggleSecNotifier {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        
         #updatedPPAndURToggleSecNotifier.showPPandURSecNotifier {
             display: inline;
         }
@@ -5760,6 +6221,10 @@
             animation: optionContainerPopinAnimation 0.2s ease;
         }
         
+        .depth .inspector-dropdown {
+            border-top-width: 2px;
+        }
+        
         .inspector-movement-point {
             padding: 0;
             margin: 0;
@@ -5833,6 +6298,10 @@
             transition: all 0.3s ease;
         }
         
+        .depth .inspector-btn {
+            border-top-width: 2px;
+        }
+        
         .inspector-btn.active {
             background: var(--switchcheckedbackground-color);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -5840,11 +6309,17 @@
             font-weight: bold;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .depth .inspector-btn.active {
+            border-top-width: 2px;
+        }
         
         .inspector-btn.inactive {
             border: 1px solid var(--border-color);
             background: var(--lightgrey-color);
             color: var(--contrast-color);
+        }
+        .depth .inspector-btn.inactive {
+            border-top-width: 2px;
         }
         
         .inspector-content-list {
@@ -5862,6 +6337,10 @@
             overflow-y: auto;
             align-items: flex-start;
             box-sizing: border-box;
+        }
+        
+        .depth .inspector-content-list {
+            border-top-width: 2px;
         }
         
         .inspector-list-item {
@@ -5893,6 +6372,9 @@
         
         .niceBorder {
             border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .depth .niceBorder {
+            border-top-width: 2px;
         }
         @keyframes loadingFadeOut {
             from {
@@ -6107,7 +6589,9 @@
             /*border-color: var(--switchcheckedbackground-color);*/
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+        .depth .list-check input:checked + .listcheckmark {
+            border-top-width: 2px;
+        }
         .list-check input:checked + .listcheckmark svg {
             opacity: 1;
             transform: scale(1);
@@ -6135,6 +6619,9 @@
             animation: optionContainerPopinAnimation 0.3s ease-in;
             min-width: 180px;
             transition: 0.5s;
+        }
+        .depth .fileSpecificNoteCon {
+            border-top-width: 2px;
         }
         .fileSpecificNoteCon.notHidden {
             display: flex;
@@ -6264,6 +6751,12 @@
             overflow-y: auto;
             gap: 0;
         }
+        .depth #listContainer, .depth #lineNoteAllCon, .depth #lineNotesContainer {
+            border-top-width: 2px;
+        }
+        .shadow #listContainer, .shadow #lineNoteAllCon, .shadow #lineNotesContainer {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .aListEl {
             display: flex;
             padding: 10px;
@@ -6308,6 +6801,12 @@
             user-select: none;
             -webkit-user-select: none;
         }
+        .depth #addListItemBtn {
+            border-top-width: 2px;
+        }
+        .shadow #addListItemBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #listSecHeader {
             display: flex;
             align-items: center;
@@ -6340,6 +6839,12 @@
             user-select: none;
             -webkit-user-select: none;
             transition: var(--tr);
+        }
+        .depth .checklistTopBtn {
+            border-top-width: 2px;
+        }
+        .shadow .checklistTopBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #noteEditArea {
             width: 100%;
@@ -6423,6 +6928,12 @@
             gap: 5px;
             justify-content: space-between;
         }
+        .depth .pinToFileCon {
+            border-top-width: 2px;
+        }
+        .shadow .pinToFileCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .pinToFileTextCon {
             display: flex;
             flex-direction: column;
@@ -6446,7 +6957,13 @@
             padding: 10px;
             max-width: 50%;
         }
-        #noteDisplayTimeSwitch {
+        .depth #selectNotePinFile, .depth #selectNotePinFileOnCreate {
+            border-top-width: 2px;
+        }
+        .shadow #selectNotePinFile, .shadow #selectNotePinFileOnCreate {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        #noteDisplayTimeSwitch, .themeToggleCons {
             font-size: 1em;
             padding: 10px;
             border: 1px solid var(--border-color);
@@ -6463,7 +6980,21 @@
             width: 100%;
             transform: translateX(-50%);
         }
-        #temporaryDisplayText {
+        .depth #noteDisplayTimeSwitch, .depth .themeToggleCons {
+            border-top-width: 2px;
+        }
+        .shadow #noteDisplayTimeSwitch, .shadow .themeToggleCons {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        .themeToggleCons {
+            max-width: 450px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .shadow .themeToggleCons {
+            margin-bottom: 10px;
+        }
+        #temporaryDisplayText, .themeToggleConTextSpans {
             color: var(--contrast-color);
         }
         .noteDescriptionCon {
@@ -6483,6 +7014,7 @@
             margin-top: 3px;
         }
         #noteTypeSelector, #noteFontSelector, #editNoteFontSelector {
+            appearance: none;
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border-color);
@@ -6492,6 +7024,12 @@
             color: var(--contrast-color);
             background: transparent;
             outline: none;
+        }
+        .depth #noteTypeSelector, .depth #noteFontSelector, .depth #editNoteFontSelector {
+            border-top-width: 2px;
+        }
+        .shadow #noteTypeSelector, .shadow #noteFontSelector, .shadow #editNoteFontSelector {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #createNoteOverlay {
             position: fixed;
@@ -6504,12 +7042,9 @@
             display: none;
             justify-content: center;
             align-items: center;
+            border: none;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
-        }
-        .sidebarenabled #createNoteOverlay {
-            border: 1px solid var(--border-color);
-            border-left: none;
         }
         #createNoteContainer {
             width: 100%;
@@ -6526,6 +7061,9 @@
             overflow: hidden;
             overflow-y: auto;
         }
+        .depth #createNoteContainer {
+            border-top-width: 2px;
+        }
         #createNoteBtn {
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -6538,7 +7076,12 @@
             width: 100%;
             color: var(--switchcheckedbackground-color);
             transition: var(--tr);
-            
+        }
+        .depth #createNoteBtn {
+            border-top-width: 2px;
+        }
+        .shadow #createNoteBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #createNoteBtn:hover {
             transform: translateY(-5px);
@@ -6546,9 +7089,12 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
         }
+        .depth #createNoteBtn:hover {
+            border-top-width: 2px;
+        }
         #searchAllFilesBtn {
             width: 100%;
-            border: 2px solid var(--lightgrey-color);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             background: var(--lightgrey-color);
             color: var(--contrast-color);
@@ -6558,8 +7104,15 @@
             justify-content: center;
             transition: var(--tr);
         }
+        .depth #searchAllFilesBtn {
+            border-top-width: 2px;
+        }
+        .shadow #searchAllFilesBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #searchAllFilesBtn:hover {
-            border: 2px solid var(--selected-color);
+            border: 1px solid var(--selected-color);
+            outline: 2px solid var(--selected-color);
         }
         .searchingAll .sidebarbardiv {
             max-width: 300px;
@@ -6607,6 +7160,12 @@
             height: fit-content;
             width: 100%;
             overflow: hidden;
+        }
+        .depth #searchAllInputCon {
+            border-top-width: 2px;
+        }
+        .shadow #searchAllInputCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #searchAllOptions {
             display: flex;
@@ -6807,6 +7366,9 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
         }
+        .depth #pin_listitem_btn.activePin {
+            border-top-width: 2px;
+        }
         .noteDescriptionHeader {
             font-size: 1em;
             padding: 10px;
@@ -6865,6 +7427,12 @@
             overflow: hidden;
             overflow-y: auto;
         }
+        .depth #expandedNotesCon, .depth #createFileNoteCon, .depth #createFileLineNoteCon {
+            border-top-width: 2px;
+        }
+        .shadow #expandedNotesCon, .shadow #createFileNoteCon, .shadow #createFileLineNoteCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #expandedNotesCon {
             padding-top: 30px;
         }
@@ -6890,6 +7458,12 @@
             padding: 8px 14px;
             font-size: 1em;
             border-radius: 50px;
+        }
+        .depth #closeExpandedNoteBtn, .depth #closeCreateNoteBtn, .depth #closeCreateFileNoteBtn, .depth #closeCreateLineNoteBtn, .depth #deleteLineNoteBtn, .depth #deleteLineNotesBtn {
+            border-top-width: 2px;
+        }
+        .shadow #closeExpandedNoteBtn, .shadow #closeCreateNoteBtn, .shadow #closeCreateFileNoteBtn, .shadow #closeCreateLineNoteBtn, .shadow #deleteLineNoteBtn, .shadow #deleteLineNotesBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #deleteLineNoteBtn, #deleteLineNotesBtn {
             right: 15px;
@@ -6964,6 +7538,12 @@
             transition: 0.3s ease;
             width: 50%;
         }
+        .depth #yes-or-no-con button {
+            border-top-width: 2px;
+        }
+        .shadow #yes-or-no-con button {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #deleteNoteBtn, #createFileNoteBtn {
             width: 100%;
             padding: 12px;
@@ -6978,10 +7558,19 @@
             user-select: none;
             -webkit-user-select: none;
         }
+        .depth #deleteNoteBtn, .depth #createFileNoteBtn {
+            border-top-width: 2px;
+        }
+        .shadow #deleteNoteBtn, .shadow #createFileNoteBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #createFileNoteBtn:hover {
             background: var(--switchcheckedbackground-color);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
+        }
+        .depth #createFileNoteBtn:hover {
+            border-top-width: 2px;
         }
         #deleteNoteBtn:hover {
             background: red;
@@ -6996,14 +7585,40 @@
             justify-content: center;
             align-items: center;
             z-index: 1000000;
+            flex-direction: row;
+            gap: 10px;
             top: 0;
             left: 0;
+        }
+        @keyframes textShimmer {
+            0% {
+                background-position: 250% 0;
+            }
+            100% {
+                background-position: -250% 0;
+            }
+        }
+        #name-loader {
+            font-size: 8vw;
+            color: #080808;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            height: fit-content;
+            font-weight: bold;
+            background: linear-gradient(110deg,
+                #080808 20%,
+                #0CC0DF 40%,
+                #080808 60%);
+            background-size: 250% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 10s linear infinite;
         }
         #logo-loader {
             width: 13vw;
             height: 13vw;
-            min-width: 100px;
-            min-height: 100px;
+            min-width: 150px;
+            min-height: 150px;
             position: relative;
         
             mask-image: url("AIluryAppLogo196x196.png");
@@ -7028,7 +7643,19 @@
             background-size: 250% 250%;
             animation: silverFlow 3s ease-in-out infinite;
         }
-        
+        @media (prefers-color-scheme: dark) {
+            #loading-screen {
+                background: black;
+            }
+        }
+        @media (max-width: 700px) {
+            #loading-screen {
+                flex-direction: column;
+            }
+            #name-loader {
+                font-size: 2em;
+            }
+        }
         #runPyBtn {
             padding: 3px 6px;
             background: var(--switchcheckedbackground-color);
@@ -7040,6 +7667,12 @@
             transition: var(--tr);
             user-select: none;
             -webkit-user-select: none;
+        }
+        .depth #runPyBtn {
+            border-top-width: 2px;
+        }
+        .shadow #runPyBtn {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         #runPyBtn:disabled {
             opacity: 0.5;
@@ -7131,6 +7764,12 @@
             font-size: 1em;
             color: var(--contrast-color);
         }
+        .depth #includedLinesTxt {
+            border-top-width: 2px;
+        }
+        .shadow #includedLinesTxt {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         #lineNoteListContainer {
             border-radius: 0;
             border: none;
@@ -7155,6 +7794,9 @@
             align-items: center;
             transition: var(--tr);
         }
+        .depth .lineNoteFileRep {
+            border-top-width: 2px;
+        }
         .lineNoteFileRep:last-of-type {
             border-bottom: 1px solid transparent;
         }
@@ -7162,6 +7804,12 @@
             border-radius: 10px;
             border: 1px solid var(--border-color);
             background: var(--lightgrey-color);
+        }
+        .depth .lineNoteFileRep:hover {
+            border-top-width: 2px;
+        }
+        .shadow .lineNoteFileRep:hover {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .lineNoteFileRep:hover .expandLineNoteFileRep {
             color: var(--contrast-color);
@@ -7251,6 +7899,12 @@
             align-items: center;
             background: transparent;
         }
+        .depth .searchCon {
+            border-top-width: 2px;
+        }
+        .shadow .searchCon {
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
         .progressSec .searchCon {
             margin-left: 50%;
             transform: translateX(-50%);
@@ -7288,6 +7942,7 @@
             font-weight: bold;
             align-items: center;
             color: var(--switchcheckedbackground-color);
+            animation: pop 0.5s ease;
         }
         @keyframes moveupAnimation {
             50% {
@@ -7368,8 +8023,10 @@
 </head>
 <body>
     <!-- ☼ -->
+    <div id="allcon" style="display: contents;">
     <div id="loading-screen">
         <div id="logo-loader"></div>
+        <div id="name-loader">studio</div>
     </div>
     <div class="divcodeeditor-container sidebarenabled ceefbrlbd">
         <div class="sidebarbardiv">
@@ -7609,6 +8266,11 @@
                         <div id="consoletopbar">
                             <span id="consoletitle">console</span>
                             <div id="consolebtncontainer">
+                                <button class="consolebtn" id="toggleExplandConsole" onclick="toggleClass('#consoleconteiner', 'expandedConsole')">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="18 15 12 9 6 15" />
+                                    </svg>
+                                </button>
                                 <button class="consolebtn" id="clearconsole" onclick="clearconsole();changeBtnTextOnClick(this)">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <g class="trash-lid">
@@ -7706,6 +8368,14 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                        </button>
+                        <button class="eslbtn disabled" id="duplicatebtn" onclick="changeBtnTextOnClick(this);duplicateselectedlines()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
                             </svg>
                         </button>
                         <button class="eslbtn disabled" id="trimbtn" onclick="changeBtnTextOnClick(this);trimAllselectedlinetexts()">
@@ -7872,6 +8542,11 @@
                     <span id="py_consoletitle">Status: <span id="status">Inactive</span></span>
                     <div id="py_consolebtncontainer">
                         <button id="runPyBtn" onclick="executePython();aAnimationFor(this, 'pop');">Run</button>
+                        <button class="consolebtn" id="toggleExplandPyConsole" onclick="toggleClass('#pythonConsole', 'expandedConsole')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="18 15 12 9 6 15" />
+                            </svg>
+                        </button>
                         <button class="consolebtn" id="clearpyconsole" onclick="clearAndStopTerminal();changeBtnTextOnClick(this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <g class="trash-lid">
                                     <path d="M3 6h18" />
@@ -7982,10 +8657,10 @@
                 </div>
                 <div class="seccontainer-line-container">
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="pastbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">undo</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="undo">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">undo</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="undo">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 14 4 9 9 4" />
                                 <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
@@ -7997,10 +8672,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="futurebtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">redo</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="redo">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">redo</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="redo">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="15 14 20 9 15 4" />
                                 <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
@@ -8012,10 +8687,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="infilerunbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">run</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="run">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">run</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="run">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M5.52 19.51a1 1 0 0 1-1.52-.86V5.35a1 1 0 0 1 1.52-.86l13.58 7.29a1 1 0 0 1 0 1.72z" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -8026,10 +8701,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="copybtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">copy</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="copy">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">copy</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="copy">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
@@ -8041,10 +8716,27 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
+                            <input type="checkbox" class="switchbox" data-checked="duplicatebtn" onchange="updatecheckboxed(this)" checked>
+                            <span class="slider"></span>
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">duplicate</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="duplicate">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
+                            </svg>
+                        </button><button class="cldeeditfunctionsettings" onclick="openfunctionsettings('duplicate')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button></div></div>
+                    </div>
+                    <div class="seccontainer-line">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="deletebtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">delete</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="delete">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">delete</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="delete">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <g class="trash-lid">
                                     <path d="M3 6h18" />
@@ -8063,10 +8755,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="commentbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">comment</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="comment">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">comment</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="comment">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="4" y1="9" x2="20" y2="9" />
                                 <line x1="4" y1="15" x2="20" y2="15" />
@@ -8080,10 +8772,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="downbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">move down</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="movedown">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">move down</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="movedown">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19" />
                                 <polyline points="19 12 12 19 5 12" />
@@ -8095,10 +8787,10 @@
                         </button></div></div>
                     </div> 
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="upbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">move up</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="moveup">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">move up</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="moveup">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="12" y1="19" x2="12" y2="5" />
                                 <polyline points="5 12 12 5 19 12" />
@@ -8110,10 +8802,10 @@
                         </button></div></div>
                     </div> 
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="importantPinbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">pin</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="pin">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">pin</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="pin">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="9" y1="3" x2="15" y2="3" />
                                 <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
@@ -8126,10 +8818,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="sleapbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">disable</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="disable">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">disable</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="disable">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                             </svg>
@@ -8140,10 +8832,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="unsleeplines" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">enable</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="enable">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">enable</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="enable">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="9" />
                             </svg>
@@ -8154,10 +8846,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="code-search-input" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">search</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="search">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">search</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="search">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8" />
                                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -8169,10 +8861,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="line-number-input" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">teleport</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="teleport">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">teleport</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="teleport">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="8" />
                                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -8184,10 +8876,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox commandsswitch" data-checked="showcommandlist-btn-element" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">commands/shortcuts</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="commands">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">commands/shortcuts</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="commands">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
                                 <line x1="6" y1="8" x2="6.01" y2="8" />
@@ -8207,10 +8899,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="trimbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">trim</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="trim">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">trim</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="trim">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="6" cy="6" r="3" />
                                 <circle cx="6" cy="18" r="3" />
@@ -8225,10 +8917,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="rightbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">unfold</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="unfold">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">unfold</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="unfold">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12" />
                                 <polyline points="12 5 19 12 12 19" />
@@ -8240,10 +8932,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="leftbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">unselect</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="unselect">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">unselect</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="unselect">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="19" y1="12" x2="5" y2="12" />
                                 <polyline points="12 19 5 12 12 5" />
@@ -8255,10 +8947,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="removespacesleftbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">remove indent</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="removespaceleft">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">remove indent</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="removespaceleft">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="3" y1="4" x2="3" y2="20" />
                                 <line x1="21" y1="12" x2="7" y2="12" />
@@ -8271,10 +8963,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line" id="search-check">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="addspacesleftbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">add indent</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="addspaceleft">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">add indent</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="addspaceleft">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="21" y1="4" x2="21" y2="20" />
                                 <line x1="3" y1="12" x2="17" y2="12" />
@@ -8287,10 +8979,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="replaceaslbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">replace selected</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="replaceselectedlines">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">replace selected</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="replaceselectedlines">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M17 1l4 4-4 4" />
                                 <path d="M3 11V9a4 4 0 0 1 4-4h14" />
@@ -8304,10 +8996,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="attachnotebtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">attach note</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="attachnotestolines">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">attach note</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="attachnotestolines">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <polyline points="14 2 14 8 20 8" />
@@ -8322,10 +9014,10 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-checked="replacealbtn" onchange="updatecheckboxed(this)" checked>
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"><span class="btnLabel">replace all</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="replacealllines">
+                        </label></div> <div class="symbolspancontainer"><span class="btnLabel">replace all</span><div class="twoSettingsSecs"><button class="Symbol-Span" data-targetInfo="replacealllines">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M17 1l4 4-4 4" />
                                 <path d="M3 11V9a4 4 0 0 1 4-4h14" />
@@ -8339,52 +9031,52 @@
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" id="lineNumberDisplayToggleEl" onchange="toggleLineNumberDisplay(this);saveLineNumberDisplayToggleSelection(this);" checked>
                             <span class="slider"></span>
-                        </label> line numbers
+                        </label></div> line numbers
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" data-update-class="gridenabled" onchange="updategridenabledordisabledcheckbox(this);saveGridEnabledOrDisabled(this);" id="enablegridcheckbox">
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"> <div class="twoSettingsSecs">grid <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('grid')">
+                        </label></div> <div class="symbolspancontainer"> <div class="twoSettingsSecs">grid <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('grid')">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 18 15 12 9 6" />
                             </svg>
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" id="suggestionToggleEl" data-update-aceclass="autocompleteenabled" onchange="updateautocompleteenabledordisabledcheckbox(this);saveAutoCompleteToggle(this);">
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"> <div class="twoSettingsSecs">suggestions <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('suggestions')">
+                        </label></div> <div class="symbolspancontainer"> <div class="twoSettingsSecs">suggestions <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('suggestions')">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 18 15 12 9 6" />
                             </svg>
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" id="spaceIndentationDisplayToggleCheckboxEl" class="syntaxspaceienabledtoggleswitch" onchange="toggleClass('.divcodeeditor-container', 'syntaxspaceienabled');saveSpaceIndentationEnabledOrDisabled(this);">
                             <span class="slider"></span>
-                        </label> <div class="symbolspancontainer"> <div class="twoSettingsSecs">space indentation <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('spaceindentation')">
+                        </label></div> <div class="symbolspancontainer"> <div class="twoSettingsSecs">space indentation <button class="cldeeditfunctionsettings" onclick="openfunctionsettings('spaceindentation')">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="9 18 15 12 9 6" />
                             </svg>
                         </button></div></div>
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="wordselectswitch" id="wordselectswitch" onchange="saveAutoWordHighlightToggle(this)">
                             <span class="slider"></span>
-                        </label> word select
+                        </label></div> word select
                     </div>
                     <div class="seccontainer-line">
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="zoomenabledbtn" onchange="toggleZoom(this)">
                             <span class="slider"></span>
-                        </label> zoom enabled
+                        </label></div> zoom enabled
                     </div>
                 </div>
                 <div class="specialbtn seccontainer-line" id="deleteEmptyLinesBtn" onclick="deleteAllEmptyLines()">
@@ -8423,10 +9115,10 @@
                     <br>
                     <div id="noteDisplayTimeSwitch">
                         <span id="temporaryDisplayText">Temporary display</span>
-                        <label class="switch">
+                        <div class="switchCon"><label class="switch">
                             <input type="checkbox" class="switchbox" id="temporaryDisplaySwitch" onchange="updateNoteTemporraryDisplay(this);saveTemporaryDisplayVal(this);">
                             <span class="slider"></span>
-                        </label>
+                        </label></div>
                     </div>
                     <br>
                     <div class="searchCon">
@@ -8794,6 +9486,25 @@
                     </button>
                     <h3>theme</h3>
                     <br>
+                    <div class="themeToggleCons">
+                        <div class="switchCon">
+                            <label class="switch">
+                                <input type="checkbox" class="switchbox" id="toggleShadowDisplaySwitch" onchange="toggleClass('#allcon', 'shadow', this.checked);saveShadowToggleSelection(this);">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <span class="themeToggleConTextSpans">Shadows</span>
+                    </div>
+                    <div class="themeToggleCons">
+                        <div class="switchCon">
+                            <label class="switch">
+                                <input type="checkbox" class="switchbox" id="toggleCastLightDisplaySwitch" onchange="toggleClass('#allcon', 'depth', this.checked);saveLightCastToggleSelection(this);">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <span class="themeToggleConTextSpans">Light Cast</span>
+                    </div>
+                    <br>
                     <div class="themeoption currentTheme defaultThemeOp" data-themeId="none" onclick="removeallthemes(true)">
                         <span class="switchtothememaincolorspan" style="background: linear-gradient(to right, #F2F2F7, #0d1117);"></span>
                         <span class="switchtothemetitlespan">none</span>
@@ -9056,152 +9767,152 @@
                             <span class="switchtothememaincolorspan" id="customThemeColorDotSpan"></span>
                             <span class="switchtothemetitlespan">custom</span></div>
                         <div class="colorselectorcontainer">
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="backgroundColor" value="#0d1117" onchange="updateBackgroundColor()">
-                            <span class="switchtothemetitlespan">background</span>
-                            <input type="range" id="backgroundAlpha" min="0" max="100" value="100" onchange="updateBackgroundColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="accentColor" value="#161b22" onchange="updateaccentColor()">
-                            <span class="switchtothemetitlespan">accent color</span>
-                            <input type="range" id="accentAlpha" min="0" max="100" value="100" onchange="updateaccentColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="selectedColor" value="#28A745" onchange="updateSelectedColor()">
-                            <span class="switchtothemetitlespan">special color</span>
-                            <input type="range" id="selectedAlpha" min="0" max="100" value="50" onchange="updateSelectedColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="colorColor" value="#ffffff" onchange="updateColorColor()">
-                            <span class="switchtothemetitlespan">text color</span>
-                            <input type="range" id="colorAlpha" min="0" max="100" value="100" onchange="updateColorColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="rectangleBorderColor" value="#161b22" onchange="updateRectangleBorderColor()">
-                            <span class="switchtothemetitlespan">borders</span>
-                            <input type="range" id="rectangleBorderAlpha" min="0" max="100" value="100" onchange="updateRectangleBorderColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="switchCheckedBackgroundColor" value="#0156CD" onchange="updateSwitchCheckedBackgroundColor()">
-                            <span class="switchtothemetitlespan">secondary color</span>
-                            <input type="range" id="switchCheckedAlpha" min="0" max="100" value="100" onchange="updateSwitchCheckedBackgroundColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="codeeditoreditbtncolor" value="#ffffff" onchange="updatecodeeditoreditbtncolor()">
-                            <span class="switchtothemetitlespan">tools</span>
-                            <input type="range" id="codeeditoreditbtncolorAlpha" min="0" max="100" value="100" onchange="updatecodeeditoreditbtncolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="loadingBarLoadedBackgroundColor" value="#0156CD" onchange="updateLoadingBarLoadedBackgroundColor()">
-                            <span class="switchtothemetitlespan">loading bar</span>
-                            <input type="range" id="loadingBarLoadedAlpha" min="0" max="100" value="100" onchange="updateLoadingBarLoadedBackgroundColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="rectangleColorColor" value="#0156CD" onchange="updateRectangleColorColor()">
-                            <span class="switchtothemetitlespan">file container path</span>
-                            <input type="range" id="rectangleColorAlpha" min="0" max="100" value="100" onchange="updateRectangleColorColor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="gridColor" value="#ffffff" onchange="updategridColorColor()">
-                            <span class="switchtothemetitlespan">grid</span>
-                            <input type="range" id="gridColorAlpha" min="0" max="100" value="10" onchange="updategridColorColor()">
-                        </div>
-                        <br>
-                        <h3>syntax</h3>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxblockcolor" value="#C678DD" onchange="updatesyntaxblockcolor()">
-                            <span class="switchtothemetitlespan">block</span>
-                            <input type="range" id="syntaxblockcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxblockcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxoperatorcolor" value="#E06C75" onchange="updatesyntaxoperatorcolor()">
-                            <span class="switchtothemetitlespan">operator</span>
-                            <input type="range" id="syntaxoperatorcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxoperatorcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxbracketcolor" value="#ABB2BF" onchange="updatesyntaxbracketcolor()">
-                            <span class="switchtothemetitlespan">bracket</span>
-                            <input type="range" id="syntaxbracketcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxbracketcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxsigncolor" value="#ABB2BF" onchange="updatesyntaxsigncolor()">
-                            <span class="switchtothemetitlespan">sign</span>
-                            <input type="range" id="syntaxsigncolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxsigncolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxstringcolor" value="#98C379" onchange="updatesyntaxstringcolor()">
-                            <span class="switchtothemetitlespan">string</span>
-                            <input type="range" id="syntaxstringcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxstringcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxnumbercolor" value="#D19A66" onchange="updatesyntaxnumbercolor()">
-                            <span class="switchtothemetitlespan">number</span>
-                            <input type="range" id="syntaxnumbercolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxnumbercolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxcommentcolor" value="#5C6370" onchange="updatesyntaxcommentcolor()">
-                            <span class="switchtothemetitlespan">comment</span>
-                            <input type="range" id="syntaxcommentcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxcommentcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxvariablecolor" value="#61AFEF" onchange="updatesyntaxvariablecolor()">
-                            <span class="switchtothemetitlespan">variable</span>
-                            <input type="range" id="syntaxvariablecolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxvariablecolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxcommandcolor" value="#E5C07B" onchange="updatesyntaxcommandcolor()">
-                            <span class="switchtothemetitlespan">command</span>
-                            <input type="range" id="syntaxcommandcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxcommandcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxkeywordcolor" value="#C678DD" onchange="updatesyntaxkeywordcolor()">
-                            <span class="switchtothemetitlespan">keyword</span>
-                            <input type="range" id="syntaxkeywordcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxkeywordcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxhtmlcommentcolor" value="#5C6370" onchange="updatesyntaxhtmlcommentcolor()">
-                            <span class="switchtothemetitlespan">html comment</span>
-                            <input type="range" id="syntaxhtmlcommentcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxhtmlcommentcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxregexcolor" value="#E06C75" onchange="updatesyntaxregexcolor()">
-                            <span class="switchtothemetitlespan">regex</span>
-                            <input type="range" id="syntaxregexcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxregexcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption">
-                            <input class="switchtothememaincolorspan2" type="color" id="syntaxhtmltagcontentcolor" value="#ffffff" onchange="updatesyntaxhtmltagcontentcolor()">
-                            <span class="switchtothemetitlespan">tag name</span>
-                            <input type="range" id="syntaxhtmltagcontentcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxhtmltagcontentcolor()">
-                        </div>
-                        <br>
-                        <div class="themeoption inputThemeOption">
-                            <input class="customthemecodeinput" type="text" id="customthemecodeinput" onkeydown="themeinputonkeydownforenetr(event)" placeholder="enter your theme code...">
-                            <button id="copyThemeCodeBtn" onclick="copyThemeCode(this);aAnimationFor(this, 'pop');">Copy</button>
-                        </div>
-                        <button onclick="addcustomthemetoallthemes();aAnimationFor(this, 'pop');">add new theme</button>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="backgroundColor" value="#0d1117" onchange="updateBackgroundColor()">
+                                <span class="switchtothemetitlespan">background</span>
+                                <input type="range" id="backgroundAlpha" min="0" max="100" value="100" onchange="updateBackgroundColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="accentColor" value="#161b22" onchange="updateaccentColor()">
+                                <span class="switchtothemetitlespan">accent color</span>
+                                <input type="range" id="accentAlpha" min="0" max="100" value="100" onchange="updateaccentColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="selectedColor" value="#28A745" onchange="updateSelectedColor()">
+                                <span class="switchtothemetitlespan">special color</span>
+                                <input type="range" id="selectedAlpha" min="0" max="100" value="50" onchange="updateSelectedColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="colorColor" value="#ffffff" onchange="updateColorColor()">
+                                <span class="switchtothemetitlespan">text color</span>
+                                <input type="range" id="colorAlpha" min="0" max="100" value="100" onchange="updateColorColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="rectangleBorderColor" value="#161b22" onchange="updateRectangleBorderColor()">
+                                <span class="switchtothemetitlespan">borders</span>
+                                <input type="range" id="rectangleBorderAlpha" min="0" max="100" value="100" onchange="updateRectangleBorderColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="switchCheckedBackgroundColor" value="#0156CD" onchange="updateSwitchCheckedBackgroundColor()">
+                                <span class="switchtothemetitlespan">secondary color</span>
+                                <input type="range" id="switchCheckedAlpha" min="0" max="100" value="100" onchange="updateSwitchCheckedBackgroundColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="codeeditoreditbtncolor" value="#ffffff" onchange="updatecodeeditoreditbtncolor()">
+                                <span class="switchtothemetitlespan">tools</span>
+                                <input type="range" id="codeeditoreditbtncolorAlpha" min="0" max="100" value="100" onchange="updatecodeeditoreditbtncolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="loadingBarLoadedBackgroundColor" value="#0156CD" onchange="updateLoadingBarLoadedBackgroundColor()">
+                                <span class="switchtothemetitlespan">loading bar</span>
+                                <input type="range" id="loadingBarLoadedAlpha" min="0" max="100" value="100" onchange="updateLoadingBarLoadedBackgroundColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="rectangleColorColor" value="#0156CD" onchange="updateRectangleColorColor()">
+                                <span class="switchtothemetitlespan">file container path</span>
+                                <input type="range" id="rectangleColorAlpha" min="0" max="100" value="100" onchange="updateRectangleColorColor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="gridColor" value="#ffffff" onchange="updategridColorColor()">
+                                <span class="switchtothemetitlespan">grid</span>
+                                <input type="range" id="gridColorAlpha" min="0" max="100" value="10" onchange="updategridColorColor()">
+                            </div>
+                            <br>
+                            <h3>syntax</h3>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxblockcolor" value="#C678DD" onchange="updatesyntaxblockcolor()">
+                                <span class="switchtothemetitlespan">block</span>
+                                <input type="range" id="syntaxblockcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxblockcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxoperatorcolor" value="#E06C75" onchange="updatesyntaxoperatorcolor()">
+                                <span class="switchtothemetitlespan">operator</span>
+                                <input type="range" id="syntaxoperatorcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxoperatorcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxbracketcolor" value="#ABB2BF" onchange="updatesyntaxbracketcolor()">
+                                <span class="switchtothemetitlespan">bracket</span>
+                                <input type="range" id="syntaxbracketcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxbracketcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxsigncolor" value="#ABB2BF" onchange="updatesyntaxsigncolor()">
+                                <span class="switchtothemetitlespan">sign</span>
+                                <input type="range" id="syntaxsigncolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxsigncolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxstringcolor" value="#98C379" onchange="updatesyntaxstringcolor()">
+                                <span class="switchtothemetitlespan">string</span>
+                                <input type="range" id="syntaxstringcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxstringcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxnumbercolor" value="#D19A66" onchange="updatesyntaxnumbercolor()">
+                                <span class="switchtothemetitlespan">number</span>
+                                <input type="range" id="syntaxnumbercolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxnumbercolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxcommentcolor" value="#5C6370" onchange="updatesyntaxcommentcolor()">
+                                <span class="switchtothemetitlespan">comment</span>
+                                <input type="range" id="syntaxcommentcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxcommentcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxvariablecolor" value="#61AFEF" onchange="updatesyntaxvariablecolor()">
+                                <span class="switchtothemetitlespan">variable</span>
+                                <input type="range" id="syntaxvariablecolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxvariablecolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxcommandcolor" value="#E5C07B" onchange="updatesyntaxcommandcolor()">
+                                <span class="switchtothemetitlespan">command</span>
+                                <input type="range" id="syntaxcommandcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxcommandcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxkeywordcolor" value="#C678DD" onchange="updatesyntaxkeywordcolor()">
+                                <span class="switchtothemetitlespan">keyword</span>
+                                <input type="range" id="syntaxkeywordcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxkeywordcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxhtmlcommentcolor" value="#5C6370" onchange="updatesyntaxhtmlcommentcolor()">
+                                <span class="switchtothemetitlespan">html comment</span>
+                                <input type="range" id="syntaxhtmlcommentcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxhtmlcommentcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxregexcolor" value="#E06C75" onchange="updatesyntaxregexcolor()">
+                                <span class="switchtothemetitlespan">regex</span>
+                                <input type="range" id="syntaxregexcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxregexcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption">
+                                <input class="switchtothememaincolorspan2" type="color" id="syntaxhtmltagcontentcolor" value="#ffffff" onchange="updatesyntaxhtmltagcontentcolor()">
+                                <span class="switchtothemetitlespan">tag name</span>
+                                <input type="range" id="syntaxhtmltagcontentcolorAlpha" min="0" max="100" value="100" onchange="updatesyntaxhtmltagcontentcolor()">
+                            </div>
+                            <br>
+                            <div class="themeoption inputThemeOption">
+                                <input class="customthemecodeinput" type="text" id="customthemecodeinput" onkeydown="themeinputonkeydownforenetr(event)" placeholder="enter your theme code...">
+                                <button id="copyThemeCodeBtn" onclick="copyThemeCode(this);aAnimationFor(this, 'pop');">Copy</button>
+                            </div>
+                            <button onclick="addcustomthemetoallthemes();aAnimationFor(this, 'pop');">add new theme</button>
                         </div>
                     </div>
                 </div>
@@ -9306,24 +10017,24 @@
                     <br>
                     <div class="chooseceebtnposopcontainer">
                         <div class="chooseceebtnposopcontainerswitchcontainer layouteditswitch" id="reduceBarsSpanTextForInfo">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input id="roundedUItoggleSwitch" type="checkbox" onchange="togglesmallNavBar(this);saveReducedBarToggleSelection(this);">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="chooseceebtnposopcontainerswitchcontainername">reduced bars</span>
                         </div>
                         <div class="chooseceebtnposopcontainerswitchcontainer ifislandenableddisablethis layouteditswitch" id="bordersSpanTextForInfo">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" id="borderToggleEl" onchange="toggleceefbrlbd(this);saveToolBarBorderToggleSelection(this);">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="chooseceebtnposopcontainerswitchcontainername">borders</span>
                         </div>
                         <div class="chooseceebtnposopcontainerswitchcontainer ifborderenableddisablethis layouteditswitch" id="islandsBarsSpanTextForInfo">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" id="islandToggleEl" onchange="togglecebtnislands(this);saveIslandToggleSelection(this);">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="chooseceebtnposopcontainerswitchcontainername">islands</span>
                         </div>
                         <div class="ceebtnposexample ceebtnposexampleselected" id="ceebtnposexample0" onclick="switchtobtnlayout('0', this);saveSelectedLayout('0');">
@@ -9378,10 +10089,10 @@
                         <h2 class="cfscscremovespaceleft cfscscaddspaceleft cfscscf cfscscremovespaceleftlabel cfscscaddspaceleftlabel cfsch2">Amount of spaces</h2>
                         <div class="cfscscmoveup cfscscmovedown cfscscremovespaceleft cfscscaddspaceleft cfscscf cfscounter"><span class="cfscountervalue">1</span><div class="cfscounterbtnc"><button class="cfscounteradd">+</button><button class="cfscounterremove">-</button></div></div>
                         <div class="cfscscpin cfscscf pinedlinestopsearchresult">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">pined lines are top search results</span>
                         </div>
                         <div class="searchCon cfscscf cfscscpin" style="margin-top: 15px;">
@@ -9399,10 +10110,10 @@
                             no pined lines yet!
                         </div>
                         <div class="cfscsccommands cfscscf commandassuggestion">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">cammands in suggestions</span>
                         </div>
                         <button class="cfscsccommands cfscscf addcommandbtn" id="addcommandbtn" onclick="addacommand()">add a command</button>
@@ -9415,10 +10126,10 @@
                         </div>
                         <h2 class="cfscscgrid cfscscf cfscscgridlabel cfsch2">grid options</h2>
                         <div class="cfscscgrid cfscscf showFalseGridToneToggle">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" checked onchange="toggleTrueGridToneDisplay(this)">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">show true grid color</span>
                         </div>
                         <div class="cfscscgrid cfscscf gridoptions">
@@ -9430,25 +10141,25 @@
                             <div class="gridop gridop6" id="gridop6" onclick="selectthisgrid('gridop6');saveGridSelection('gridop6');"></div>
                         </div>
                         <div class="cfscscsearch cfscscf commandforregexsearch">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname commandtosearchregexswitchtext">"/r" to search with regex</span>
                         </div>
                         <input type="text" class="cfscscsearch cfscscf commandtosearchregex" oninput="changecommandtosearchregexswitchtext(this)" value="r/" maxlength="10" onblur="checkRegexStringInput(this)">
                         <div class="cfscscsearch cfscscf linenumberforsearchresult">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname linenumberforsearchresultswitchtext">show line numbers in search results</span>
                         </div>
                         <div class="cfscscdelete cfscscf onlydeletelinecontent">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">only delete lines content</span>
                         </div>
                         <div class="searchCon cfscscf cfscscdelete" style="margin-top: 15px;">
@@ -9466,10 +10177,10 @@
                             no lines selected yet!
                         </div>
                         <div class="cfscscattachnotestolines cfscscf mergelinenotesonautomatedaddintion">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname addfullcodecopytoclipboardpastswitchtext">Merge notes when line notes are mass applied.</span>
                         </div>
                         <button class="cfscscattachnotestolines cfscscf addCommentsAsLineNotesBtn" id="addCommentsAsLineNotesBtn" style="justify-content: center; margin-top: 15px; margin-bottom: 10px; border-radius: 15px;" onclick="addCommentsAsLineNotes()">add comments as line notes</button>
@@ -9489,10 +10200,10 @@
                         </div>
                         <h2 class="cfscsccopy cfscscf cfscsccopylabel cfsch2">AIlury Clipboard</h2>
                         <div class="cfscsccopy cfscscf addfullcodecopytoclipboardpast">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname addfullcodecopytoclipboardpastswitchtext">add full code copy to clipboard past</span>
                         </div>
                         <button class="cfscsccopy cfscscf clearclipboardbtn" id="clearclipboardbtn" onclick="clearclipboard()">clear clipboard</button>
@@ -9539,24 +10250,24 @@
                             no disabled lines yet!
                         </div>
                         <div class="cfscscredo cfscscf redoanimation">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">redo button animation</span>
                         </div>
                         <div class="cfscscundo cfscscf undoanimation">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">undo button animation</span>
                         </div>
                         <div class="cfscscsuggestions cfscscf suggestuniquevalues">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" id="uniqueValuesInSuggestionsToggleEl" checked onchange="updateSuggestionInterval(this);saveUniqueValuesForSuggestionsToggle(this);">
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">Suggest unique values</span>
                         </div>
                         <select name="spaceindentationnum" class="cfscscspaceindentation cfscscf spaceindentationnum dropDownOpCon" oninput="updateIndentSizes(this)">
@@ -9565,20 +10276,20 @@
                             <option value="4" selected>4 space indent</option>
                         </select>
                         <div class="cfscscspaceindentation cfscscf applyspaceindentationonupload" style="margin-top: 10px;">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" onchange="applyIndentSizeOnLoadToggle(this)" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">apply space indentation to uploaded files</span>
                         </div>
                         <button class="cfscscspaceindentation cfscscf applyNewIndentSizesBtn" id="applyNewIndentSizesBtn" onclick="applyNewIndentSizes()" style="justify-content: center;">Apply new indent size</button>
                         <p class="cfscscspaceindentation cfscscf">Prevent unexpected indent highlight interruptions</p>
                         <button class="cfscscspaceindentation cfscscf equalizeIndentSizeBtn" id="equalizeIndentSizeBtn" onclick="equalizeIndentSize()" style="justify-content: center;">Equalize Indent Size</button>
                         <div class="cfscscundo cfscscf undolimit">
-                            <label class="switch">
+                            <div class="switchCon"><label class="switch">
                                 <input type="checkbox" id="undoLimitToggleEl" onchange="saveUndoLimitToggle(this);updateHistorySize();updateSaveFile();" checked>
                                 <span class="slider"></span>
-                            </label>
+                            </label></div>
                             <span class="cfscscswitchdesname">undo limit</span>
                         </div>
                         <select name="undolimitnum" class="cfscscundo cfscscf undolimitnum dropDownOpCon" onchange="saveUndoLimit(this);updateHistorySize();updateSaveFile();">
@@ -9596,6 +10307,13 @@
                         <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="clearpasttoundo()">clear current file's history</button>
                         <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="clearallpasttoundo()">clear all files history</button>
                         <button class="cfscscundo cfscscf clearpasttoundobtn" id="clearpasttoundobtn" onclick="cleareverypasttoundo()">clear all files history in all projects</button>
+                        <div class="cfscscduplicate cfscscf duplicatemethod">
+                            <div class="switchCon"><label class="switch">
+                                    <input type="checkbox" id="duplicateInGroupsToggle" checked>
+                                    <span class="slider"></span>
+                                </label></div>
+                            <span class="cfscscswitchdesname">group duplication</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -9671,10 +10389,12 @@
                         <input type="text" id="projectNameInputEl" placeholder="My New Project" oninput="enterProjectNameInputEvent(this)" onkeydown="projectNameKeydown(this, event)" maxlength="20">
                     </div>
                     <label for="cuswitchbox">casual use: </label>
-                    <label class="cuswitch">
-                        <input id="cuswitchbox" type="checkbox" class="cuswitchbox" onchange="toggleCasualUse(this)">
-                        <span class="cuslider"></span>
-                    </label>
+                    <div id="switchCon">
+                        <label class="cuswitch">
+                            <input id="cuswitchbox" type="checkbox" class="cuswitchbox" onchange="toggleCasualUse(this)">
+                            <span class="cuslider"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
             <div id="policiesAndConSec">
@@ -9729,6 +10449,7 @@
     <div id="hoverCon">
         <div id="hover"></div>
     </div>
+    </div>
     <script>
         var allNotes = {};
         var allProjectNotes = {};
@@ -9741,8 +10462,9 @@
         var vAIluryStudioPendingFileName = null;
         window.addEventListener("load", () => {
             const loadingScreen = document.getElementById("loading-screen");
+            const isDark = window.matchMedia("(prefers-color-scheme: dark)")?.matches;
             if (typeof switchtotheme === "function") {
-                switchtotheme('light-theme', undefined, true);
+                switchtotheme(isDark ? 'dark-theme' : 'light-theme', undefined, true);
             }
             recoverReducedBarsToggleSelection();
             recoverToolBarBorderSelection();
@@ -9766,6 +10488,14 @@
                 //document.querySelector(".navdotc3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11").scrollIntoView({ block: 'center', inline: "end", block: "center" });
             }, 1000);
         });
+        function toggleClass(elementclass, classtt, setToVal = null) {
+            const el = document.querySelector(elementclass);
+            if (el && setToVal == null) {
+                el.classList.toggle(classtt);
+            } else if (el) {
+                el.classList.toggle(classtt, setToVal);
+            }
+        }
         const theNavBarForScrollAmount2 = document.getElementById("nav-bar");
         if (theNavBarForScrollAmount2) {
             theNavBarForScrollAmount2.scrollLeft = theNavBarForScrollAmount2.getBoundingClientRect().width;
@@ -10044,6 +10774,62 @@
                 valueToStore: true,
                 saveFailMsg: "something went wrong while trying to save temporary display selection. You might have run out of local storage.",
                 removeFailMsg: "something went wrong while trying to update temporary display selection. Local storage error."
+            });
+        }
+        
+        function recoverSavedShadowsDisplaySelection() {
+            _localRecover({
+                selector: "#toggleShadowDisplaySwitch",
+                storageKey: "AIluryStudioShadowsDisplay",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked ? true : false;
+                    toggleClass('#allcon', 'shadow', el.checked);
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                    toggleClass('#allcon', 'shadow', el.checked);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover shadow display selection. Local storage error.",
+                removeWarnMsg: "something went wrong while trying to remove shadow display selection after an error during the recovery process. Local storage error."
+            });
+        }
+        recoverSavedShadowsDisplaySelection();
+        
+        function saveShadowToggleSelection(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioShadowsDisplay",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save shadow display selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update the shadow display selection. Local storage error."
+            });
+        }
+        
+        function recoverSavedDepthDisplaySelection() {
+            _localRecover({
+                selector: "#toggleCastLightDisplaySwitch",
+                storageKey: "AIluryStudioDepthDisplay",
+                onFound: (el, isChecked) => {
+                    el.checked = isChecked ? true : false;
+                    toggleClass('#allcon', 'depth', el.checked);
+                },
+                onFailure: (el) => {
+                    el.checked = false;
+                    toggleClass('#allcon', 'depth', el.checked);
+                },
+                recoverWarnMsg: "something went wrong while trying to recover light cast display selection. Local storage error.",
+                removeWarnMsg: "something went wrong while trying to remove light cast display selection after an error during the recovery process. Local storage error."
+            });
+        }
+        recoverSavedDepthDisplaySelection();
+        
+        function saveLightCastToggleSelection(el) {
+            _localSave({
+                shouldStore: el.checked != false,
+                storageKey: "AIluryStudioDepthDisplay",
+                valueToStore: true,
+                saveFailMsg: "something went wrong while trying to save light cast display selection. You might have run out of local storage.",
+                removeFailMsg: "something went wrong while trying to update the light cast display selection. Local storage error."
             });
         }
         
@@ -12361,6 +13147,11 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 description: "Copy the text content of selected lines or all lines, at once. On click, the one in the top tool-bar copies all the code in the selected lines and merges it into one big piece of code for paste, and the one in the bottom tool-bar copies all the code in the file.",
                 keycomb: "[ctr/cmd + c + alt] and [+ shift] if you want to copy the entire files code content."
             },
+            "duplicate": {
+                title: "duplicate",
+                description: "Duplicate selected lines, either in groups of selected lines or individually. Duplicating in groups means that the editor will look for selected lines that are next to each other, group them, and insert a duplicate of the group, right after it. Duplicating individually simply skips the grouping process and inserts a duplicate of every individual line after that line. Below you can toggle between the two duplication methods. ",
+                keycomb: "[ctr/cmd + alt + d]"
+            },
             "delete": {
                 title: "delete",
                 description: "Delete selected lines or all lines, at once. On click, the one at the top will only delete all selected lines, and the one at the bottom will delete all lines in the file and essentially clear it. Below this text you can see a list of all selected lines. You can delete them individually here by clicking the delete button next to the lines.",
@@ -12766,17 +13557,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }, 2000);
         }
         
-        
-        function toggleClass(elementclass, classtt, setToVal = null) {
-            const el = document.querySelector(elementclass);
-            if (el && setToVal == null) {
-                el.classList.toggle(classtt);
-            } else if (el) {
-                el.classList.toggle(classtt, setToVal);
-            }
-        }
-        
-        
         var replacing = "all";
         function replacetextinlines(allorsl) {
             replacing = allorsl;
@@ -13019,7 +13799,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             
                     if (groupElements.length > 0) {
                         messagecontainer.classList.toggle('consolegroupcollapsed');
-                        icon.textContent = messagecontainer.classList.contains('consolegroupcollapsed') ? "▶" : "▼";
                     }
                     
                     if (messagecontainer.classList.contains('consolegroupcollapsed')) {
@@ -13072,9 +13851,9 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             if (eds == "timeEnd"){
                 message.textContent += ": " + endTimer(edm2);
             }
-            if (eds != "time" && eds != "countReset" && eds != "groupEnd"){
+            if (eds != "time" && eds != "countReset"){
                 consol.appendChild(messagecontainer);
-                if (eds != "group") {
+                if (eds != "group" && eds != "groupCollapsed" && eds != "groupEnd") {
                     const dateInfoText = document.createElement('span');
                     const messageNumInfoText = document.createElement('span');
                     const dateTypeText = document.createElement('span');
@@ -13098,29 +13877,136 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             if (eds == "countReset"){
                 resetCount(edm2);
             }
+            if (eds == "groupEnd") {
+                messagecontainer.classList.add("consoleGroupEndBreak");
+            }
             
             
             const allicons = {
-                error: "⚠",
-                clear: "⌧",
-                log: "○",
-                debug: "✓",
-                info: "?",
-                warn: "!",
-                table: "■",
-                dir: "",
-                group: "▼",
-                groupEnd: "∞",
-                groupCollapsed: "▶",
-                time: "◴",
-                timeEnd: "◷",
-                timeLog: "◵",
-                assert: "⚠",
-                count: "•",
-                countReset: ""
+                error: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+</svg>`,
+                clear: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <g class="trash-lid">
+        <path d="M3 6h18" />
+        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </g>
+    <g class="trash-body">
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+        <line x1="10" y1="11" x2="10" y2="17" />
+        <line x1="14" y1="11" x2="14" y2="17" />
+    </g>
+</svg>`,
+                log: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+    <polyline points="13 2 13 9 20 9" />
+    <line x1="8" y1="13" x2="16" y2="13" />
+    <line x1="8" y1="17" x2="16" y2="17" />
+</svg>`,
+                debug: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="15" rx="5" ry="6.5" />
+    <ellipse cx="12" cy="8" rx="3.5" ry="3.5" />
+    <line x1="10.5" y1="5" x2="8.5" y2="2" />
+    <line x1="13.5" y1="5" x2="15.5" y2="2" />
+    <circle cx="4.8" cy="11.5" r="1.25" fill="currentColor" stroke="none" />
+    <circle cx="3.8" cy="15" r="1.25" fill="currentColor" stroke="none" />
+    <circle cx="4.8" cy="18.5" r="1.25" fill="currentColor" stroke="none" />
+    <circle cx="19.2" cy="11.5" r="1.25" fill="currentColor" stroke="none" />
+    <circle cx="20.2" cy="15" r="1.25" fill="currentColor" stroke="none" />
+    <circle cx="19.2" cy="18.5" r="1.25" fill="currentColor" stroke="none" />
+</svg>`,
+                info: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+    <line x1="12" y1="12" x2="12" y2="16" />
+</svg>`,
+                warn: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+</svg>`,
+                table: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <path d="M3 9h18" />
+    <path d="M3 15h18" />
+    <path d="M9 9v12" />
+</svg>`,
+                dir: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="8" height="8" rx="1.5" />
+    <rect x="13" y="3" width="8" height="8" rx="1.5" />
+    <rect x="3" y="13" width="8" height="8" rx="1.5" />
+    <path d="M14 14.5h7" />
+    <path d="M14 17h5" />
+    <path d="M14 19.5h6" />
+</svg>`,
+                group: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+</svg>`,
+                groupEnd: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="5" y1="3" x2="5" y2="21" />
+    <path d="M5 4h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5" />
+    <path d="M12.5 4v12" />
+    <path d="M5 10h15" />
+    <rect x="12.5" y="4" width="7.5" height="6" fill="currentColor" stroke="none" />
+    <rect x="5" y="10" width="7.5" height="6" fill="currentColor" stroke="none" />
+</svg>`,
+                groupCollapsed: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+</svg>`,
+                time: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+</svg>`,
+                timeEnd: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 2h4" />
+    <path d="M12 2v3" />
+    <circle cx="12" cy="14" r="8" />
+    <path d="M12 14l3-3" />
+    <path d="M12 10v4" />
+</svg>`,
+                timeLog: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 2h4" />
+    <path d="M12 2v3" />
+    <circle cx="12" cy="14" r="8" />
+    <path d="M12 14l3-3" />
+    <path d="M12 10v4" />
+</svg>`,
+                assert: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+</svg>`,
+                count: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="18" height="16" rx="3" />
+    <path d="M7 12h3" />
+    <path d="M8.5 10.5v3" />
+    <path d="M14 12h3" />
+</svg>`,
+                countReset: "",
+                trace: `
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 4c0 4.5 10 3.5 10 8s-10 3.5-10 8" stroke-dasharray="3 3" />
+</svg>`
             };
             if (eds in allicons){
-                icon.textContent = allicons[eds];
+                icon.innerHTML = allicons[eds];
             }
             if (eds == "error" && document.getElementById('consoleconteiner').style.display == "none") {
                 importantnotificationmessageelement(message.textContent);
@@ -15708,14 +16594,14 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             "candy-theme": "#fff5ff,100.#ffe9ff,100.#fa92e9,100.#9b72b3,100.#eedcee,100.#ca7dff,100.#e03bbd,100.#be38f3,100.#f568e4,100.#ffe2ff,52.#d00078,100.#ffaae9,100.#982b72,100.#c11463,100.#ff47ff,100.#da63be,100.#b117c4,100.#c678dd,100.#5c6370,100.#e06cff,100.#8a5588,100.#e00075,100.#e63bd5,100",
             "lightblue-theme": "#e6f5ff,100.#dcebff,100.#1cbfca,50.#151441,100.#6fabce,19.#508fcd,100.#123f56,100.#00a9b6,100.#448e99,100.#b4d8d9,20.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#1c3446,100",
             "deeplightblue-theme": "#ffffff,100.#daf4ff,100.#aafbff,50.#00cafb,100.#ccffff,100.#0088ef,100.#53e0ff,100.#0156cd,100.#007fd7,100.#ffffff,10.#84ebff,100.#64daff,100.#0d9fff,100.#3873bf,100.#007dff,100.#61bfff,100.#aafbff,100.#009fff,100.#73c2ff,100.#0078dd,100.#aafbff,100.#007cff,100.#8ce2ff,100",
-            "enhanceddefaultdark-theme": "#020615,100.#0b1120,100.#0156cd,50.#ffffff,100.#0b1120,100.#0156cd,100.#ffffff,100.#0156cd,100.#0156cd,100.#0b1120,75.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
-            "gray-theme": "#28282e,100.#393a43,100.#0156cd,74.#ffffff,100.#393a43,100.#0156cd,100.#ffffff,100.#0156cd,100.#0156cd,100.#393a43,12.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
+            "enhanceddefaultdark-theme": "#020615,100.#0b1120,100.#0156cd,50.#ffffff,100.#101625,100.#0156cd,100.#ffffff,100.#0156cd,100.#0156cd,100.#0b1120,75.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
+            "gray-theme": "#28282e,100.#393a43,100.#0156cd,74.#ffffff,100.#43444d,100.#0156cd,100.#ffffff,100.#0156cd,100.#0156cd,100.#393a43,12.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
             "darkgray-theme": "#1a1a1c,100.#2f2f32,100.#0091ff,74.#ffffff,100.#38383b,100.#0091ff,100.#ffffff,100.#0091ff,100.#0091ff,100.#38383b,12.#c678dd,100.#e06c75,100.#abb2bf,100.#abb2bf,100.#98c379,100.#d19a66,100.#5c6370,100.#61afef,100.#e5c07b,100.#c678dd,100.#5c6370,100.#e06c75,100.#ffffff,100",
             "lightyellow-theme": "#f0f0f0,100.#ebebeb,100.#ffab01,50.#000000,100.#d6d6d6,100.#ffab01,100.#000000,100.#fecb3e,100.#ffab01,100.#d6d6d6,37.#a96800,100.#da5100,100.#858585,100.#707070,100.#da5100,100.#d19a66,100.#5c6370,100.#d19d01,100.#e5c07b,100.#d19d01,100.#5c6370,100.#d38301,100.#333333,100",
-            "darkpurple-theme": "#141425,100.#1e1e2f,100.#5c2d91,100.#ffffff,100.#1e1e2f,100.#5c2d91,100.#ffffff,100.#5c2d91,100.#61afef,100.#1e1e2f,44.#c640dd,100.#5c2d91,100.#abb2bf,100.#abb2bf,100.#72c338,100.#d02d91,72.#5c6370,100.#61afef,100.#61afef,100.#b125dd,100.#5c6370,100.#5c2d91,100.#ffffff,100",
+            "darkpurple-theme": "#141425,100.#1e1e2f,100.#5c2d91,100.#ffffff,100.#282839,100.#5c2d91,100.#ffffff,100.#5c2d91,100.#61afef,100.#1e1e2f,44.#c640dd,100.#5c2d91,100.#abb2bf,100.#abb2bf,100.#72c338,100.#d02d91,72.#5c6370,100.#61afef,100.#61afef,100.#b125dd,100.#5c6370,100.#5c2d91,100.#ffffff,100",
             "light-theme": "#ffffff,100.#f2f2f8,100.#0075f0,34.#000000,100.#e8eaee,100.#0075f0,100.#7f868b,100.#0075f0,100.#0075f0,100.#dadce1,21.#0075f0,100.#abb2bf,100.#abb2bf,100.#abb2bf,100.#009500,100.#61afef,72.#5c6370,100.#0075f0,100.#0075f0,100.#0075f0,100.#5c6370,100.#0075f0,100.#000000,100",
             "lightgreen-theme": "#ffffff,100.#f7f9f7,100.#00b600,43.#000000,100.#e8eaee,100.#35d342,100.#7f868b,100.#4ae44b,100.#00b600,100.#daebe1,21.#00b600,100.#abc4bf,100.#abc3bf,100.#abcdbf,100.#51606b,100.#007e63,100.#5c6370,100.#00a500,100.#006900,100.#006147,100.#5c6370,100.#00de5e,100.#000000,100",
-            "blackboard-theme": "#356b3d,100.#608c66,100.#28a745,50.#b0c6b3,100.#608c66,100.#acc3af,100.#ffffff,100.#ffffff,100.#ccdfd0,100.#8dbd8f,13.#ffffff,100.#ffffff,100.#abb2bf,100.#abb2bf,100.#ffffff,100.#ffffff,100.#ffffff,56.#adadad,100.#d6d6d6,100.#999999,100.#ffffff,61.#ffffff,100.#c2c2c2,100",
+            "blackboard-theme": "#2b6133,100.#608c66,100.#28a745,50.#b0c6b3,100.#74a07a,100.#acc3af,100.#ffffff,100.#ffffff,100.#ccdfd0,100.#8dbd8f,13.#ffffff,100.#ffffff,100.#abb2bf,100.#abb2bf,100.#ffffff,100.#ffffff,100.#ffffff,56.#adadad,100.#d6d6d6,100.#999999,100.#ffffff,61.#ffffff,100.#c2c2c2,100",
             "custom-theme": ""
         };
 
@@ -16894,6 +17780,14 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
+                        </button>
+                        <button class="eslbtn disabled" id="duplicatebtn" onclick="changeBtnTextOnClick(this);duplicateselectedlines()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                <line x1="15.5" y1="12.5" x2="15.5" y2="18.5" />
+                                <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
                             </svg>
                         </button>
                         <button class="eslbtn disabled" id="trimbtn" onclick="changeBtnTextOnClick(this);trimAllselectedlinetexts()">
@@ -20679,7 +21573,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         "timeLog",
                         "assert",
                         "count",
-                        "countReset"
+                        "countReset",
+                        "trace"
                     ];
                     if (!keys.includes(type)){
                         return `parent.postMessage({ status: 'error', message: 'unsupported console method: ${type}', logId: 'consoleMessageId' + crypto.randomUUID() }, '*');\nconsole.${type}(${message});`;
@@ -20688,7 +21583,13 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     if (messagetouse == ""){
                         return `parent.postMessage({ status: '${type}', message: "default", logId: 'consoleMessageId' + crypto.randomUUID() }, '*');`;
                     }
-                    return `parent.postMessage({ status: '${type}', message: [${messagetouse}], logId: 'consoleMessageId' + crypto.randomUUID() }, '*');`;
+                    return `parent.postMessage({ status: '${type}', message: [${messagetouse}].map(el => {
+                        if (typeof el == "object") {
+                            return JSON.stringify(el);
+                        } else {
+                            return el;
+                        }
+                    }), logId: 'consoleMessageId' + crypto.randomUUID() }, '*');`;
                 });
             }
             
@@ -21199,7 +22100,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         "timeLog",
                         "assert",
                         "count",
-                        "countReset"
+                        "countReset",
+                        "trace"
                     ];
                     if (!keys.includes(type)) {
                         return `parent.postMessage({ status: 'error', message: 'unsupported console method: ${type}', logId: 'consoleMessageId' + crypto.randomUUID() }, '*');`;
@@ -23436,6 +24338,88 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 checkifselectedlines();
             }
         }
+        function duplicateselectedlines() {
+            if (!editorIndex || !editorFiles[editorIndex]) return;
+            
+            const duplicateInGroups = document.getElementById("duplicateInGroupsToggle")?.checked
+            
+            cPasting = true;
+            noKeyDown = true;
+            
+            const allLines = editorFiles[editorIndex];
+            
+            const snapshot = allLines.map(line => ({
+                line,
+                selected: line.classes.includes("selected")
+            }));
+            
+            function createLineDuplicate(line) {
+                return {
+                    id: createCodeEditorLineId(),
+                    classes: ['code-editor-line'],
+                    text: line.text
+                };
+            }
+            
+            let newpast = [];
+            let lastLine = 0;
+            let offset = 0;
+            
+            function insertBlock(duplicates, originalInsertIndex) {
+                const actualIndex = originalInsertIndex + offset;
+                allLines.splice(actualIndex, 0, ...duplicates);
+                duplicates.forEach((newline, i) => {
+                    const idx = actualIndex + i;
+                    newpast.push({ element: { ...newline }, type: "create", index: idx });
+                    lastLine = idx;
+                });
+                offset += duplicates.length;
+            }
+            
+            if (duplicateInGroups) {
+                let i = 0;
+                while (i < snapshot.length) {
+                    if (!snapshot[i].selected) {
+                        i++;
+                        continue;
+                    }
+                    const groupStart = i;
+                    let groupEnd = i;
+                    while (groupEnd + 1 < snapshot.length && snapshot[groupEnd + 1].selected) {
+                        groupEnd++;
+                    }
+                    
+                    const duplicates = [];
+                    for (let j = groupStart; j <= groupEnd; j++) {
+                        duplicates.push(createLineDuplicate(snapshot[j].line));
+                    }
+                    insertBlock(duplicates, groupEnd + 1);
+                    
+                    i = groupEnd + 1;
+                }
+            } else {
+                for (let i = 0; i < snapshot.length; i++) {
+                    if (!snapshot[i].selected) continue;
+                    const newline = createLineDuplicate(snapshot[i].line);
+                    insertBlock([newline], i + 1);
+                }
+            }
+            
+            updateSelectedClasses(0, () => {
+                scrolltolinenumber(lastLine, undefined, undefined, () => {
+                    cPasting = false;
+                    noKeyDown = false;
+                    
+                    if (newpast.length > 0) {
+                        resolvePendingPast();
+                        pasteventPrep();
+                        pastevents[lasteventsparentsection.id].push(newpast);
+                        enablepastbtn();
+                        updateSaveFile();
+                    }
+                });
+            });
+        }
         function copyalllinetexts() {
             const allLines = editorFiles[editorIndex];
             if (allLines.length) {
@@ -23531,6 +24515,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             "downbtn": "This button allows you to move selected lines down. You can edit the jump size in the \"file settings\". The keyboard shortcut for it is: the arrow up key, or [ctr/cmd + m + shift].",
             "sleapbtn": "This allows you to enable or disable lines. Disabled lines can not be edited. You can use the enable all lines to enable disabled lines or you can go to the \"file settings\" to enable manually. The keyboard shortcut for it is: [ctr/cmd + d + shift].",
             "copybtn": "This button allows you to copy code. This button at the top copies code only from selected lines and this button at the bottom copies the entire files content. You can also open file options and copy the entire files content there. You can edit this button in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + alt + c] and [+ shift], if you want to copy the entire files content.",
+            "duplicatebtn": "This button allows you to duplicate selected lines, either individually or in groups. It duplicates in groups by default but you can change that in the \"file settings\". The keyboard shortcut for it is: [ctr/cmd + alt + d].",
             "trimbtn": "This button trims the text in selected lines. Trimming removes all spaces on both sides of the text, while leaving all the spaces in the middle. The keyboard shortcut for it is: [ctr/cmd + t + shift].",
             "removespacesleftbtn": "This button removes indent spaces left. You can edit the removal amount in the \"file settings\". The keyboard shortcut for it is: (ctr/cmd + [).",
             "addspacesleftbtn": "This button adds indent spaces left. You can edit the indent size in the \"file settings\". The keyboard shortcut for it is: (ctr/cmd + ]).",
@@ -25050,7 +26035,15 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     }
                     return;
                 }
-                else if (isCmdOrCtrl && event.key.toLowerCase() == "d" && event.shiftKey) {
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "d" && !event.shiftKey && event.altKey) {
+                    if (areSelectedLine) {
+                        forSelectedEv(duplicateselectedlines, () => event.preventDefault());
+                    } else {
+                        shortNotificationmessageelement("Select lines first with the arrow left key or ctr/cmd + >.");
+                    }
+                    return;
+                }
+                else if (isCmdOrCtrl && event.key.toLowerCase() == "d" && event.shiftKey && !event.altKey) {
                     if (areSelectedLine) {
                         forSelectedEv(restselectedline, () => event.preventDefault());
                     } else {
@@ -26373,7 +27366,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         ];
         
         var supportedConsoleMethods = [
-            "count", "countReset", "time", "timeLog", "timeEnd", "group", "groupEnd", "log", "debug", "warn"
+            "count", "countReset", "time", "timeLog", "timeEnd", "group", "groupEnd", "log", "debug", "warn", "trace"
         ];
         
         var jsGlobals = [
