@@ -616,7 +616,6 @@
             width: 100vw;
             border-radius: 5px;
             padding: 5px 4.5em;
-            overflow-y: scroll;
             overflow-x: hidden;
             transition: var(--aftr);
             background:
@@ -987,6 +986,9 @@
         }
         input[type="text"]:not(.filePathInput), textarea {
             caret-color: var(--selected-color);
+        }
+        textarea {
+            resize: vertical;
         }
         .filePathInput{
             font-size: 1em;
@@ -4535,6 +4537,7 @@
             width: 100%;
             transition: var(--tr);
             outline: 0px solid var(--border-color);
+            filter: none;
         }
         
         .depth .gridop, .depth .caexample {
@@ -4582,13 +4585,14 @@
             width: 100%;
         }
         
-        .caexample button {
+        .caexample .animationShowcaseEl {
             height: 90%;
             width: 90%;
             border: none;
             border-radius: 5px;
             background: var(--lightgrey-color);
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
         }
         
         @keyframes swipeinout {
@@ -4709,23 +4713,23 @@
                 transform: none;
             }
         }
-        .caexample1 button {
+        .caexample1 .animationShowcaseEl {
             animation: swipeinout 3s infinite;
         }
         
-        .caexample2 button {
+        .caexample2 .animationShowcaseEl {
             animation: easeinout 3s infinite;
         }
         
-        .caexample3 button {
+        .caexample3 .animationShowcaseEl {
             animation: rollinout 3s infinite;
         }
         
-        .caexample4 button {
+        .caexample4 .animationShowcaseEl {
             animation: popinout 3s infinite;
         }
         
-        .caexample5 button {
+        .caexample5 .animationShowcaseEl {
             animation: noneinout 3s infinite;
         }
         
@@ -5849,9 +5853,6 @@
         .depth #defaultNewProjectCon {
             border-top-width: 2px;
         }
-        .shadow #defaultNewProjectCon {
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
-        }
         #defaultNewProjectCon p {
             font-size: 1em;
             font-weight: normal;
@@ -5895,7 +5896,7 @@
         .depth .projectCon {
             border-top-width: 2px;
         }
-        .shadow .projectCon {
+        .shadow .projectCon.currentProjectOp, .shadow #defaultNewProjectCon.currentProjectOp {
             box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
         }
         .deleteProjectConBtn {
@@ -6207,7 +6208,7 @@
             margin: 0;
             padding: 10px;
             position: fixed;
-            z-index: 15;
+            z-index: 2100;
             color: var(--contrast-color);
             max-height: 420px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -8170,6 +8171,21 @@
             <span id="sidebarResizeSymbol"></span>
         </div>
         <div class="sidebarwidthdisplay">30vw</div>
+        <div class="inspector-dropdown">
+            <button class="inspector-movement-point"></button>
+            <button class="inspector-close-btn">&times;</button>
+            
+            <input type="text" class="inspector-input" placeholder="search for value...">
+            
+            <div class="inspector-options">
+                <button class="inspector-btn active">CSS</button>
+                <button class="inspector-btn inactive">HTML</button>
+            </div>
+            
+            <div class="inspector-content-list">
+                
+            </div>
+        </div>
         <div class="allcontainer">
             <div class="container linenumberingon" id="container">
                 <div id="codeLoadingSpinner">
@@ -8197,22 +8213,6 @@
                             <line x1="9" y1="3" x2="9" y2="21" />
                         </svg>
                     </button>
-                    <div class="inspector-dropdown">
-                        <button class="inspector-movement-point"></button>
-                        <button class="inspector-close-btn">&times;</button>
-                        
-                        <input type="text" class="inspector-input" placeholder="search for value...">
-                        
-                        <div class="inspector-options">
-                            <button class="inspector-btn active">CSS</button>
-                            <button class="inspector-btn inactive">HTML</button>
-                        </div>
-                        
-                        <div class="inspector-content-list">
-                            
-                        </div>
-                    </div>
-                    
                     <div class="swipe-container">
                         <div class="view">
                             <div class="mobile-container">
@@ -9997,11 +9997,11 @@
                     <h3>Animation</h3>
                     <br>
                     <div class="chooseanimationexamplecontainer">
-                        <div class="caexample caexample1 selectedanimation" onclick="chengeanimation(this, 'swipe');" id="animationOpswipe"><button></button> <span class="caexampleLabel">Slide</span></div>
-                        <div class="caexample caexample2" onclick="chengeanimation(this, 'ease');" id="animationOpease"><button></button> <span class="caexampleLabel">Ease</span></div>
-                        <div class="caexample caexample3" onclick="chengeanimation(this, 'roll');" id="animationOproll"><button></button> <span class="caexampleLabel">Roll</span></div>
-                        <div class="caexample caexample4" onclick="chengeanimation(this, 'pop');" id="animationOppop"><button></button> <span class="caexampleLabel">Pop</span></div>
-                        <div class="caexample caexample5" onclick="chengeanimation(this, 'none');" id="animationOpnone"><button></button> <span class="caexampleLabel">None</span></div>
+                        <div class="caexample caexample1 selectedanimation" onclick="chengeanimation(this, 'swipe');" id="animationOpswipe"><div class="animationShowcaseEl"></div> <span class="caexampleLabel">Slide</span></div>
+                        <div class="caexample caexample2" onclick="chengeanimation(this, 'ease');" id="animationOpease"><div class="animationShowcaseEl"></div> <span class="caexampleLabel">Ease</span></div>
+                        <div class="caexample caexample3" onclick="chengeanimation(this, 'roll');" id="animationOproll"><div class="animationShowcaseEl"></div> <span class="caexampleLabel">Roll</span></div>
+                        <div class="caexample caexample4" onclick="chengeanimation(this, 'pop');" id="animationOppop"><div class="animationShowcaseEl"></div> <span class="caexampleLabel">Pop</span></div>
+                        <div class="caexample caexample5" onclick="chengeanimation(this, 'none');" id="animationOpnone"><div class="animationShowcaseEl"></div> <span class="caexampleLabel">None</span></div>
                     </div>
                 </div>
             </div>
@@ -10264,7 +10264,8 @@
                             </label></div>
                             <span class="cfscscswitchdesname">undo button animation</span>
                         </div>
-                        <div class="cfscscsuggestions cfscscf suggestuniquevalues">
+                        <p class="cfscscsuggestions cfscscf">Unique values are values found within the code of your files.</p>
+                        <div class="cfscscsuggestions cfscscf suggestuniquevalues" style="margin-top: 5px;">
                             <div class="switchCon"><label class="switch">
                                 <input type="checkbox" id="uniqueValuesInSuggestionsToggleEl" checked onchange="updateSuggestionInterval(this);saveUniqueValuesForSuggestionsToggle(this);">
                                 <span class="slider"></span>
@@ -11776,14 +11777,13 @@
             };
             
             handle.addEventListener('mousedown', onDragStart);
-            handle.addEventListener('mousemove', onDragMove);
-            handle.addEventListener('mouseup', onDragEnd);
-            handle.addEventListener('mouseleave', onDragEnd);
+            window.addEventListener('mousemove', onDragMove);
+            window.addEventListener('mouseup', onDragEnd);
             
             handle.addEventListener('touchstart', onDragStart, { passive: false });
-            handle.addEventListener('touchmove', onDragMove, { passive: false });
-            handle.addEventListener('touchend', onDragEnd);
-            handle.addEventListener('touchcancel', onDragEnd);
+            window.addEventListener('touchmove', onDragMove, { passive: false });
+            window.addEventListener('touchend', onDragEnd);
+            window.addEventListener('touchcancel', onDragEnd);
         }
         
         makeDraggable("inspector-movement-point", "inspector-dropdown");
@@ -15370,6 +15370,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                             opEl.note = structuredClone(element.note);
                         }
                         pushEl.push(opEl);
+                        element.element.classes = element.element.classes.filter(val => val != "hidden");
                         if (hasIndex(element.index) && element.index >= 0 && element.index <= allLines.length) {
                             allLines.splice(element.index, 0, element.element);
                         } else {
@@ -26111,12 +26112,12 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     return;
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "k" && event.shiftKey) {
-                    forSelectedEv(replacealllines, () => event.preventDefault());
+                    forSelectedEv(() => {replacetextinlines('all')}, () => event.preventDefault());
                     return;
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "k" && !event.shiftKey) {
                     if (areSelectedLine) {
-                        forSelectedEv(replaceselectedlines, () => event.preventDefault());
+                        forSelectedEv(() => {replacetextinlines('allsl')}, () => event.preventDefault());
                     } else {
                         shortNotificationmessageelement("Select lines first with the arrow left key or ctr/cmd + >.");
                     }
