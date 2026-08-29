@@ -617,6 +617,7 @@
             border-radius: 5px;
             padding: 5px 4.5em;
             overflow-x: hidden;
+            overflow-anchor: none;
             transition: var(--aftr);
             background:
               color-mix(in srgb, var(--bg-color), black 10%);
@@ -1187,12 +1188,16 @@
             transition: var(--tr);
         }
 
-        .browser-header .browser-buttons div {
+        .browser-header .browser-buttons button {
             width: 12px;
             height: 12px;
             border-radius: 50%;
             transition: var(--tr);
             cursor: pointer;
+        }
+        
+        .browser-header .browser-buttons button:hover {
+            transform: scale(1.3);
         }
 
         .close-btn {
@@ -3373,7 +3378,21 @@
                 transform: scale(1);
             }
         }
-        
+        #options-dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100dvh;
+            background-color: rgba(0, 0, 0, 0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        #options-dropdown-overlay {
+            display: none;
+        }
         .options-container {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.1);
@@ -3388,8 +3407,44 @@
             color: var(--contrast-color);
             animation: optionContainerPopinAnimation 0.3s ease-in;
             overflow: hidden;
+            max-height: 350px;
+            overflow-y: auto;
         }
-
+        #options-dropdown-container {
+            position: absolute;
+            background: var(--bg-color);
+            border-radius: 17px;
+            corner-shape: squircle;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 0;
+            width: 200px;
+            color: var(--contrast-color);
+            animation: optionContainerPopinAnimation 0.3s ease-in;
+            overflow: hidden;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .dropdown-option {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px;
+            color: var(--contrast-color);
+            font-size: 1em;
+            width: 100%;
+            transition: var(--tr);
+        }
+        .dropdown-option:last-of-type {
+            border-bottom: none;
+        }
+        .dropdown-option:hover {
+            background: var(--switchcheckedbackground-color);
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
         .option-item {
             display: flex;
             align-items: center;
@@ -8230,7 +8285,7 @@
                                             <option id="optionc3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11" value="index.html"></option>
                                         </datalist>
                                     </div>
-                                    <div class="action-btn" onclick="textCode('mobile-url-input', 'mobile-frame');createConfetti();aAnimationFor(this, 'pop');">
+                                    <div class="action-btn" onclick="runCodeInIframe(this, 'mobile-url-input', 'mobile-frame');createConfetti();aAnimationFor(this, 'pop');">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="11" cy="11" r="8" />
                                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -8246,9 +8301,9 @@
                             <div class="browser-container">
                                 <div class="browser-header">
                                     <div class="browser-buttons">
-                                        <div class="close-btn" onclick="cleariframe('computer-frame')"></div>
-                                        <div class="minimize-btn"></div>
-                                        <div class="maximize-btn" onclick="toggleClass('.browser-container', 'fullscreen')"></div>
+                                        <button class="close-btn" onclick="cleariframe('computer-frame')"></button>
+                                        <button class="minimize-btn" onclick="textCode('computer-url-input', undefined, true)"></button>
+                                        <button class="maximize-btn" onclick="toggleClass('.browser-container', 'fullscreen')"></button>
                                     </div>
                                     <div class="url-bar">
                                         <input type="text" id="computer-url-input" placeholder="FileName.html" list="filenameoptions">
@@ -10451,6 +10506,11 @@
     <div id="hoverCon">
         <div id="hover"></div>
     </div>
+    <div id="options-dropdown-overlay">
+        <div id="options-dropdown-container">
+            <button class="dropdown-option">index.html</button>
+        </div>
+    </div>
     </div>
     <script>
         var allNotes = {};
@@ -10462,6 +10522,7 @@
         var savedDisabledTools = [];
         var vAIluryStudioPendingFileRun = null;
         var vAIluryStudioPendingFileName = null;
+        
         window.addEventListener("load", () => {
             const loadingScreen = document.getElementById("loading-screen");
             const isDark = window.matchMedia("(prefers-color-scheme: dark)")?.matches;
@@ -10490,6 +10551,69 @@
                 //document.querySelector(".navdotc3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11").scrollIntoView({ block: 'center', inline: "end", block: "center" });
             }, 1000);
         });
+        var optionsDropdownOverlay = document.getElementById("options-dropdown-overlay");
+        var optionsDropdownContainer = document.getElementById("options-dropdown-container");
+        optionsDropdownOverlay.onclick = (e) => {
+            if (e.target == e.currentTarget) {
+                optionsDropdownOverlay.style.display = "none";
+            }
+        };
+        function positionElementBelowOrAboveTarget(targetElement, elementToPosition) {
+            if (!targetElement || !elementToPosition) return;
+        
+            const GAP = 5;
+        
+            const viewportWidth = document.documentElement.clientWidth;
+            const viewportHeight = document.documentElement.clientHeight;
+        
+            const targetRect = targetElement.getBoundingClientRect();
+            const elementRect = elementToPosition.getBoundingClientRect();
+            const elementWidth = elementRect.width;
+            const elementHeight = elementRect.height;
+            
+            const targetCenterY = targetRect.top + targetRect.height / 2;
+            const targetIsInLowerHalf = targetCenterY > viewportHeight / 2;
+        
+            let top = targetIsInLowerHalf
+                ? targetRect.top - elementHeight - GAP
+                : targetRect.bottom + GAP;
+                
+            if (top < 0) {
+                top = 0;
+            } else if (top + elementHeight > viewportHeight) {
+                top = viewportHeight - elementHeight;
+            }
+            if (top < 0) top = 0;
+            
+            let left = targetRect.left + targetRect.width / 2 - elementWidth / 2;
+            
+            if (left < 0) {
+                left = 0;
+            } else if (left + elementWidth > viewportWidth) {
+                left = viewportWidth - elementWidth;
+            }
+            if (left < 0) left = 0;
+        
+            elementToPosition.style.top = `${top}px`;
+            elementToPosition.style.left = `${left}px`;
+        }
+        function showdropdownops(posTarget, options) {
+            if (!optionsDropdownOverlay || !posTarget || !options || !optionsDropdownContainer) return;
+            optionsDropdownContainer.innerHTML = "";
+            options.forEach(op => {
+                const opEl = document.createElement("button");
+                opEl.className = "dropdown-option";
+                opEl.textContent = op.text;
+                optionsDropdownContainer.appendChild(opEl);
+                opEl.onclick = () => {
+                    op.func();
+                    optionsDropdownOverlay.style.display = "none";
+                    optionsDropdownContainer.innerHTML = "";
+                };
+            });
+            optionsDropdownOverlay.style.display = "flex";
+            positionElementBelowOrAboveTarget(posTarget, optionsDropdownContainer);
+        }
         function toggleClass(elementclass, classtt, setToVal = null) {
             const el = document.querySelector(elementclass);
             if (el && setToVal == null) {
@@ -17480,14 +17604,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 }
             });
         }
-        function requestcreatenewfilefortemplatecode(codetext) {
-            showPrompt('file path:', (filename) => {
-                let allfilenames = Array.from(document.querySelectorAll('.filedot .filePathInput')).map(input => input.value);
-                if (!allfilenames.includes(filename) && filename.length <= 250) {
-                    createNewFile(filename, codetext);
-                }
-            });
-        }
         
         let addFileQueue = Promise.resolve();
         
@@ -19437,25 +19553,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 }
             }
         }
-        function getLineBreakPositions(element) {
-            const text = element.textContent;
-            const range = document.createRange();
-            const positions = [];
-            
-            for (let i = 1; i < text.length; i++) {
-                range.setStart(element.firstChild, 0);
-                range.setEnd(element.firstChild, i);
-                
-                const rect1 = range.getBoundingClientRect();
-                range.setEnd(element.firstChild, i + 1);
-                const rect2 = range.getBoundingClientRect();
-                if (rect2.top > rect1.top) {
-                    positions.push(i);
-                }
-            }
-            
-            return positions;
-        }
+        
         function _getAllLines(editor, name) {
             return (typeof editorFiles !== 'undefined' && editorFiles[name]) || [];
         }
@@ -19674,7 +19772,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         }
                         
                         try {
-                            if (currentLineOpTargetIndex && typeof currentLineOpTargetIndex !== 'undefined') {
+                            if (currentLineOpTargetIndex != null && typeof currentLineOpTargetIndex !== 'undefined') {
                                 const currentVisibleIndex = visibleIdx;
                                 if (currentLineOpTargetIndex != null && currentLineOpTargetIndex === currentVisibleIndex) {
                                     safePerformLongPressAction(line, true);
@@ -19721,155 +19819,161 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 state._lastRender = { startVisible, visibleMap };
             }
             state.render = render;
+            let editorScrollRafPending = false;
             editor.addEventListener('scroll', (event) => {
-                const all = _getAllLines(editor, innum) || [];
-                const targetElement = event.target;
-                if (targetElement && targetElement.holdTimer) clearTimeout(targetElement.holdTimer);
-                const container = document.querySelector('.suggestioncontainer');
-                if (container) {
+                if (editorScrollRafPending) return;
+                editorScrollRafPending = true;
+                requestAnimationFrame(() => {
+                    editorScrollRafPending = false;
+                    const all = _getAllLines(editor, innum) || [];
+                    const targetElement = event.target;
+                    if (targetElement && targetElement.holdTimer) clearTimeout(targetElement.holdTimer);
+                    const container = document.querySelector('.suggestioncontainer');
+                    if (container) {
+                        try {
+                            const selection = window.getSelection && window.getSelection();
+                            if (selection && selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                const rect = range.getBoundingClientRect();
+                                if (rect && rect.height > 0) {
+                                    container.style.left = `${rect.left + window.scrollX}px`;
+                                    container.style.top = `${rect.bottom + window.scrollY}px`;
+                                    safeAdjustElementPositionleft(container);
+                                    const rect2 = container.getBoundingClientRect();
+                                    const screenHeight = window.innerHeight;
+                                    if (rect2.bottom - screenHeight > 0 || rect2.top < 0) container.remove();
+                                }
+                            }
+                        } catch (e) {}
+                    }
                     try {
-                        const selection = window.getSelection && window.getSelection();
-                        if (selection && selection.rangeCount > 0) {
-                            const range = selection.getRangeAt(0);
-                            const rect = range.getBoundingClientRect();
-                            if (rect && rect.height > 0) {
-                                container.style.left = `${rect.left + window.scrollX}px`;
-                                container.style.top = `${rect.bottom + window.scrollY}px`;
-                                safeAdjustElementPositionleft(container);
-                                const rect2 = container.getBoundingClientRect();
-                                const screenHeight = window.innerHeight;
-                                if (rect2.bottom - screenHeight > 0 || rect2.top < 0) container.remove();
-                            }
-                        }
-                    } catch (e) {}
-                }
-                try {
-                    const lineOpTE = (typeof section !== 'undefined' && section.querySelector) ? section.querySelector(`.code-editor-line[line-index="${typeof currentLineOpTargetIndex !== 'undefined' ? currentLineOpTargetIndex : -1}"]`) : null;
-                    if (lineOpTE) safePerformLongPressAction(lineOpTE, true);
-                    else safeCloseLineOptionsContainer();
-                } catch (e) {
-                    console.warn(e);
-                }
-                
-                recomputeCumulativeHeights();
-                const visibleMap = buildVisibleIndexMap();
-                const totalVisible = visibleMap.length;
-                
-                const visibleCum = new Array(Math.max(1, totalVisible) + 1).fill(0);
-                for (let v = 0; v < totalVisible; v++) {
-                    visibleCum[v] = state.cumulativeHeights[visibleMap[v]] || 0;
-                }
-                visibleCum[totalVisible] = state.cumulativeHeights[all.length] || 0;
-        
-                const scrollTop = editor.scrollTop;
-                let low = 0, high = totalVisible;
-                while (low < high) {
-                    const mid = (low + high) >> 1;
-                    if (visibleCum[mid] <= scrollTop) low = mid + 1;
-                    else high = mid;
-                }
-                const newFirstVisible = totalVisible === 0 ? 0 : Math.max(0, Math.min(totalVisible - 1, low - 1));
-                const prevStartVisible = (state._lastRender && typeof state._lastRender.startVisible === 'number') ? state._lastRender.startVisible : 0;
-        
-                if (newFirstVisible !== prevStartVisible) {
-                    let focusedEl = getFocusedLineElement();
-                    if (focusedEl) {
-                        const focusedIndex = parseInt(focusedEl.getAttribute('line-index'), 10);
-                        const firstAllForNew = visibleMap[newFirstVisible] || 0;
-                        const lastVisibleIndexForNew = Math.min(totalVisible - 1, newFirstVisible + visibleLines - 1);
-                        const lastAllForNew = (visibleMap[lastVisibleIndexForNew] != null) ? visibleMap[lastVisibleIndexForNew] : firstAllForNew;
-                        if (isNaN(focusedIndex) || focusedIndex < firstAllForNew || focusedIndex > lastAllForNew) {
-                            try { focusedEl.blur(); } catch (e) {}
-                            const sel = window.getSelection();
-                            if (sel) sel.removeAllRanges();
-                            safeCloseLineOptionsContainer();
-                            document.querySelectorAll('.suggestioncontainer').forEach(s => s.remove());
-                            focusedEl = null;
-                        }
+                        const lineOpTE = (typeof section !== 'undefined' && section.querySelector) ? section.querySelector(`.code-editor-line[line-index="${typeof currentLineOpTargetIndex !== 'undefined' ? currentLineOpTargetIndex : -1}"]`) : null;
+                        if (lineOpTE) safePerformLongPressAction(lineOpTE, true);
+                        else safeCloseLineOptionsContainer();
+                    } catch (e) {
+                        console.warn(e);
                     }
                     
-                    const delta = newFirstVisible - prevStartVisible;
+                    recomputeCumulativeHeights();
+                    const visibleMap = buildVisibleIndexMap();
+                    const totalVisible = visibleMap.length;
                     
-                    if (focusedEl && Math.abs(delta) > 0 && Math.abs(delta) < visibleLines) {
-                        let focusedPos = -1;
-                        for (let i = 0; i < lineNodes.length; i++) {
-                            if (lineNodes[i] === focusedEl) { focusedPos = i; break; }
+                    const visibleCum = new Array(Math.max(1, totalVisible) + 1).fill(0);
+                    for (let v = 0; v < totalVisible; v++) {
+                        visibleCum[v] = state.cumulativeHeights[visibleMap[v]] || 0;
+                    }
+                    visibleCum[totalVisible] = state.cumulativeHeights[all.length] || 0;
+            
+                    const scrollTop = editor.scrollTop;
+                    let low = 0, high = totalVisible;
+                    while (low < high) {
+                        const mid = (low + high) >> 1;
+                        if (visibleCum[mid] <= scrollTop) low = mid + 1;
+                        else high = mid;
+                    }
+                    const newFirstVisible = totalVisible === 0 ? 0 : Math.max(0, Math.min(totalVisible - 1, low - 1));
+                    const prevStartVisible = (state._lastRender && typeof state._lastRender.startVisible === 'number') ? state._lastRender.startVisible : 0;
+            
+                    if (newFirstVisible !== prevStartVisible) {
+                        let focusedEl = getFocusedLineElement();
+                        if (focusedEl) {
+                            const focusedIndex = parseInt(focusedEl.getAttribute('line-index'), 10);
+                            const firstAllForNew = visibleMap[newFirstVisible] || 0;
+                            const lastVisibleIndexForNew = Math.min(totalVisible - 1, newFirstVisible + visibleLines - 1);
+                            const lastAllForNew = (visibleMap[lastVisibleIndexForNew] != null) ? visibleMap[lastVisibleIndexForNew] : firstAllForNew;
+                            if (isNaN(focusedIndex) || focusedIndex < firstAllForNew || focusedIndex > lastAllForNew) {
+                                try { focusedEl.blur(); } catch (e) {}
+                                const sel = window.getSelection();
+                                if (sel) sel.removeAllRanges();
+                                safeCloseLineOptionsContainer();
+                                document.querySelectorAll('.suggestioncontainer').forEach(s => s.remove());
+                                focusedEl = null;
+                            }
                         }
-        
-                        let safeToRecycle = true;
-                        if (delta > 0 && focusedPos === 0) safeToRecycle = false;
-                        if (delta < 0 && focusedPos === (visibleLines - 1)) safeToRecycle = false;
-        
-                        if (!safeToRecycle) {
-                            requestAnimationFrame(() => render(newFirstVisible));
-                            return;
-                        }
-        
-                        if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.add('noLineTransition');
-                        noSelectTime = true;
-        
-                        const steps = Math.abs(delta);
-                        if (delta > 0) {
-                            for (let s = 0; s < steps; s++) {
-                                const moved = lineNodes.shift();
-                                viewport.appendChild(moved);
-                                lineNodes.push(moved);
-                                const newVisibleIndex = prevStartVisible + visibleLines + s;
-                                if (newVisibleIndex < totalVisible) updateNodeToIndex(moved, newVisibleIndex);
-                                else {
-                                    moved.textContent = '';
-                                    moved.style.display = 'none';
-                                    moved.setAttribute('line-index', '-1');
+                        
+                        const delta = newFirstVisible - prevStartVisible;
+                        
+                        if (focusedEl && Math.abs(delta) > 0 && Math.abs(delta) < visibleLines) {
+                            let focusedPos = -1;
+                            for (let i = 0; i < lineNodes.length; i++) {
+                                if (lineNodes[i] === focusedEl) { focusedPos = i; break; }
+                            }
+            
+                            let safeToRecycle = true;
+                            if (delta > 0 && focusedPos === 0) safeToRecycle = false;
+                            if (delta < 0 && focusedPos === (visibleLines - 1)) safeToRecycle = false;
+            
+                            if (!safeToRecycle) {
+                                requestAnimationFrame(() => render(newFirstVisible));
+                                return;
+                            }
+            
+                            if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.add('noLineTransition');
+                            noSelectTime = true;
+            
+                            const steps = Math.abs(delta);
+                            if (delta > 0) {
+                                for (let s = 0; s < steps; s++) {
+                                    const moved = lineNodes.shift();
+                                    viewport.appendChild(moved);
+                                    lineNodes.push(moved);
+                                    const newVisibleIndex = prevStartVisible + visibleLines + s;
+                                    if (newVisibleIndex < totalVisible) updateNodeToIndex(moved, newVisibleIndex);
+                                    else {
+                                        moved.textContent = '';
+                                        moved.style.display = 'none';
+                                        moved.setAttribute('line-index', '-1');
+                                    }
+                                }
+                            } else {
+                                for (let s = 0; s < steps; s++) {
+                                    const moved = lineNodes.pop();
+                                    viewport.insertBefore(moved, viewport.firstChild);
+                                    lineNodes.unshift(moved);
+                                    const newVisibleIndex = prevStartVisible - (s + 1);
+                                    if (newVisibleIndex >= 0) updateNodeToIndex(moved, newVisibleIndex);
+                                    else {
+                                        moved.textContent = '';
+                                        moved.style.display = 'none';
+                                        moved.setAttribute('line-index', '-1');
+                                    }
                                 }
                             }
+                            recomputeCumulativeHeights();
+                            const firstAll = visibleMap[newFirstVisible] || 0;
+                            const endIndexAfter = Math.min(newFirstVisible + visibleLines, visibleMap.length) - 1;
+                            const lastAllExclusive = (visibleMap[endIndexAfter] != null) ? (visibleMap[endIndexAfter] + 1) : firstAll;
+                            state.spacerTop.style.height = `${state.cumulativeHeights[firstAll] || 0}px`;
+                            const bottomHeight = Math.max(0, (state.cumulativeHeights[all.length] || 0) - (state.cumulativeHeights[lastAllExclusive] || 0));
+                            state.spacerBottom.style.height = `${Math.max(0, bottomHeight)}px`;
+            
+                            requestAnimationFrame(() => {
+                                let changed = false;
+                                const visNow = buildVisibleIndexMap();
+                                for (let i = 0; i < visibleLines; i++) {
+                                    const idx = newFirstVisible + i;
+                                    const allIdx = visNow[idx];
+                                    const node = lineNodes[i];
+                                    if (!node || typeof allIdx !== 'number') continue;
+                                    const classes = all[allIdx] && all[allIdx].classes;
+                                    const isHidden = !!(classes && ((Array.isArray(classes) && classes.includes('hidden')) || (typeof classes === 'string' && classes.split(/\s+/).includes('hidden'))));
+                                    const newH = isHidden ? 0 : (node.offsetHeight || 24);
+                                    if (state.lineHeights[allIdx] !== newH) {
+                                        state.lineHeights[allIdx] = newH;
+                                        changed = true;
+                                    }
+                                }
+                                if (changed) recomputeCumulativeHeights();
+                                noSelectTime = false;
+                                if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.remove('noLineTransition');
+                            });
+            
+                            state._lastRender = { startVisible: newFirstVisible, visibleMap: buildVisibleIndexMap() };
                         } else {
-                            for (let s = 0; s < steps; s++) {
-                                const moved = lineNodes.pop();
-                                viewport.insertBefore(moved, viewport.firstChild);
-                                lineNodes.unshift(moved);
-                                const newVisibleIndex = prevStartVisible - (s + 1);
-                                if (newVisibleIndex >= 0) updateNodeToIndex(moved, newVisibleIndex);
-                                else {
-                                    moved.textContent = '';
-                                    moved.style.display = 'none';
-                                    moved.setAttribute('line-index', '-1');
-                                }
-                            }
+                            requestAnimationFrame(() => render(newFirstVisible));
                         }
-                        recomputeCumulativeHeights();
-                        const firstAll = visibleMap[newFirstVisible] || 0;
-                        const endIndexAfter = Math.min(newFirstVisible + visibleLines, visibleMap.length) - 1;
-                        const lastAllExclusive = (visibleMap[endIndexAfter] != null) ? (visibleMap[endIndexAfter] + 1) : firstAll;
-                        state.spacerTop.style.height = `${state.cumulativeHeights[firstAll] || 0}px`;
-                        const bottomHeight = Math.max(0, (state.cumulativeHeights[all.length] || 0) - (state.cumulativeHeights[lastAllExclusive] || 0));
-                        state.spacerBottom.style.height = `${Math.max(0, bottomHeight)}px`;
-        
-                        requestAnimationFrame(() => {
-                            let changed = false;
-                            const visNow = buildVisibleIndexMap();
-                            for (let i = 0; i < visibleLines; i++) {
-                                const idx = newFirstVisible + i;
-                                const allIdx = visNow[idx];
-                                const node = lineNodes[i];
-                                if (!node || typeof allIdx !== 'number') continue;
-                                const classes = all[allIdx] && all[allIdx].classes;
-                                const isHidden = !!(classes && ((Array.isArray(classes) && classes.includes('hidden')) || (typeof classes === 'string' && classes.split(/\s+/).includes('hidden'))));
-                                const newH = isHidden ? 0 : (node.offsetHeight || 24);
-                                if (state.lineHeights[allIdx] !== newH) {
-                                    state.lineHeights[allIdx] = newH;
-                                    changed = true;
-                                }
-                            }
-                            if (changed) recomputeCumulativeHeights();
-                            noSelectTime = false;
-                            if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.remove('noLineTransition');
-                        });
-        
-                        state._lastRender = { startVisible: newFirstVisible, visibleMap: buildVisibleIndexMap() };
-                    } else {
-                        requestAnimationFrame(() => render(newFirstVisible));
                     }
-                }
+                });
             });
             function updateNodeToIndex(node, visibleIndex) {
                 const allLinesData1 = _getAllLines(editor, innum) || [];
@@ -20953,22 +21057,6 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 elementToPosition.style.right = `${referenceRect.left + (referenceRect.width - elementToPosition.offsetWidth) / 2}px`;
             }
         }
-
-        function positionoptionsElementBelow(elementToPosition, referenceElement) {
-            const referenceRect = referenceElement.getBoundingClientRect();
-            elementToPosition.style.position = 'absolute';
-            elementToPosition.style.top = `${referenceRect.height}px`;
-
-            if (document.querySelector('.sidebarenabled')) {
-                elementToPosition.style.right = `calc(${referenceRect.left + (elementToPosition.offsetWidth) / 2}px - var(--sibebar-width))`;
-                elementToPosition.style.width = 'calc(100vw - var(--sibebar-width))';
-            } else {
-                elementToPosition.style.right = `${referenceRect.left + (elementToPosition.offsetWidth) / 2}px`;
-                elementToPosition.style.width = '100vw';
-            }
-            adjustElementPosition(elementToPosition);
-            adjustElementPositionleft(elementToPosition);
-        }
         
         function lineoptioncontainerupdate(linecontainer){
 
@@ -21616,50 +21704,97 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             openconsolegroups = {};
             document.getElementById('console').innerHTML = "";
         }
-        function textCode(textcontainerid, iframeid) {
-            if (!iframeid || !textcontainerid){
+        function runCodeInNewTab(htmlString) {
+            const win = window.open('', '_blank');
+            if (!win) {
+                showAlert('Your browser blocked the popup. Please allow popups for this site.');
                 return;
             }
-            closeInspectorDropdown();
-            currentiframeid = iframeid;
-            currenttextcontainerid = textcontainerid;
-            document.querySelector('#computer-frame').srcdoc = "";
-            document.querySelector('#mobile-frame').srcdoc = "";
-            document.querySelectorAll('.iframe-container').forEach(iframe => {
-                iframe.style.backgroundColor = "var(--browseriframebackgroundcolor-color)";
-            });
-            document.getElementById('console').innerHTML = "";
-            timers = {};
-            counts = {};
-            consolegroups = {};
-            openconsolegroups = {};
+            win.document.open();
+            win.document.write(htmlString);
+            win.document.close();
+        }
+        function runCodeInIframe(el, textcontainerid, iframeid) {
+            showdropdownops(el, [
+                {
+                    text: "Run Here",
+                    func: () => {textCode(textcontainerid, iframeid, false)}
+                },
+                {
+                    text: "Open In New Window",
+                    func: () => {textCode(textcontainerid, iframeid, true)}
+                },
+                {
+                    text: "Clear Viewport",
+                    func: () => {cleariframe(iframeid)}
+                }
+            ]);
+        }
+        
+        function textCode(textcontainerid, iframeid, inNewTab = false) {
+            if (!textcontainerid || (!iframeid && !inNewTab)){
+                return;
+            }
+            if (!inNewTab) {
+                closeInspectorDropdown();
+                currentiframeid = iframeid;
+                currenttextcontainerid = textcontainerid;
+                document.querySelector('#computer-frame').srcdoc = "";
+                document.querySelector('#mobile-frame').srcdoc = "";
+                document.querySelectorAll('.iframe-container').forEach(iframe => {
+                    iframe.style.backgroundColor = "var(--browseriframebackgroundcolor-color)";
+                });
+                document.getElementById('console').innerHTML = "";
+                timers = {};
+                counts = {};
+                consolegroups = {};
+                openconsolegroups = {};
+            }
+            function escapeHTML(str) {
+                return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
             let code = "";
             const iframe = document.getElementById(iframeid);
             const requestedfilename = document.getElementById(textcontainerid).value;
             if (requestedfilename.toLowerCase().endsWith(".tsx") || requestedfilename.toLowerCase().endsWith(".jsx")){
                 code = checkiffile(requestedfilename);
                 if (code) {
-                    iframe.srcdoc = code;
+                    if (inNewTab) {
+                        runCodeInNewTab(code);
+                    } else {
+                        iframe.srcdoc = code;
+                    }
                 }
             } else if (requestedfilename.toLowerCase().endsWith(".html") || requestedfilename.toLowerCase().endsWith(".htm")){
                 code = replaceLinksAndScripts(requestedfilename);
                 if (code) {
-                    iframe.srcdoc = code;
+                    if (inNewTab) {
+                        runCodeInNewTab(code);
+                    } else {
+                        iframe.srcdoc = code;
+                    }
                 }
             } else {
                 code = checkiffile(requestedfilename);
                 if (code) {
-                    iframe.srcdoc = "<pre><code>" + escapeHTML(code) + "</code></pre>";
+                    const preForDisplay = "<pre><code>" + escapeHTML(code) + "</code></pre>";
+                    if (inNewTab) {
+                        runCodeInNewTab(preForDisplay);
+                    } else {
+                        iframe.srcdoc = preForDisplay;
+                    }
                 }
             }
             if (code == null) {
-                iframe.removeAttribute("srcdoc");
-                iframe.src = "PageNotFound.html";
-            }
-            iframe.parentElement.style.background = "white";
-            iframeNotEmpty = true;
-            function escapeHTML(str) {
-                return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                if (inNewTab) {
+                    showAlert("The code was not found! Unable to open code in new tab.");
+                } else {
+                    iframe.removeAttribute("srcdoc");
+                    iframe.src = "PageNotFound.html";
+                }
+            } else if (!inNewTab) {
+                iframe.parentElement.style.background = "white";
+                iframeNotEmpty = true;
             }
         }
         
@@ -22122,12 +22257,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
 
         const swipeContainer = document.querySelector('.swipe-container');
         var startXvvv;
-
-        function updateIframe(type) {
-            const iframe = document.getElementById(`${type}-frame`);
-            const url = document.getElementById(`${type}-url-input`).value;
-            iframe.src = url;
-        }
 
         swipeContainer.addEventListener('touchstart', (e) => {
             startXvvv = e.touches[0].clientX;
@@ -23116,17 +23245,15 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 updateviewthisfilebtn();
             }
         }
-        navBar.addEventListener('scroll', () => {
+        
+        function scrollEivsListener() {
             scrolleivs();
-        });
-
+        }
+        navBar.addEventListener('scroll', scrollEivsListener);
+        
         function navBarremoveeventlistenerscrollandadditagain() {
-            navBar.removeEventListener('scroll', () => {
-                scrolleivs();
-            });
-            navBar.addEventListener('scroll', () => {
-                scrolleivs();
-            });
+            navBar.removeEventListener('scroll', scrollEivsListener);
+            navBar.addEventListener('scroll', scrollEivsListener);
         }
         
         function dotonclick() {
@@ -23179,13 +23306,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     dline.classList.remove('disabled');
                 });
             }
-        }
-        function getElementIndexInParent(element) {
-            if (!element || !element.parentElement) {
-                return -1;
-            }
-            const parent = element.parentElement;
-            return Array.from(parent.children).indexOf(element);
         }
 
         function deleteSelectedLines() {
@@ -24844,42 +24964,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             return returnArray;
         }
         
-        function extractUniqueIds(code) {
-            const matches = new Set();
-        
-            const patterns = [
-                { regex: /id="([^"]+)"/g, prefix: '#' },
-                { regex: /\.id\s*=\s*['"]([^'"]+)['"]/g, prefix: '#' }
-            ];
-        
-            patterns.forEach(({ regex, prefix }) => {
-                let match;
-                while ((match = regex.exec(code)) !== null) {
-                    matches.add(match[1]);
-                }
-            });
-        
-            return Array.from(matches);
-        }
-
-        function extractUniqueClasses(code) {
-            const matches = new Set();
-        
-            const patterns = [
-                { regex: /class="([^"]+)"/g, prefix: '.' },
-                { regex: /\.classList\.add\(\s*['"]([^'"]+)['"]\s*\)/g, prefix: '.' },
-                { regex: /\.className\s*=\s*['"]([^'"]+)['"]/g, prefix: '.' }
-            ];
-        
-            patterns.forEach(({ regex, prefix }) => {
-                let match;
-                while ((match = regex.exec(code)) !== null) {
-                    matches.add(match[1]);
-                }
-            });
-        
-            return Array.from(matches);
-        }
         function standardizeIndentation(codeText) {
             const lines = codeText.split('\n');
             const indentSize = editorIndentSize;
@@ -26211,15 +26295,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (index !== undefined) e.index = index;
             arr.push(e);
             updateSaveFile();
-        }
-        
-        function cursorOffsetInElement(element, selRange) {
-            if (!selRange) return null;
-            const range = selRange.range;
-            const pre = range.cloneRange();
-            pre.selectNodeContents(element);
-            pre.setEnd(range.startContainer, range.startOffset);
-            return pre.toString().length;
         }
         
         function insertClosingCharacterFor(celine, selection, range, cursorOffset, openingChar, closingChar, newpast, cursorPosition, selectedText = "") {
@@ -28277,13 +28352,14 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         function updateSuggestionInterval(el) {
             const containerEl = document.getElementById('container');
             if (!el || !section || !containerEl) return;
+            if (uniqueValCheckInterval) {
+                clearInterval(uniqueValCheckInterval);
+                uniqueValCheckInterval = null;
+            }
             if (el.checked == true && containerEl.classList.contains('autocompleteenabled')) {
                 uniqueValCheckInterval = setInterval(() => {
                     updateUniqueVals();
                 }, 4500);
-            } else if (uniqueValCheckInterval) {
-                clearInterval(uniqueValCheckInterval);
-                uniqueValCheckInterval = null;
             }
         }
         recoverUniqueValuesForSuggestionsEnabledToggleSelection();
@@ -28363,15 +28439,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     document.body.appendChild(container);
                 }
                 return container;
-            }
-        
-            function positionSuggestionsContainer(container) {
-                const rect = inputElement.getBoundingClientRect();
-                const parentRect = inputElement.parentElement.getBoundingClientRect();
-                const scrollOffset = inputElement.parentElement.scrollTop;
-        
-                container.style.left = `${rect.left}px`;
-                container.style.top = `${rect.top + window.innerHeight * 0.03 + scrollOffset}px`;
             }
             
             function resolveLiveLineElement() {
