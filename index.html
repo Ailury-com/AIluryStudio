@@ -3375,22 +3375,19 @@
                 transform: scale(1);
             }
         }
-        #options-dropdown-overlay {
+        #options-dropdown-overlay, #replacement-dropdown-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100dvh;
             background-color: rgba(0, 0, 0, 0);
-            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-        }
-        #options-dropdown-overlay {
             display: none;
         }
-        .options-container {
+        .options-container, #replacement-dropdown-container {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 17px;
@@ -3406,6 +3403,24 @@
             overflow: hidden;
             max-height: 350px;
             overflow-y: auto;
+        }
+        #replacement-dropdown-container {
+            padding: 0;
+        }
+        .dropdown-op {
+            background: transparent;
+            border: none;
+            color: var(--contrast-color);
+            font-size: 1em;
+            width: 100%;
+            transition: var(--tr);
+            text-align: center;
+            padding: 5px 10px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .dropdown-op:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         #options-dropdown-container {
             position: absolute;
@@ -8282,7 +8297,7 @@
                                             <option id="optionc3f8a1a6_7e42_4b9a_9b3a_1f7c2a5e9d11" value="index.html"></option>
                                         </datalist>
                                     </div>
-                                    <div class="action-btn" onclick="runCodeInIframe(this, 'mobile-url-input', 'mobile-frame');createConfetti();aAnimationFor(this, 'pop');">
+                                    <div class="action-btn" onclick="runCodeInIframe(this, 'mobile-url-input', 'mobile-frame');aAnimationFor(this, 'pop');">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                             <circle cx="11" cy="11" r="8" />
                                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -8393,7 +8408,7 @@
                                 <line x1="16" y1="3" x2="14" y2="21" />
                             </svg>
                         </button>
-                        <button class="eslbtn disabled" id="importantPinbtn" onclick="changeBtnTextOnClick(this);importantselectedlines()">
+                        <button class="eslbtn disabled" id="importantPinbtn" onclick="importantselectedlinesWithDropdown(this)">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="9" y1="3" x2="15" y2="3" />
                                 <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
@@ -8431,7 +8446,7 @@
                                 <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
                             </svg>
                         </button>
-                        <button class="eslbtn disabled" id="trimbtn" onclick="changeBtnTextOnClick(this);trimAllselectedlinetexts()">
+                        <button class="eslbtn disabled" id="trimbtn" onclick="trimAllselectedlinetextsWithDropdown(this)">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="6" cy="6" r="3" />
                                 <circle cx="6" cy="18" r="3" />
@@ -10504,8 +10519,11 @@
         <div id="hover"></div>
     </div>
     <div id="options-dropdown-overlay">
-        <div id="options-dropdown-container">
-            <button class="dropdown-option">index.html</button>
+        <div id="options-dropdown-container" class="transformAllowed">
+        </div>
+    </div>
+    <div id="replacement-dropdown-overlay">
+        <div id="replacement-dropdown-container" class="transformAllowed">
         </div>
     </div>
     </div>
@@ -10519,7 +10537,1360 @@
         var savedDisabledTools = [];
         var vAIluryStudioPendingFileRun = null;
         var vAIluryStudioPendingFileName = null;
+        var allCssProperties = [
+          "-apple-pay-button-style",
+          "-apple-pay-button-type",
+          "accent-color",
+          "align-content",
+          "align-items",
+          "align-self",
+          "alignment-baseline",
+          "anchor-name",
+          "anchor-scope",
+          "animation",
+          "animation-composition",
+          "animation-delay",
+          "animation-direction",
+          "animation-duration",
+          "animation-fill-mode",
+          "animation-iteration-count",
+          "animation-name",
+          "animation-play-state",
+          "animation-range-end",
+          "animation-range-start",
+          "animation-timeline",
+          "animation-timing-function",
+          "appearance",
+          "aspect-ratio",
+          "backdrop-filter",
+          "backface-visibility",
+          "background",
+          "background-attachment",
+          "background-blend-mode",
+          "background-clip",
+          "background-color",
+          "background-image",
+          "background-origin",
+          "background-position",
+          "background-position-x",
+          "background-position-y",
+          "background-repeat",
+          "background-size",
+          "baseline-shift",
+          "block",
+          "block-size",
+          "border",
+          "border-block-end-color",
+          "border-block-end-style",
+          "border-block-end-width",
+          "border-block-start-color",
+          "border-block-start-style",
+          "border-block-start-width",
+          "border-bottom",
+          "border-bottom-color",
+          "border-bottom-left-radius",
+          "border-bottom-right-radius",
+          "border-bottom-style",
+          "border-bottom-width",
+          "border-box",
+          "border-collapse",
+          "border-color",
+          "border-end-end-radius",
+          "border-end-start-radius",
+          "border-image-outset",
+          "border-image-repeat",
+          "border-image-slice",
+          "border-image-source",
+          "border-image-width",
+          "border-inline-end-color",
+          "border-inline-end-style",
+          "border-inline-end-width",
+          "border-inline-start-color",
+          "border-inline-start-style",
+          "border-inline-start-width",
+          "border-left",
+          "border-left-color",
+          "border-left-style",
+          "border-left-width",
+          "border-radius",
+          "border-right",
+          "border-right-color",
+          "border-right-style",
+          "border-right-width",
+          "border-spacing",
+          "border-start-end-radius",
+          "border-start-start-radius",
+          "border-style",
+          "border-top",
+          "border-top-color",
+          "border-top-left-radius",
+          "border-top-right-radius",
+          "border-top-style",
+          "border-top-width",
+          "border-width",
+          "bottom",
+          "box-align",
+          "box-shadow",
+          "box-sizing",
+          "break-after",
+          "break-before",
+          "break-inside",
+          "buffered-rendering",
+          "caption-side",
+          "caret-color",
+          "clear",
+          "clip",
+          "clip-path",
+          "clip-rule",
+          "color",
+          "color-interpolation",
+          "color-interpolation-filters",
+          "color-scheme",
+          "column-count",
+          "column-fill",
+          "column-gap",
+          "column-rule-color",
+          "column-rule-style",
+          "column-rule-width",
+          "column-span",
+          "column-width",
+          "contain",
+          "contain-intrinsic-block-size",
+          "contain-intrinsic-height",
+          "contain-intrinsic-inline-size",
+          "contain-intrinsic-width",
+          "container-name",
+          "container-type",
+          "content",
+          "content-visibility",
+          "counter-increment",
+          "counter-reset",
+          "counter-set",
+          "cursor",
+          "cx",
+          "cy",
+          "direction",
+          "display",
+          "dominant-baseline",
+          "dynamic-range-limit",
+          "empty-cells",
+          "fill",
+          "fill-opacity",
+          "fill-rule",
+          "filter",
+          "flex",
+          "flex-basis",
+          "flex-direction",
+          "flex-grow",
+          "flex-shrink",
+          "flex-wrap",
+          "float",
+          "flood-color",
+          "flood-opacity",
+          "font-family",
+          "font-feature-settings",
+          "font-kerning",
+          "font-optical-sizing",
+          "font-palette",
+          "font-size",
+          "font-size-adjust",
+          "font-style",
+          "font-synthesis-small-caps",
+          "font-synthesis-style",
+          "font-synthesis-weight",
+          "font-variant-alternates",
+          "font-variant-caps",
+          "font-variant-east-asian",
+          "font-variant-ligatures",
+          "font-variant-numeric",
+          "font-variant-position",
+          "font-variation-settings",
+          "font-weight",
+          "font-width",
+          "gap",
+          "glyph-orientation-horizontal",
+          "glyph-orientation-vertical",
+          "grid",
+          "grid-auto-columns",
+          "grid-auto-flow",
+          "grid-auto-rows",
+          "grid-column",
+          "grid-column-end",
+          "grid-column-start",
+          "grid-gap",
+          "grid-row",
+          "grid-row-end",
+          "grid-row-start",
+          "grid-template-areas",
+          "grid-template-columns",
+          "grid-template-rows",
+          "hanging-punctuation",
+          "height",
+          "hyphenate-character",
+          "hyphens",
+          "image-orientation",
+          "image-rendering",
+          "inline",
+          "inline-block",
+          "inline-size",
+          "inset-block-end",
+          "inset-block-start",
+          "inset-inline-end",
+          "inset-inline-start",
+          "isolation",
+          "justify-content",
+          "justify-items",
+          "justify-self",
+          "left",
+          "letter-spacing",
+          "lighting-color",
+          "line-break",
+          "line-height",
+          "list-style",
+          "list-style-image",
+          "list-style-position",
+          "list-style-type",
+          "margin",
+          "margin-block-end",
+          "margin-block-start",
+          "margin-bottom",
+          "margin-inline-end",
+          "margin-inline-start",
+          "margin-left",
+          "margin-right",
+          "margin-top",
+          "margin-trim",
+          "marker-end",
+          "marker-mid",
+          "marker-start",
+          "mask-border-outset",
+          "mask-border-repeat",
+          "mask-border-slice",
+          "mask-border-source",
+          "mask-border-width",
+          "mask-clip",
+          "mask-composite",
+          "mask-image",
+          "mask-mode",
+          "mask-origin",
+          "mask-repeat",
+          "mask-size",
+          "mask-type",
+          "math-style",
+          "max-block-size",
+          "max-height",
+          "max-inline-size",
+          "max-width",
+          "min-block-size",
+          "min-height",
+          "min-inline-size",
+          "min-width",
+          "mix-blend-mode",
+          "none",
+          "object-fit",
+          "object-position",
+          "offset-anchor",
+          "offset-distance",
+          "offset-path",
+          "offset-position",
+          "offset-rotate",
+          "opacity",
+          "order",
+          "orphans",
+          "outline-color",
+          "outline-offset",
+          "outline-style",
+          "outline-width",
+          "overflow",
+          "overflow-block",
+          "overflow-inline",
+          "overflow-wrap",
+          "overflow-x",
+          "overflow-y",
+          "overscroll-behavior-block",
+          "overscroll-behavior-inline",
+          "overscroll-behavior-x",
+          "overscroll-behavior-y",
+          "padding",
+          "padding-block-end",
+          "padding-block-start",
+          "padding-bottom",
+          "padding-inline-end",
+          "padding-inline-start",
+          "padding-left",
+          "padding-right",
+          "padding-top",
+          "paint-order",
+          "perspective",
+          "perspective-origin",
+          "pointer-events",
+          "position",
+          "position-anchor",
+          "position-area",
+          "position-try-fallbacks",
+          "position-try-order",
+          "print-color-adjust",
+          "quotes",
+          "r",
+          "resize",
+          "right",
+          "rotate",
+          "row-gap",
+          "ruby-align",
+          "ruby-overhang",
+          "ruby-position",
+          "rx",
+          "ry",
+          "scale",
+          "scroll-behavior",
+          "scroll-margin-block-end",
+          "scroll-margin-block-start",
+          "scroll-margin-bottom",
+          "scroll-margin-inline-end",
+          "scroll-margin-inline-start",
+          "scroll-margin-left",
+          "scroll-margin-right",
+          "scroll-margin-top",
+          "scroll-padding-block-end",
+          "scroll-padding-block-start",
+          "scroll-padding-bottom",
+          "scroll-padding-inline-end",
+          "scroll-padding-inline-start",
+          "scroll-padding-left",
+          "scroll-padding-right",
+          "scroll-padding-top",
+          "scroll-snap-align",
+          "scroll-snap-stop",
+          "scroll-snap-type",
+          "scroll-timeline-axis",
+          "scroll-timeline-name",
+          "scrollbar-gutter",
+          "scrollbar-width",
+          "shape-image-threshold",
+          "shape-margin",
+          "shape-outside",
+          "shape-rendering",
+          "speak-as",
+          "stop-color",
+          "stop-opacity",
+          "stroke",
+          "stroke-color",
+          "stroke-dasharray",
+          "stroke-dashoffset",
+          "stroke-linecap",
+          "stroke-linejoin",
+          "stroke-miterlimit",
+          "stroke-opacity",
+          "stroke-width",
+          "tab-size",
+          "table-layout",
+          "text-align",
+          "text-align-last",
+          "text-anchor",
+          "text-autospace",
+          "text-box-edge",
+          "text-box-trim",
+          "text-combine-upright",
+          "text-decoration",
+          "text-decoration-color",
+          "text-decoration-line",
+          "text-decoration-skip-ink",
+          "text-decoration-style",
+          "text-decoration-thickness",
+          "text-emphasis-color",
+          "text-emphasis-position",
+          "text-emphasis-style",
+          "text-indent",
+          "text-orientation",
+          "text-overflow",
+          "text-rendering",
+          "text-shadow",
+          "text-transform",
+          "text-underline-offset",
+          "text-underline-position",
+          "text-wrap-mode",
+          "text-wrap-style",
+          "timeline-scope",
+          "top",
+          "touch-action",
+          "transform",
+          "transform-box",
+          "transform-origin",
+          "transform-style",
+          "transition",
+          "transition-behavior",
+          "transition-delay",
+          "transition-duration",
+          "transition-property",
+          "transition-timing-function",
+          "translate",
+          "unicode-bidi",
+          "user-select",
+          "vector-effect",
+          "vertical-align",
+          "view-timeline-axis",
+          "view-timeline-inset",
+          "view-timeline-name",
+          "view-transition-class",
+          "view-transition-name",
+          "visibility",
+          "white-space",
+          "white-space-collapse",
+          "widows",
+          "width",
+          "will-change",
+          "word-break",
+          "word-spacing",
+          "writing-mode",
+          "x",
+          "y",
+          "z-index",
+          "zoom"
+        ];
+        var cssKeywords = [
+            "inherit", "initial", "unset", "revert",
+            
+            "block", "inline", "grid", "list-item", "run-in", "table",
+            "static", "absolute", "fixed", "sticky",
+            "visible", "hidden", "collapse",
+            "left", "right", "both", "inline-start", "inline-end",
+            "content-box",
+            "scroll", "clip",
+            
+            "row", "row-reverse", "column", "column-reverse",
+            "nowrap", "wrap", "wrap-reverse",
+            "flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly",
+            "stretch", "baseline", "self-start", "self-end",
+            
+            "underline", "overline", "line-through", "blink",
+            "uppercase", "lowercase", "capitalize", "full-width",
+            "left", "right", "center", "justify", "start", "end", "match-parent",
+            "normal", "pre", "pre-wrap", "pre-line", "break-spaces", "nowrap",
+            
+            "italic", "oblique", "normal",
+            "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900",
+            
+            "disc", "circle", "square", "decimal", "decimal-leading-zero", "lower-roman",
+            "upper-roman", "lower-greek", "lower-latin", "upper-latin", "armenian", "georgian",
+            "lower-alpha", "upper-alpha", "none",
+            
+            "auto", "default", "pointer", "text", "wait", "crosshair", "move", "help",
+            "not-allowed", "grab", "grabbing", "progress", "alias", "copy",
+            
+            "solid", "dashed", "dotted", "double", "groove", "ridge", "inset", "outset",
+            
+            "rgb()", "rgba()", "hsl()", "hsla()", "url()", "var()", "calc()", "min()", "max()", "clamp()",
+            "rgb(0,0,0)", "rgb(255,255,255)", "rgba(0,0,0,1)", "rgba(255,255,255,1)",
+            "hsl(0,0%,0%)", "hsl(0,0%,100%)", "hsla(0,0%,0%,1)", "hsla(0,0%,100%,1)",
+            "url('black.png')", "url('white.png')", "var(--black)", "var(--white)",
+            "calc(0px)", "calc(100px)", "min(0,1)", "max(0,1)", "clamp(0,0,0)", "clamp(0,100,100)",
+            
+            "all", "visiblePainted", "visibleFill", "visibleStroke",
+            "painted", "bounding-box",
+            "@import", "@media", "@font-face", "@keyframes", "@supports", "@page",
+            "@charset", "@namespace", "@document", "@viewport", "@counter-style",
+            
+            ":hover", ":focus", ":active", ":visited", ":link", ":checked", ":disabled",
+            ":first-child", ":last-child", ":nth-child()", ":not()", ":root", ":before", ":after",
+            
+            "::before", "::after", "::first-letter", "::first-line", "::selection",
+            "::placeholder", "accent-color",
+            "@keyframes ", "@media", "@font-face", "@supports", "@import", "@namespace", "@container"
+        ];
         
+        var jsKeywords = [
+            "await", "break", "case", "catch", "class", "const", "continue", "debugger", "default",
+            "delete", "do", "else", "enum", "export", "extends", "false", "finally", "for", "function",
+            "if", "import", "in", "instanceof", "new", "null", "return", "super", "switch", "this",
+            "throw", "true", "try", "typeof", "var", "void", "while", "with", "yield", "let", "static",
+            "implements", "interface", "package", "private", "protected", "public", "async"
+        ];
+        
+        var supportedConsoleMethods = [
+            "count", "countReset", "time", "timeLog", "timeEnd", "group", "groupEnd", "log", "debug", "warn", "trace"
+        ];
+        
+        var jsGlobals = [
+            "undefined", "NaN", "Infinity", "eval", "isFinite", "isNaN", "parseFloat", "parseInt",
+            "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent",
+            "Object", "Function", "Boolean", "Symbol", "Error", "EvalError", "InternalError", "RangeError",
+            "ReferenceError", "SyntaxError", "TypeError", "URIError", "Number", "BigInt", "Math", "Date",
+            "String", "RegExp", "Array", "Int8Array", "Uint8Array", "Uint8ClampedArray", "Int16Array",
+            "Uint16Array", "Int32Array", "Uint32Array", "Float32Array", "Float64Array", "BigInt64Array",
+            "BigUint64Array", "Map", "Set", "WeakMap", "WeakSet", "ArrayBuffer", "SharedArrayBuffer",
+            "Atomics", "DataView", "JSON", "Promise", "Generator", "GeneratorFunction", "AsyncFunction",
+            "Reflect", "Proxy", "Intl", "WebAssembly",
+            
+            "console", "arguments"
+        ];
+        var domAPIs = [
+            "window", "document",
+            "getElementById", "getElementsByClassName", "getElementsByTagName", "querySelector", "querySelectorAll",
+            "createElement", "createTextNode", "cloneNode",
+            "appendChild", "removeChild", "replaceChild", "insertBefore",
+            "setAttribute", "getAttribute", "removeAttribute", "hasAttribute",
+            "addEventListener", "removeEventListener", "dispatchEvent",
+            "getBoundingClientRect", "scrollTo", "scrollIntoView",
+            "focus", "blur", "designMode",
+            "setTimeout", "setInterval", "clearTimeout", "clearInterval"
+        ];
+        var cssProperties = [
+            "accentColor", "alignContent", "alignItems", "alignSelf", "animationDelay",
+            "animationDirection", "animationDuration", "animationFillMode", "animationIterationCount",
+            "animationName", "animationPlayState", "animationTimingFunction", "backfaceVisibility",
+            "backgroundAttachment", "backgroundBlendMode", "backgroundClip", "backgroundColor",
+            "backgroundImage", "backgroundOrigin", "backgroundPosition", "backgroundPositionX", "backgroundPositionY",
+            "backgroundRepeat", "backgroundSize", "border", "borderBottom", "borderBottomColor",
+            "borderBottomLeftRadius", "borderBottomRightRadius", "borderBottomStyle", "borderBottomWidth",
+            "borderCollapse", "borderColor", "borderImage", "borderImageOutset", "borderImageRepeat",
+            "borderImageSlice", "borderImageSource", "borderImageWidth", "borderLeft", "borderLeftColor",
+            "borderLeftStyle", "borderLeftWidth", "borderRadius", "borderRight", "borderRightColor",
+            "borderRightStyle", "borderRightWidth", "borderSpacing", "borderStyle", "borderTop",
+            "borderTopColor", "borderTopLeftRadius", "borderTopRightRadius", "borderTopStyle",
+            "borderTopWidth", "borderWidth", "bottom", "boxDecorationBreak", "boxShadow", "boxSizing",
+            "captionSide", "clear", "clip", "color", "columnCount", "columnFill", "columnGap", "columnRule",
+            "columnRuleColor", "columnRuleStyle", "columnRuleWidth", "columns", "columnSpan", "columnWidth",
+            "content", "counterIncrement", "counterReset", "direction", "display", "emptyCells", "flexBasis", "flexDirection", "flexFlow", "flexGrow", "flexShrink", "flexWrap",
+            "float", "font", "fontFamily", "fontFeatureSettings", "fontKerning", "fontSize", "fontSizeAdjust",
+            "fontStretch", "fontStyle", "fontVariant", "fontVariantCaps", "fontVariantEastAsian",
+            "fontVariantLigatures", "fontVariantNumeric", "fontWeight", "gap", "grid", "gridArea",
+            "gridAutoColumns", "gridAutoFlow", "gridAutoRows", "gridColumn", "gridColumnEnd", "gridColumnGap",
+            "gridColumnStart", "gridGap", "gridRow", "gridRowEnd", "gridRowGap", "gridRowStart", "gridTemplate",
+            "gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows", "hangingPunctuation", "height",
+            "hyphens", "imageRendering", "isolation", "justifyContent", "left", "letterSpacing", "lineHeight",
+            "listStyle", "listStyleImage", "listStylePosition", "listStyleType", "margin", "marginBottom",
+            "marginLeft", "marginRight", "marginTop", "maxHeight", "maxWidth", "minHeight", "minWidth",
+            "objectFit", "objectPosition", "opacity", "order", "outline", "outlineColor", "outlineOffset",
+            "outlineStyle", "outlineWidth", "overflow", "overflowWrap", "overflowX", "overflowY",
+            "paddingBottom", "paddingLeft", "paddingRight", "paddingTop", "pageBreakAfter", "pageBreakBefore",
+            "pageBreakInside", "perspectiveOrigin", "pointerEvents", "position", "quotes",
+            "resize", "right", "scrollBehavior", "tableLayout", "textAlign", "textAlignLast", "textDecoration",
+            "textDecorationColor", "textDecorationLine", "textDecorationStyle", "textIndent", "textJustify",
+            "textOverflow", "textShadow", "textTransform", "top", "transform", "transformOrigin",
+            "transformStyle", "transition", "transitionDelay", "transitionDuration", "transitionProperty",
+            "transitionTimingFunction", "unicodeBidi", "userSelect", "verticalAlign", "visibility",
+            "whiteSpace", "width", "wordBreak", "wordSpacing", "wordWrap", "writingMode", "zIndex"
+        ];
+        var webkitProperties = [
+            "-webkit-align-content",
+            "-webkit-align-items",
+            "-webkit-align-self",
+            "-webkit-animation",
+            "-webkit-animation-delay",
+            "-webkit-animation-direction",
+            "-webkit-animation-duration",
+            "-webkit-animation-fill-mode",
+            "-webkit-animation-iteration-count",
+            "-webkit-animation-name",
+            "-webkit-animation-play-state",
+            "-webkit-animation-timing-function",
+            "-webkit-appearance",
+            "-webkit-backdrop-filter",
+            "-webkit-background-clip",
+            "-webkit-background-composite",
+            "-webkit-background-origin",
+            "-webkit-background-size",
+            "-webkit-border-before",
+            "-webkit-border-before-color",
+            "-webkit-border-before-style",
+            "-webkit-border-before-width",
+            "-webkit-border-image",
+            "-webkit-border-radius",
+            "-webkit-border-top-left-radius",
+            "-webkit-border-top-right-radius",
+            "-webkit-border-bottom-left-radius",
+            "-webkit-border-bottom-right-radius",
+            "-webkit-box-align",
+            "-webkit-box-decoration-break",
+            "-webkit-box-direction",
+            "-webkit-box-flex",
+            "-webkit-box-flex-group",
+            "-webkit-box-lines",
+            "-webkit-box-ordinal-group",
+            "-webkit-box-orient",
+            "-webkit-box-pack",
+            "-webkit-box-reflect",
+            "-webkit-box-shadow",
+            "-webkit-clip-path",
+            "-webkit-color-correction",
+            "-webkit-column-count",
+            "-webkit-column-gap",
+            "-webkit-column-rule",
+            "-webkit-column-rule-color",
+            "-webkit-column-rule-style",
+            "-webkit-column-rule-width",
+            "-webkit-column-span",
+            "-webkit-column-width",
+            "-webkit-columns",
+            "-webkit-filter",
+            "-webkit-flex",
+            "-webkit-flex-basis",
+            "-webkit-flex-direction",
+            "-webkit-flex-flow",
+            "-webkit-flex-grow",
+            "-webkit-flex-shrink",
+            "-webkit-flex-wrap",
+            "-webkit-font-feature-settings",
+            "-webkit-font-kerning",
+            "-webkit-font-smoothing",
+            "-webkit-font-variant-ligatures",
+            "-webkit-hyphens",
+            "-webkit-justify-content",
+            "-webkit-line-break",
+            "-webkit-line-clamp",
+            "-webkit-margin-before",
+            "-webkit-margin-after",
+            "-webkit-margin-start",
+            "-webkit-margin-end",
+            "-webkit-mask",
+            "-webkit-mask-box-image",
+            "-webkit-mask-box-image-outset",
+            "-webkit-mask-box-image-repeat",
+            "-webkit-mask-box-image-slice",
+            "-webkit-mask-box-image-source",
+            "-webkit-mask-box-image-width",
+            "-webkit-mask-clip",
+            "-webkit-mask-composite",
+            "-webkit-mask-image",
+            "-webkit-mask-origin",
+            "-webkit-mask-position",
+            "-webkit-mask-repeat",
+            "-webkit-mask-size",
+            "-webkit-max-logical-height",
+            "-webkit-max-logical-width",
+            "-webkit-min-logical-height",
+            "-webkit-min-logical-width",
+            "-webkit-opacity",
+            "-webkit-order",
+            "-webkit-overflow-scrolling",
+            "-webkit-padding-before",
+            "-webkit-padding-after",
+            "-webkit-padding-start",
+            "-webkit-padding-end",
+            "-webkit-perspective",
+            "-webkit-perspective-origin",
+            "-webkit-print-color-adjust",
+            "-webkit-rtl-ordering",
+            "-webkit-ruby-position",
+            "-webkit-shape-image-threshold",
+            "-webkit-shape-margin",
+            "-webkit-shape-outside",
+            "-webkit-tap-highlight-color",
+            "-webkit-text-combine",
+            "-webkit-text-decoration",
+            "-webkit-text-decoration-color",
+            "-webkit-text-decoration-line",
+            "-webkit-text-decoration-style",
+            "-webkit-text-emphasis",
+            "-webkit-text-emphasis-color",
+            "-webkit-text-emphasis-position",
+            "-webkit-text-emphasis-style",
+            "-webkit-text-fill-color",
+            "-webkit-text-orientation",
+            "-webkit-text-security",
+            "-webkit-text-size-adjust",
+            "-webkit-text-stroke",
+            "-webkit-text-stroke-color",
+            "-webkit-text-stroke-width",
+            "-webkit-transform",
+            "-webkit-transform-origin",
+            "-webkit-transform-style",
+            "-webkit-transition",
+            "-webkit-transition-delay",
+            "-webkit-transition-duration",
+            "-webkit-transition-property",
+            "-webkit-transition-timing-function",
+            "-webkit-user-drag",
+            "-webkit-user-modify",
+            "-webkit-user-select",
+            "-webkit-writing-mode"
+        ];
+        var mozProperties = [
+            "-moz-appearance",
+            "-moz-backface-visibility",
+            "-moz-background-clip",
+            "-moz-background-inline-policy",
+            "-moz-background-origin",
+            "-moz-background-size",
+            "-moz-binding",
+            "-moz-border-bottom-colors",
+            "-moz-border-end-color",
+            "-moz-border-end-style",
+            "-moz-border-end-width",
+            "-moz-border-left-colors",
+            "-moz-border-right-colors",
+            "-moz-border-start-color",
+            "-moz-border-start-style",
+            "-moz-border-start-width",
+            "-moz-border-top-colors",
+            "-moz-box-align",
+            "-moz-box-direction",
+            "-moz-box-flex",
+            "-moz-box-ordinal-group",
+            "-moz-box-orient",
+            "-moz-box-pack",
+            "-moz-box-shadow",
+            "-moz-column-count",
+            "-moz-column-fill",
+            "-moz-column-gap",
+            "-moz-column-rule",
+            "-moz-column-rule-color",
+            "-moz-column-rule-style",
+            "-moz-column-rule-width",
+            "-moz-column-width",
+            "-moz-columns",
+            "-moz-context-properties",
+            "-moz-float-edge",
+            "-moz-font-feature-settings",
+            "-moz-font-language-override",
+            "-moz-force-broken-image-icon",
+            "-moz-hyphens",
+            "-moz-image-region",
+            "-moz-margin-end",
+            "-moz-margin-start",
+            "-moz-orient",
+            "-moz-outline-radius",
+            "-moz-outline-radius-bottomleft",
+            "-moz-outline-radius-bottomright",
+            "-moz-outline-radius-topleft",
+            "-moz-outline-radius-topright",
+            "-moz-padding-end",
+            "-moz-padding-start",
+            "-moz-perspective",
+            "-moz-perspective-origin",
+            "-moz-stack-sizing",
+            "-moz-tab-size",
+            "-moz-text-blink",
+            "-moz-text-decoration-color",
+            "-moz-text-decoration-line",
+            "-moz-text-decoration-style",
+            "-moz-transform",
+            "-moz-transform-origin",
+            "-moz-transform-style",
+            "-moz-transition",
+            "-moz-transition-delay",
+            "-moz-transition-duration",
+            "-moz-transition-property",
+            "-moz-transition-timing-function",
+            "-moz-user-focus",
+            "-moz-user-input",
+            "-moz-user-modify",
+            "-moz-user-select",
+            "-moz-window-shadow"
+        ];
+        var msProperties = [
+            "-ms-accelerator",
+            "-ms-align-self",
+            "-ms-block-progression",
+            "-ms-content-zoom-limit",
+            "-ms-content-zoom-limit-max",
+            "-ms-content-zoom-limit-min",
+            "-ms-content-zoom-snap",
+            "-ms-content-zoom-snap-points",
+            "-ms-content-zoom-snap-type",
+            "-ms-flow-from",
+            "-ms-flow-into",
+            "-ms-grid-column",
+            "-ms-grid-column-align",
+            "-ms-grid-column-span",
+            "-ms-grid-columns",
+            "-ms-grid-row",
+            "-ms-grid-row-align",
+            "-ms-grid-row-span",
+            "-ms-grid-rows",
+            "-ms-high-contrast-adjust",
+            "-ms-hyphenate-limit-chars",
+            "-ms-hyphenate-limit-lines",
+            "-ms-hyphenate-limit-zone",
+            "-ms-hyphens",
+            "-ms-ime-align",
+            "-ms-interpolation-mode",
+            "-ms-overflow-style",
+            "-ms-scroll-chaining",
+            "-ms-scroll-limit",
+            "-ms-scroll-limit-x-max",
+            "-ms-scroll-limit-x-min",
+            "-ms-scroll-limit-y-max",
+            "-ms-scroll-limit-y-min",
+            "-ms-scroll-rails",
+            "-ms-scroll-snap-points-x",
+            "-ms-scroll-snap-points-y",
+            "-ms-scroll-snap-type",
+            "-ms-scroll-snap-x",
+            "-ms-scroll-snap-y",
+            "-ms-scroll-translation",
+            "-ms-text-combine-horizontal",
+            "-ms-text-overflow",
+            "-ms-touch-action",
+            "-ms-touch-select",
+            "-ms-transform",
+            "-ms-transform-origin",
+            "-ms-transition",
+            "-ms-transition-delay",
+            "-ms-transition-duration",
+            "-ms-transition-property",
+            "-ms-transition-timing-function",
+            "-ms-user-select"
+        ];
+        var csscolors = [
+            "transparent",
+            "AliceBlue",
+            "AntiqueWhite",
+            "Aqua",
+            "Aquamarine",
+            "Azure",
+            "Beige",
+            "Bisque",
+            "Black",
+            "BlanchedAlmond",
+            "Blue",
+            "BlueViolet",
+            "Brown",
+            "BurlyWood",
+            "CadetBlue",
+            "Chartreuse",
+            "Chocolate",
+            "Coral",
+            "CornflowerBlue",
+            "Cornsilk",
+            "Crimson",
+            "Cyan",
+            "DarkBlue",
+            "DarkCyan",
+            "DarkGoldenRod",
+            "DarkGray",
+            "DarkGreen",
+            "DarkGrey",
+            "DarkKhaki",
+            "DarkMagenta",
+            "DarkOliveGreen",
+            "DarkOrange",
+            "DarkOrchid",
+            "DarkRed",
+            "DarkSalmon",
+            "DarkSeaGreen",
+            "DarkSlateBlue",
+            "DarkSlateGray",
+            "DarkSlateGrey",
+            "DarkTurquoise",
+            "DarkViolet",
+            "DeepPink",
+            "DeepSkyBlue",
+            "DimGray",
+            "DimGrey",
+            "DodgerBlue",
+            "FireBrick",
+            "FloralWhite",
+            "ForestGreen",
+            "Fuchsia",
+            "Gainsboro",
+            "GhostWhite",
+            "Gold",
+            "GoldenRod",
+            "Gray",
+            "Green",
+            "GreenYellow",
+            "Grey",
+            "HoneyDew",
+            "HotPink",
+            "IndianRed",
+            "Indigo",
+            "Ivory",
+            "Khaki",
+            "Lavender",
+            "LavenderBlush",
+            "LawnGreen",
+            "LemonChiffon",
+            "LightBlue",
+            "LightCoral",
+            "LightCyan",
+            "LightGoldenRodYellow",
+            "LightGray",
+            "LightGreen",
+            "LightGrey",
+            "LightPink",
+            "LightSalmon",
+            "LightSeaGreen",
+            "LightSkyBlue",
+            "LightSlateGray",
+            "LightSlateGrey",
+            "LightSteelBlue",
+            "LightYellow",
+            "Lime",
+            "LimeGreen",
+            "Linen",
+            "Magenta",
+            "Maroon",
+            "MediumAquaMarine",
+            "MediumBlue",
+            "MediumOrchid",
+            "MediumPurple",
+            "MediumSeaGreen",
+            "MediumSlateBlue",
+            "MediumSpringGreen",
+            "MediumTurquoise",
+            "MediumVioletRed",
+            "MidnightBlue",
+            "MintCream",
+            "MistyRose",
+            "Moccasin",
+            "NavajoWhite",
+            "Navy",
+            "OldLace",
+            "Olive",
+            "OliveDrab",
+            "Orange",
+            "OrangeRed",
+            "Orchid",
+            "PaleGoldenRod",
+            "PaleGreen",
+            "PaleTurquoise",
+            "PaleVioletRed",
+            "PapayaWhip",
+            "PeachPuff",
+            "Peru",
+            "Pink",
+            "Plum",
+            "PowderBlue",
+            "Purple",
+            "RebeccaPurple",
+            "Red",
+            "RosyBrown",
+            "RoyalBlue",
+            "SaddleBrown",
+            "Salmon",
+            "SandyBrown",
+            "SeaGreen",
+            "SeaShell",
+            "Sienna",
+            "Silver",
+            "SkyBlue",
+            "SlateBlue",
+            "SlateGray",
+            "SlateGrey",
+            "Snow",
+            "SpringGreen",
+            "SteelBlue",
+            "Tan",
+            "Teal",
+            "Thistle",
+            "Tomato",
+            "Turquoise",
+            "Violet",
+            "Wheat",
+            "White",
+            "WhiteSmoke",
+            "Yellow",
+            "YellowGreen"
+        ];
+        var vendorCSSProperties = [
+            "WebkitAlignContent",
+            "WebkitAlignItems",
+            "WebkitAlignSelf",
+            "WebkitAnimation",
+            "WebkitAnimationDelay",
+            "WebkitAnimationDirection",
+            "WebkitAnimationDuration",
+            "WebkitAnimationFillMode",
+            "WebkitAnimationIterationCount",
+            "WebkitAnimationName",
+            "WebkitAnimationPlayState",
+            "WebkitAnimationTimingFunction",
+            "WebkitAppearance",
+            "WebkitBackfaceVisibility",
+            "WebkitBackgroundClip",
+            "WebkitBackgroundOrigin",
+            "WebkitBackgroundSize",
+            "WebkitBorderBefore",
+            "WebkitBorderBeforeColor",
+            "WebkitBorderBeforeStyle",
+            "WebkitBorderBeforeWidth",
+            "WebkitBorderImage",
+            "WebkitBorderRadius",
+            "WebkitBorderTopLeftRadius",
+            "WebkitBorderTopRightRadius",
+            "WebkitBorderBottomLeftRadius",
+            "WebkitBorderBottomRightRadius",
+            "WebkitBoxAlign",
+            "WebkitBoxDecorationBreak",
+            "WebkitBoxDirection",
+            "WebkitBoxFlex",
+            "WebkitBoxFlexGroup",
+            "WebkitBoxLines",
+            "WebkitBoxOrdinalGroup",
+            "WebkitBoxOrient",
+            "WebkitBoxPack",
+            "WebkitBoxReflect",
+            "WebkitBoxShadow",
+            "WebkitClipPath",
+            "WebkitColumnCount",
+            "WebkitColumnGap",
+            "WebkitColumnRule",
+            "WebkitColumnRuleColor",
+            "WebkitColumnRuleStyle",
+            "WebkitColumnRuleWidth",
+            "WebkitColumnSpan",
+            "WebkitColumnWidth",
+            "WebkitColumns",
+            "WebkitFilter",
+            "WebkitFlex",
+            "WebkitFlexBasis",
+            "WebkitFlexDirection",
+            "WebkitFlexFlow",
+            "WebkitFlexGrow",
+            "WebkitFlexShrink",
+            "WebkitFlexWrap",
+            "WebkitFontFeatureSettings",
+            "WebkitFontKerning",
+            "WebkitFontSmoothing",
+            "WebkitFontVariantLigatures",
+            "WebkitHyphens",
+            "WebkitJustifyContent",
+            "WebkitLineClamp",
+            "WebkitMask",
+            "WebkitMaskBoxImage",
+            "WebkitMaskBoxImageOutset",
+            "WebkitMaskBoxImageRepeat",
+            "WebkitMaskBoxImageSlice",
+            "WebkitMaskBoxImageSource",
+            "WebkitMaskBoxImageWidth",
+            "WebkitMaskClip",
+            "WebkitMaskComposite",
+            "WebkitMaskImage",
+            "WebkitMaskOrigin",
+            "WebkitMaskPosition",
+            "WebkitMaskRepeat",
+            "WebkitMaskSize",
+            "WebkitPerspective",
+            "WebkitPerspectiveOrigin",
+            "WebkitPrintColorAdjust",
+            "WebkitTextFillColor",
+            "WebkitTextStroke",
+            "WebkitTextStrokeColor",
+            "WebkitTextStrokeWidth",
+            "WebkitTransform",
+            "WebkitTransformOrigin",
+            "WebkitTransformStyle",
+            "WebkitTransition",
+            "WebkitTransitionDelay",
+            "WebkitTransitionDuration",
+            "WebkitTransitionProperty",
+            "WebkitTransitionTimingFunction",
+            "WebkitUserDrag",
+            "WebkitUserModify",
+            "WebkitUserSelect",
+            "WebkitWritingMode",
+            
+            "msAccelerator",
+            "msAlignSelf",
+            "msBlockProgression",
+            "msContentZoomLimit",
+            "msContentZoomLimitMax",
+            "msContentZoomLimitMin",
+            "msContentZoomSnap",
+            "msContentZoomSnapPoints",
+            "msContentZoomSnapType",
+            "msFlowFrom",
+            "msFlowInto",
+            "msGridColumn",
+            "msGridColumnAlign",
+            "msGridColumnSpan",
+            "msGridColumns",
+            "msGridRow",
+            "msGridRowAlign",
+            "msGridRowSpan",
+            "msGridRows",
+            "msHighContrastAdjust",
+            "msHyphenateLimitChars",
+            "msHyphenateLimitLines",
+            "msHyphenateLimitZone",
+            "msHyphens",
+            "msImeAlign",
+            "msInterpolationMode",
+            "msOverflowStyle",
+            "msScrollChaining",
+            "msScrollLimit",
+            "msScrollLimitXMax",
+            "msScrollLimitXMin",
+            "msScrollLimitYMax",
+            "msScrollLimitYMin",
+            "msScrollRails",
+            "msScrollSnapPointsX",
+            "msScrollSnapPointsY",
+            "msScrollSnapType",
+            "msScrollSnapX",
+            "msScrollSnapY",
+            "msScrollTranslation",
+            "msTextCombineHorizontal",
+            "msTextOverflow",
+            "msTouchAction",
+            "msTouchSelect",
+            "msTransform",
+            "msTransformOrigin",
+            "msTransition",
+            "msTransitionDelay",
+            "msTransitionDuration",
+            "msTransitionProperty",
+            "msTransitionTimingFunction",
+            "msUserSelect",
+            
+            "MozAppearance",
+            "MozBackfaceVisibility",
+            "MozBackgroundClip",
+            "MozBackgroundInlinePolicy",
+            "MozBackgroundOrigin",
+            "MozBackgroundSize",
+            "MozBinding",
+            "MozBorderBottomColors",
+            "MozBorderEndColor",
+            "MozBorderEndStyle",
+            "MozBorderEndWidth",
+            "MozBorderLeftColors",
+            "MozBorderRightColors",
+            "MozBorderStartColor",
+            "MozBorderStartStyle",
+            "MozBorderStartWidth",
+            "MozBorderTopColors",
+            "MozBoxAlign",
+            "MozBoxDirection",
+            "MozBoxFlex",
+            "MozBoxOrdinalGroup",
+            "MozBoxOrient",
+            "MozBoxPack",
+            "MozBoxShadow",
+            "MozColumnCount",
+            "MozColumnFill",
+            "MozColumnGap",
+            "MozColumnRule",
+            "MozColumnRuleColor",
+            "MozColumnRuleStyle",
+            "MozColumnRuleWidth",
+            "MozColumnWidth",
+            "MozColumns",
+            "MozContextProperties",
+            "MozFloatEdge",
+            "MozFontFeatureSettings",
+            "MozFontLanguageOverride",
+            "MozForceBrokenImageIcon",
+            "MozHyphens",
+            "MozImageRegion",
+            "MozMarginEnd",
+            "MozMarginStart",
+            "MozOrient",
+            "MozOutlineRadius",
+            "MozOutlineRadiusBottomLeft",
+            "MozOutlineRadiusBottomRight",
+            "MozOutlineRadiusTopLeft",
+            "MozOutlineRadiusTopRight",
+            "MozPaddingEnd",
+            "MozPaddingStart",
+            "MozPerspective",
+            "MozPerspectiveOrigin",
+            "MozStackSizing",
+            "MozTabSize",
+            "MozTextBlink",
+            "MozTextDecorationColor",
+            "MozTextDecorationLine",
+            "MozTextDecorationStyle",
+            "MozTransform",
+            "MozTransformOrigin",
+            "MozTransformStyle",
+            "MozTransition",
+            "MozTransitionDelay",
+            "MozTransitionDuration",
+            "MozTransitionProperty",
+            "MozTransitionTimingFunction",
+            "MozUserFocus",
+            "MozUserInput",
+            "MozUserModify",
+            "MozUserSelect",
+            "MozWindowShadow",
+            
+            "OAnimation", "OAnimationDelay", "OAnimationDirection", "OAnimationDuration", "OAnimationFillMode",
+            "OAnimationIterationCount", "OAnimationName", "OAnimationPlayState", "OAnimationTimingFunction",
+            "OTransition", "OTransitionDelay", "OTransitionDuration", "OTransitionProperty", "OTransitionTimingFunction"
+        ];
+        var jsSyntax = [
+            ...jsKeywords,
+            ...supportedConsoleMethods,
+            ...jsGlobals,
+            ...domAPIs,
+            ...cssProperties,
+            ...vendorCSSProperties
+        ];
+        
+        var htmlTags = [
+            "<div>", "<span>", "<input>", "<button>", "<form>", "<select>", "<option>", "<table>", "<thead>",
+            "<tbody>", "<tr>", "<td>", "<ul>", "<ol>", "<li>", "<a>", "<p>", "<h1>", "<h2>", "<h3>", "<h4>",
+            "<h5>", "<h6>", "<article>", "<section>", "<header>", "<footer>", "<nav>", "<aside>", "<main>", "<mark>",
+            "<small>", "<strong>", "<em>", "<i>", "<b>", "<u>", "<code>", "<pre>", "<blockquote>", "<cite>", "<time>",
+            "<abbr>", "<address>", "<del>", "<ins>", "<sub>", "<sup>", "<figure>", "<figcaption>", "<details>", "<summary>",
+            "<progress>", "<meter>", "<canvas>", "<svg>", "<path>", "<g>", "<circle>", "<rect>", "<line>", "<polygon>",
+            "<polyline>", "<text>", "<style>", "<link>", "<meta>", "<title>", "<base>", "<script>", "<noscript>", "<iframe>",
+            "<audio>", "<video>", "<source>", "<track>", "<object>", "<param>", "<embed>", "<picture>", "<map>", "<area>",
+            "<use>",
+            "</div>", "</span>", "</input>", "</button>", "</form>", "</select>", "</option>", "</table>", "</thead>",
+            "</tbody>", "</tr>", "</td>", "</ul>", "</ol>", "</li>", "</a>", "</p>", "</h1>", "</h2>", "</h3>", "</h4>",
+            "</h5>", "</h6>", "</article>", "</section>", "</header>", "</footer>", "</nav>", "</aside>", "</main>", "</mark>",
+            "</small>", "</strong>", "</em>", "</i>", "</b>", "</u>", "</code>", "</pre>", "</blockquote>", "</cite>", "</time>",
+            "</abbr>", "</address>", "</del>", "</ins>", "</sub>", "</sup>", "</figure>", "</figcaption>", "</details>", "</summary>",
+            "</progress>", "</meter>", "</canvas>", "</svg>", "</path>", "</g>", "</circle>", "</rect>", "</line>", "</polygon>",
+            "</polyline>", "</text>", "</style>", "</link>", "</meta>", "</title>", "</base>", "<\/script>", "</noscript>", "</iframe>",
+            "</audio>", "</video>", "</source>", "</track>", "</object>", "</param>", "</embed>", "</picture>", "</map>", "</area>",
+            "</use>"
+        ];
+        var openJsTags = [
+            "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "body",
+            "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del",
+            "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer",
+            "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "i", "iframe", "img", "input",
+            "ins", "kbd", "label", "legend", "li", "link", "main", "map", "mark", "meta", "meter", "nav", "noscript",
+            "object", "ol", "optgroup", "option", "output", "p", "param", "picture", "pre", "progress", "q", "rp",
+            "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style",
+            "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time",
+            "title", "tr", "track", "u", "ul", "var", "video", "wbr"
+        ];
+        var pythonUniqueKeys = [
+            "False",
+            "None",
+            "True",
+            "assert",
+            "def",
+            "elif",
+            "except",
+            "global",
+            "lambda",
+            "nonlocal",
+            "pass",
+            "raise",
+            "aiter",
+            "anext",
+            "any",
+            "ascii",
+            "bin",
+            "bool",
+            "breakpoint",
+            "bytearray",
+            "bytes",
+            "callable",
+            "chr",
+            "classmethod",
+            "compile",
+            "complex",
+            "delattr",
+            "dict",
+            "divmod",
+            "enumerate",
+            "frozenset",
+            "getattr",
+            "globals",
+            "hasattr",
+            "hash",
+            "hex",
+            "int",
+            "isinstance",
+            "issubclass",
+            "iter",
+            "len",
+            "list",
+            "locals",
+            "memoryview",
+            "next",
+            "oct",
+            "ord",
+            "repr",
+            "setattr",
+            "sorted",
+            "staticmethod",
+            "sum",
+            "tuple",
+            "vars",
+            "zip",
+            "__import__",
+            "re",
+            "fullmatch",
+            "findall",
+            "finditer",
+            "subn",
+            "purge",
+            "IGNORECASE",
+            "LOCALE",
+            "MULTILINE",
+            "DOTALL",
+            "VERBOSE",
+            "UNICODE",
+            "comb",
+            "copysign",
+            "degrees",
+            "dist",
+            "erf",
+            "erfc",
+            "fabs",
+            "factorial",
+            "fmod",
+            "frexp",
+            "fsum",
+            "gamma",
+            "gcd",
+            "isclose",
+            "isinf",
+            "isqrt",
+            "lcm",
+            "ldexp",
+            "lgamma",
+            "modf",
+            "nextafter",
+            "perm",
+            "prod",
+            "radians",
+            "remainder",
+            "tau",
+            "ulp",
+            "seed",
+            "getstate",
+            "setstate",
+            "randbytes",
+            "randrange",
+            "randint",
+            "getrandbits",
+            "choice",
+            "choices",
+            "shuffle",
+            "sample",
+            "uniform",
+            "triangular",
+            "betavariate",
+            "expovariate",
+            "gammavariate",
+            "gauss",
+            "lognormvariate",
+            "normalvariate",
+            "vonmisesvariate",
+            "paretovariate",
+            "weibullvariate",
+            "sys",
+            "argv",
+            "byteorder",
+            "displayhook",
+            "excepthook",
+            "executable",
+            "hexversion",
+            "maxsize",
+            "maxunicode",
+            "stderr",
+            "stdin",
+            "stdout",
+            "version_info",
+            "os",
+            "chdir",
+            "getcwd",
+            "fsencode",
+            "fsdecode",
+            "getpid",
+            "getppid",
+            "getuid"
+        ];
+        var allListsCombined = [allCssProperties, cssKeywords, jsKeywords, supportedConsoleMethods, jsGlobals, domAPIs, cssProperties, webkitProperties, mozProperties, msProperties, csscolors, vendorCSSProperties, openJsTags, pythonUniqueKeys];
         window.addEventListener("load", () => {
             const loadingScreen = document.getElementById("loading-screen");
             const isDark = window.matchMedia("(prefers-color-scheme: dark)")?.matches;
@@ -10550,6 +11921,13 @@
         });
         var optionsDropdownOverlay = document.getElementById("options-dropdown-overlay");
         var optionsDropdownContainer = document.getElementById("options-dropdown-container");
+        var replacementOptionsDropdownOverlay = document.getElementById("replacement-dropdown-overlay");
+        var replacementOptionsDropdownContainer = document.getElementById("replacement-dropdown-container");
+        replacementOptionsDropdownOverlay.onclick = (e) => {
+            if (e.target == e.currentTarget) {
+                replacementOptionsDropdownOverlay.style.display = "none";
+            }
+        };
         optionsDropdownOverlay.onclick = (e) => {
             if (e.target == e.currentTarget) {
                 optionsDropdownOverlay.style.display = "none";
@@ -10594,8 +11972,8 @@
             elementToPosition.style.top = `${top}px`;
             elementToPosition.style.left = `${left}px`;
         }
-        function showdropdownops(posTarget, options) {
-            if (!optionsDropdownOverlay || !posTarget || !options || !optionsDropdownContainer) return;
+        function showdropdownops(posTarget, options, event = null) {
+            if (!optionsDropdownOverlay || !options || !optionsDropdownContainer) return;
             optionsDropdownContainer.innerHTML = "";
             options.forEach(op => {
                 const opEl = document.createElement("button");
@@ -10609,7 +11987,65 @@
                 };
             });
             optionsDropdownOverlay.style.display = "flex";
-            positionElementBelowOrAboveTarget(posTarget, optionsDropdownContainer);
+            if (event) {
+                positionAtCursor(optionsDropdownContainer, event);
+            } else if (posTarget) {
+                positionElementBelowOrAboveTarget(posTarget, optionsDropdownContainer);
+            }
+        }
+        function positionAtCursor(element, event) {
+            const point = getEventPoint(event);
+            if (!point) return;
+            
+            const { x: cursorX, y: cursorY } = point;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            element.style.position = 'fixed';
+            
+            const { width, height } = element.getBoundingClientRect();
+            
+            const isLowerHalf = cursorY > viewportHeight / 2;
+            let top = isLowerHalf ? cursorY - height : cursorY;
+            let left = cursorX - width / 2;
+            
+            left = Math.max(0, Math.min(left, viewportWidth - width));
+            top = Math.max(0, Math.min(top, viewportHeight - height));
+            
+            element.style.left = `${left}px`;
+            element.style.top = `${top}px`;
+        }
+        
+        function getEventPoint(event) {
+            if (event.changedTouches && event.changedTouches.length > 0) {
+                const touch = event.changedTouches[0];
+                return { x: touch.clientX, y: touch.clientY };
+            }
+            if (event.touches && event.touches.length > 0) {
+                const touch = event.touches[0];
+                return { x: touch.clientX, y: touch.clientY };
+            }
+            if (typeof event.clientX === 'number' && typeof event.clientY === 'number') {
+                return { x: event.clientX, y: event.clientY };
+            }
+            return null;
+        }
+        function showreplacementsuggestionsdropdownops(posTarget, options) {
+            if (!replacementOptionsDropdownOverlay || !posTarget || !options || !replacementOptionsDropdownContainer) return;
+            replacementOptionsDropdownContainer.innerHTML = "";
+            options.forEach(op => {
+                const opEl = document.createElement("button");
+                opEl.className = "dropdown-op";
+                opEl.textContent = op.text;
+                replacementOptionsDropdownContainer.appendChild(opEl);
+                opEl.onclick = () => {
+                    op.func();
+                    replacementOptionsDropdownOverlay.style.display = "none";
+                    replacementOptionsDropdownContainer.innerHTML = "";
+                };
+            });
+            replacementOptionsDropdownOverlay.style.display = "flex";
+            positionElementBelowOrAboveTarget(posTarget, replacementOptionsDropdownContainer);
         }
         function toggleClass(elementclass, classtt, setToVal = null) {
             const el = document.querySelector(elementclass);
@@ -11828,6 +13264,8 @@
             
             return destroy;
         }
+        positionElementAtCursor(optionsDropdownContainer);
+        positionElementAtCursor(replacementOptionsDropdownContainer);
         
         hoverEls.forEach(elIdentifier => {
             const els = document.querySelectorAll(elIdentifier);
@@ -14339,11 +15777,64 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
         }
         
-        
+        var secondClickForMoreInfo;
+        var clicksForMoreOps = 0;
         document.addEventListener('click', (event) => {
             if (event.target.classList.contains('code-editor-btn') || event.target.classList.contains('editor-selected-line-btns') || event.target.classList.contains('eslbtn') || event.target.classList.contains('code-editor-btns') || event.target.classList.contains('threedots')){
                 if (document.querySelector('.notificationmessage').style.display != "none") {
                     hidenotificationmessage();
+                }
+            } else if (event.target.classList.contains("syntax") && editorIndex && section) {
+                const containerEl = document.getElementById('container');
+                const targetList = allListsCombined.filter(list => list.map(slist => slist.toLowerCase()).includes(event.target.textContent.toLowerCase()));
+                if (
+                    containerEl &&
+                    containerEl.classList.contains('autocompleteenabled') &&
+                    targetList.length > 0
+                ) {
+                    clicksForMoreOps++;
+                    if (clicksForMoreOps == 1) {
+                        secondClickForMoreInfo = setTimeout(() => {
+                            if (clicksForMoreOps == 1) {
+                                clicksForMoreOps = 0;
+                                secondClickForMoreInfo = null;
+                                return;
+                            }
+                            const celine = document.querySelector(".code-editor-line:focus");
+                            if (celine) {
+                                celine.blur();
+                            }
+                            const closestCeline = event.target.closest(".code-editor-line");
+                            let entireList = [];
+                            targetList.flat().forEach(suggestion => {
+                                entireList.push({
+                                    text: suggestion,
+                                    func: () => {
+                                        lasteventsparentsection = section;
+                                        const celineIndex = closestCeline.getAttribute('line-index');
+                                        const newpast = [{
+                                            type: "text",
+                                            text: editorFiles[editorIndex][parseInt(celineIndex)]?.text || closestCeline.textContent,
+                                            index: parseInt(celineIndex)
+                                        }];
+                                        resolvePendingPast();
+                                        pasteventPrep();
+                                        pastevents[lasteventsparentsection.id].push(newpast);
+                                        enablepastbtn();
+                                        updateSaveFile();
+                                        event.target.textContent = suggestion;
+                                        updateAttribute(closestCeline);
+                                        if (inputDiv) {
+                                            refreshEditorLines(inputDiv, editorIndex, 0);
+                                        }
+                                    }
+                                });
+                            });
+                            showreplacementsuggestionsdropdownops(event.target, entireList);
+                            secondClickForMoreInfo = null;
+                            clicksForMoreOps = 0;
+                        }, 500);
+                    }
                 }
             }
         });
@@ -14459,6 +15950,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             el.disabled = true;
             setTimeout(() => {
                 el.disabled = false;
+                el.style.animation = "none";
+                void el.offsetWidth;
             }, 400);
         }
         function gobackrotateanimation(el) {
@@ -14471,6 +15964,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             el.disabled = true;
             setTimeout(() => {
                 el.disabled = false;
+                el.style.animation = "none";
+                void el.offsetWidth;
             }, 400);
         }
         
@@ -15449,6 +16944,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 } else {
                     disablepastbtn();
                 }
+                undoing = false;
                 return;
             }
             
@@ -15615,7 +17111,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
             
             checkifselectedlines();
-            updateSaveFile();
+            updateSaveFileNow();
         }
         
         
@@ -17867,7 +19363,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                 <line x1="16" y1="3" x2="14" y2="21" />
                             </svg>
                         </button>
-                        <button class="eslbtn disabled" id="importantPinbtn" onclick="changeBtnTextOnClick(this);importantselectedlines()">
+                        <button class="eslbtn disabled" id="importantPinbtn" onclick="importantselectedlinesWithDropdown(this)">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="9" y1="3" x2="15" y2="3" />
                                 <path d="M10 3v3l-2 4.5V13h8v-2.5L14 6V3" />
@@ -17905,7 +19401,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                                 <line x1="12.5" y1="15.5" x2="18.5" y2="15.5" />
                             </svg>
                         </button>
-                        <button class="eslbtn disabled" id="trimbtn" onclick="changeBtnTextOnClick(this);trimAllselectedlinetexts()">
+                        <button class="eslbtn disabled" id="trimbtn" onclick="trimAllselectedlinetextsWithDropdown(this)">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="6" cy="6" r="3" />
                                 <circle cx="6" cy="18" r="3" />
@@ -18227,15 +19723,23 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 updateSelectedClasses();
             }
             
-            if (pastevents[randomNewSecName] && pastevents[randomNewSecName].length > 0) {
-                delete pastevents[randomNewSecName];
-                enablepastbtn(newSection);
+            if (pastevents[randomNewSecName]) {
+                if (pastevents[randomNewSecName].length > 0) {
+                    enablepastbtn(newSection);
+                } else {
+                    delete pastevents[randomNewSecName];
+                    disablepastbtn(newSection);
+                }
             } else {
                 disablepastbtn(newSection);
             }
-            if (futureevents[randomNewSecName] && futureevents[randomNewSecName].length > 0) {
-                delete futureevents[randomNewSecName];
-                enablefuturebtn(newSection);
+            if (futureevents[randomNewSecName]) {
+                if (futureevents[randomNewSecName].length > 0) {
+                    enablefuturebtn(newSection);
+                } else {
+                    delete futureevents[randomNewSecName];
+                    disablefuturebtn(newSection);
+                }
             } else {
                 disablefuturebtn(newSection);
             }
@@ -19125,7 +20629,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     } else {
                         await disablefuturebtn(firstCESection);
                     }
-                    await refreshEditorLines(inputDiv, firstFileId, 0);
+                    await refreshEditorLines(document.querySelector(`#${firstFileId} .code-editor-container`) || inputDiv, firstFileId, 0);
                 } else {
                     let fileName = projectNames[fileId] || "My New Project";
                     await addNewFilesForRefresh(fileName, innitualProjectObj[fileId], fileId);
@@ -20314,7 +21818,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         startLoadingThis(steps, 'getting past');
                         delete pastevents[editorIndex];
                         disablepastbtn();
-                        saveProjects();
+                        updateSaveFileNow();
                     }
                 });
             }else {
@@ -20335,7 +21839,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                             delete pastevents[key];
                         });
                         disablepastbtn();
-                        saveProjects();
+                        updateSaveFileNow();
                     }
                 });
             } else {
@@ -20356,7 +21860,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         projectsObj[key]["past"] = {};
                     });
                     disablepastbtn();
-                    saveProjects();
+                    updateSaveFileNow();
                 }
             });
         }
@@ -21715,7 +23219,10 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             showdropdownops(el, [
                 {
                     text: "Run Here",
-                    func: () => {textCode(textcontainerid, iframeid, false)}
+                    func: () => {
+                        textCode(textcontainerid, iframeid, false);
+                        createConfetti();
+                    }
                 },
                 {
                     text: "Open In New Window",
@@ -23475,12 +24982,40 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             enablepastbtn();
             updateSaveFile();
         }
-
-        function importantselectedlines() {
+        function importantselectedlinesWithDropdown(el, event = null) {
+            showdropdownops(el, [
+                {
+                    text: "Toggle pin",
+                    func: () => {
+                        importantselectedlines("toggle");
+                        if (el) changeBtnTextOnClick(el);
+                    }
+                },
+                {
+                    text: "Unpin",
+                    func: () => {
+                        importantselectedlines("unpin");
+                        if (el) changeBtnTextOnClick(el);
+                    }
+                },
+                {
+                    text: "Pin",
+                    func: () => {
+                        importantselectedlines("pin");
+                        if (el) changeBtnTextOnClick(el);
+                    }
+                }
+            ], event);
+        }
+        function importantselectedlines(mode = "toggle") {
             const allselectedlines1 = section.querySelectorAll(".code-editor-line.selected");
             if (allselectedlines1.length) {
                 allselectedlines1.forEach(selectedline => {
-                    selectedline.classList.toggle("importantpin");
+                    if (mode != "toggle") {
+                        selectedline.classList.toggle("importantpin", mode == "pin" ? true : false);
+                    } else {
+                        selectedline.classList.toggle("importantpin");
+                    }
                     selectedline.classList.remove('selected');
                     updateAttribute(selectedline);
                 });
@@ -23492,9 +25027,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     const theElement = allLines[allLines.indexOf(selectedline)];
                     if (theElement) {
                         theElement.classes.splice(theElement.classes.indexOf('selected'), 1);
-                        if (theElement.classes.includes('importantpin')) {
-                            theElement.classes.splice(theElement.classes.indexOf('importantpin'), 1);
-                        } else {
+                        if ((theElement.classes.includes('importantpin') && mode != "pin") || mode == "unpin") {
+                            theElement.classes = theElement.classes.filter(el => el != "importantpin");
+                        } else if (!theElement.classes.includes('importantpin') || mode == "pin") {
+                            theElement.classes = theElement.classes.filter(el => el != "importantpin");
                             theElement.classes.push('importantpin');
                         }
                     }
@@ -23857,8 +25393,32 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 updateSaveFile();
             }
         }
-        
-        function trimAllselectedlinetexts(){
+        function trimAllselectedlinetextsWithDropdown(el, event) {
+            showdropdownops(el, [
+                {
+                    text: "Trim Left",
+                    func: () => {
+                        trimAllselectedlinetexts("left");
+                        if (el) changeBtnTextOnClick(el);
+                    }
+                },
+                {
+                    text: "Trim",
+                    func: () => {
+                        trimAllselectedlinetexts("both");
+                        if (el) changeBtnTextOnClick(el);
+                    }
+                },
+                {
+                    text: "Trim Right",
+                    func: () => {
+                        trimAllselectedlinetexts("right");
+                        if (el) changeBtnTextOnClick(el);
+                    }
+                }
+            ], event);
+        }
+        function trimAllselectedlinetexts(mode = "both") {
             if (!section) return;
             let newpast = [];
             lasteventsparentsection = section;
@@ -23874,7 +25434,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     newpast.push(pastelement);
                     
                     const theElement = allLines[allLines.indexOf(selectedline)];
-                    const theNewText = selectedline.text.trim();
+                    const theNewText = mode == "left" ? selectedline.text.trimStart() : mode == "right" ? selectedline.text.trimEnd() : selectedline.text.trim();
                     theElement.text = theNewText;
                     const theEl = section.querySelector(`.code-editor-line[line-index="${allLines.indexOf(selectedline)}"]`);
                     if (theEl) {
@@ -25489,11 +27049,12 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 { regex: /\b(?<=^|[:()[\]{}.\s])(@charset|@namespace|@viewport|@counter-style|await|break|const|continue|debugger|delete|false|in|instanceof|new|null|return|super|this|throw|true|typeof|var|void|yield|let|static|undefined|NaN|Infinity|eval|isFinite|isNaN|parseFloat|parseInt|decodeURI|decodeURIComponent|encodeURI|encodeURIComponent|Object|Function|Boolean|Symbol|Error|EvalError|InternalError|RangeError|ReferenceError|SyntaxError|TypeError|URIError|Number|BigInt|Math|Date|String|RegExp|Array|Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array|BigInt64Array|BigUint64Array|Map|Set|WeakMap|WeakSet|ArrayBuffer|SharedArrayBuffer|Atomics|DataView|JSON|Promise|Generator|Reflect|Proxy|Intl|WebAssembly|solid|dashed|dotted|double|groove|ridge|inset|outset|False|None|True|and|as|assert|del|from|global|is|lambda|nonlocal|not|or|pass|raise)\b(?=$|[:()[\]{}.\s])/g, className: "syntaxkeyword" },
                 { regex: /\b(case|catch|class(?!=)|default|do|else|enum|export|extends|finally|def|function|if|elif|import|switch|try|while|with|implements|interface|package|private|protected|public|async|GeneratorFunction|AsyncFunction|for|match|except)\b/g, className: "syntaxblock" },
                 { regex: /@(container|page|supports|keyframes|import|font-face|media|document)\b/g, className: "syntaxkeyword" },
-                { regex: /\-\-[\w-]+(?=\:)/g, className: "syntaxvariable", goto: "def" },
+                { regex: /\-\-[\w\-]+(?=\:)/g, className: "syntaxvariable", goto: "def" },
                 { regex: /(?<=\b(?:def|function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "def" },
                 { regex: /(?<!\b(?:function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "function ", isBefore: true }, 
                 { regex: /(?<!\b(?:def)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "def ", isBefore: true },
                 { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true", additionalTxt: ":" },
+                { regex: /[-\w]+(?=:)/g, className: "syntaxcommand" },
                 { regex: /(?<=<\/?)([^\s>/]+)(?=[\s>])/g, className: "syntaxhtmltagcontent" },
                 { regex: signregex, className: "syntaxoperator" },
                 { regex: /(#|0x)([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g, className: "syntaxhex" },
@@ -25508,7 +27069,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 { regex: /(?<=\.)\b[\w\-]+\b/g, className: "syntaxvariable" },
                 { regex: /(?<=\:\s*)\b[\w\-\s]+\b(?=;)/g, className: "syntaxkeyword" },
                 { regex: /\#\b[\w\-]+\b/g, className: "syntaxvariable" },
-                { regex: /\b[\w\-]+(?=:)/g, className: "syntaxcommand" },
                 { regex: /\w+/g, className: "notpartofesyntax" }
             ];
             
@@ -26099,7 +27659,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "p" && !event.shiftKey) {
                     if (areSelectedLine) {
-                        forSelectedEv(importantselectedlines, () => event.preventDefault());
+                        forSelectedEv(() => {
+                            importantselectedlinesWithDropdown(undefined, event);
+                        }, () => event.preventDefault());
                     } else {
                         shortNotificationmessageelement("Select lines first with the arrow left key or ctr/cmd + >.");
                     }
@@ -26156,7 +27718,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "t" && event.shiftKey) {
                     if (areSelectedLine) {
-                        forSelectedEv(trimAllselectedlinetexts, () => event.preventDefault());
+                        forSelectedEv(() => {
+                            trimAllselectedlinetextsWithDropdown(undefined, event);
+                        }, () => event.preventDefault());
                     } else {
                         shortNotificationmessageelement("Select lines first with the arrow left key or ctr/cmd + >.");
                     }
@@ -26970,1359 +28534,6 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 refreshEditorLines(inputDiv, editorIndex);
             }, 0);
         }
-        var allCssProperties = [
-          "-apple-pay-button-style",
-          "-apple-pay-button-type",
-          "accent-color",
-          "align-content",
-          "align-items",
-          "align-self",
-          "alignment-baseline",
-          "anchor-name",
-          "anchor-scope",
-          "animation",
-          "animation-composition",
-          "animation-delay",
-          "animation-direction",
-          "animation-duration",
-          "animation-fill-mode",
-          "animation-iteration-count",
-          "animation-name",
-          "animation-play-state",
-          "animation-range-end",
-          "animation-range-start",
-          "animation-timeline",
-          "animation-timing-function",
-          "appearance",
-          "aspect-ratio",
-          "backdrop-filter",
-          "backface-visibility",
-          "background",
-          "background-attachment",
-          "background-blend-mode",
-          "background-clip",
-          "background-color",
-          "background-image",
-          "background-origin",
-          "background-position",
-          "background-position-x",
-          "background-position-y",
-          "background-repeat",
-          "background-size",
-          "baseline-shift",
-          "block",
-          "block-size",
-          "border",
-          "border-block-end-color",
-          "border-block-end-style",
-          "border-block-end-width",
-          "border-block-start-color",
-          "border-block-start-style",
-          "border-block-start-width",
-          "border-bottom",
-          "border-bottom-color",
-          "border-bottom-left-radius",
-          "border-bottom-right-radius",
-          "border-bottom-style",
-          "border-bottom-width",
-          "border-box",
-          "border-collapse",
-          "border-color",
-          "border-end-end-radius",
-          "border-end-start-radius",
-          "border-image-outset",
-          "border-image-repeat",
-          "border-image-slice",
-          "border-image-source",
-          "border-image-width",
-          "border-inline-end-color",
-          "border-inline-end-style",
-          "border-inline-end-width",
-          "border-inline-start-color",
-          "border-inline-start-style",
-          "border-inline-start-width",
-          "border-left",
-          "border-left-color",
-          "border-left-style",
-          "border-left-width",
-          "border-radius",
-          "border-right",
-          "border-right-color",
-          "border-right-style",
-          "border-right-width",
-          "border-spacing",
-          "border-start-end-radius",
-          "border-start-start-radius",
-          "border-style",
-          "border-top",
-          "border-top-color",
-          "border-top-left-radius",
-          "border-top-right-radius",
-          "border-top-style",
-          "border-top-width",
-          "border-width",
-          "bottom",
-          "box-align",
-          "box-shadow",
-          "box-sizing",
-          "break-after",
-          "break-before",
-          "break-inside",
-          "buffered-rendering",
-          "caption-side",
-          "caret-color",
-          "clear",
-          "clip",
-          "clip-path",
-          "clip-rule",
-          "color",
-          "color-interpolation",
-          "color-interpolation-filters",
-          "color-scheme",
-          "column-count",
-          "column-fill",
-          "column-gap",
-          "column-rule-color",
-          "column-rule-style",
-          "column-rule-width",
-          "column-span",
-          "column-width",
-          "contain",
-          "contain-intrinsic-block-size",
-          "contain-intrinsic-height",
-          "contain-intrinsic-inline-size",
-          "contain-intrinsic-width",
-          "container-name",
-          "container-type",
-          "content",
-          "content-visibility",
-          "counter-increment",
-          "counter-reset",
-          "counter-set",
-          "cursor",
-          "cx",
-          "cy",
-          "direction",
-          "display",
-          "dominant-baseline",
-          "dynamic-range-limit",
-          "empty-cells",
-          "fill",
-          "fill-opacity",
-          "fill-rule",
-          "filter",
-          "flex",
-          "flex-basis",
-          "flex-direction",
-          "flex-grow",
-          "flex-shrink",
-          "flex-wrap",
-          "float",
-          "flood-color",
-          "flood-opacity",
-          "font-family",
-          "font-feature-settings",
-          "font-kerning",
-          "font-optical-sizing",
-          "font-palette",
-          "font-size",
-          "font-size-adjust",
-          "font-style",
-          "font-synthesis-small-caps",
-          "font-synthesis-style",
-          "font-synthesis-weight",
-          "font-variant-alternates",
-          "font-variant-caps",
-          "font-variant-east-asian",
-          "font-variant-ligatures",
-          "font-variant-numeric",
-          "font-variant-position",
-          "font-variation-settings",
-          "font-weight",
-          "font-width",
-          "gap",
-          "glyph-orientation-horizontal",
-          "glyph-orientation-vertical",
-          "grid",
-          "grid-auto-columns",
-          "grid-auto-flow",
-          "grid-auto-rows",
-          "grid-column",
-          "grid-column-end",
-          "grid-column-start",
-          "grid-gap",
-          "grid-row",
-          "grid-row-end",
-          "grid-row-start",
-          "grid-template-areas",
-          "grid-template-columns",
-          "grid-template-rows",
-          "hanging-punctuation",
-          "height",
-          "hyphenate-character",
-          "hyphens",
-          "image-orientation",
-          "image-rendering",
-          "inline",
-          "inline-block",
-          "inline-size",
-          "inset-block-end",
-          "inset-block-start",
-          "inset-inline-end",
-          "inset-inline-start",
-          "isolation",
-          "justify-content",
-          "justify-items",
-          "justify-self",
-          "left",
-          "letter-spacing",
-          "lighting-color",
-          "line-break",
-          "line-height",
-          "list-style",
-          "list-style-image",
-          "list-style-position",
-          "list-style-type",
-          "margin",
-          "margin-block-end",
-          "margin-block-start",
-          "margin-bottom",
-          "margin-inline-end",
-          "margin-inline-start",
-          "margin-left",
-          "margin-right",
-          "margin-top",
-          "margin-trim",
-          "marker-end",
-          "marker-mid",
-          "marker-start",
-          "mask-border-outset",
-          "mask-border-repeat",
-          "mask-border-slice",
-          "mask-border-source",
-          "mask-border-width",
-          "mask-clip",
-          "mask-composite",
-          "mask-image",
-          "mask-mode",
-          "mask-origin",
-          "mask-repeat",
-          "mask-size",
-          "mask-type",
-          "math-style",
-          "max-block-size",
-          "max-height",
-          "max-inline-size",
-          "max-width",
-          "min-block-size",
-          "min-height",
-          "min-inline-size",
-          "min-width",
-          "mix-blend-mode",
-          "none",
-          "object-fit",
-          "object-position",
-          "offset-anchor",
-          "offset-distance",
-          "offset-path",
-          "offset-position",
-          "offset-rotate",
-          "opacity",
-          "order",
-          "orphans",
-          "outline-color",
-          "outline-offset",
-          "outline-style",
-          "outline-width",
-          "overflow",
-          "overflow-block",
-          "overflow-inline",
-          "overflow-wrap",
-          "overflow-x",
-          "overflow-y",
-          "overscroll-behavior-block",
-          "overscroll-behavior-inline",
-          "overscroll-behavior-x",
-          "overscroll-behavior-y",
-          "padding",
-          "padding-block-end",
-          "padding-block-start",
-          "padding-bottom",
-          "padding-inline-end",
-          "padding-inline-start",
-          "padding-left",
-          "padding-right",
-          "padding-top",
-          "paint-order",
-          "perspective",
-          "perspective-origin",
-          "pointer-events",
-          "position",
-          "position-anchor",
-          "position-area",
-          "position-try-fallbacks",
-          "position-try-order",
-          "print-color-adjust",
-          "quotes",
-          "r",
-          "resize",
-          "right",
-          "rotate",
-          "row-gap",
-          "ruby-align",
-          "ruby-overhang",
-          "ruby-position",
-          "rx",
-          "ry",
-          "scale",
-          "scroll-behavior",
-          "scroll-margin-block-end",
-          "scroll-margin-block-start",
-          "scroll-margin-bottom",
-          "scroll-margin-inline-end",
-          "scroll-margin-inline-start",
-          "scroll-margin-left",
-          "scroll-margin-right",
-          "scroll-margin-top",
-          "scroll-padding-block-end",
-          "scroll-padding-block-start",
-          "scroll-padding-bottom",
-          "scroll-padding-inline-end",
-          "scroll-padding-inline-start",
-          "scroll-padding-left",
-          "scroll-padding-right",
-          "scroll-padding-top",
-          "scroll-snap-align",
-          "scroll-snap-stop",
-          "scroll-snap-type",
-          "scroll-timeline-axis",
-          "scroll-timeline-name",
-          "scrollbar-gutter",
-          "scrollbar-width",
-          "shape-image-threshold",
-          "shape-margin",
-          "shape-outside",
-          "shape-rendering",
-          "speak-as",
-          "stop-color",
-          "stop-opacity",
-          "stroke",
-          "stroke-color",
-          "stroke-dasharray",
-          "stroke-dashoffset",
-          "stroke-linecap",
-          "stroke-linejoin",
-          "stroke-miterlimit",
-          "stroke-opacity",
-          "stroke-width",
-          "tab-size",
-          "table-layout",
-          "text-align",
-          "text-align-last",
-          "text-anchor",
-          "text-autospace",
-          "text-box-edge",
-          "text-box-trim",
-          "text-combine-upright",
-          "text-decoration",
-          "text-decoration-color",
-          "text-decoration-line",
-          "text-decoration-skip-ink",
-          "text-decoration-style",
-          "text-decoration-thickness",
-          "text-emphasis-color",
-          "text-emphasis-position",
-          "text-emphasis-style",
-          "text-indent",
-          "text-orientation",
-          "text-overflow",
-          "text-rendering",
-          "text-shadow",
-          "text-transform",
-          "text-underline-offset",
-          "text-underline-position",
-          "text-wrap-mode",
-          "text-wrap-style",
-          "timeline-scope",
-          "top",
-          "touch-action",
-          "transform",
-          "transform-box",
-          "transform-origin",
-          "transform-style",
-          "transition",
-          "transition-behavior",
-          "transition-delay",
-          "transition-duration",
-          "transition-property",
-          "transition-timing-function",
-          "translate",
-          "unicode-bidi",
-          "user-select",
-          "vector-effect",
-          "vertical-align",
-          "view-timeline-axis",
-          "view-timeline-inset",
-          "view-timeline-name",
-          "view-transition-class",
-          "view-transition-name",
-          "visibility",
-          "white-space",
-          "white-space-collapse",
-          "widows",
-          "width",
-          "will-change",
-          "word-break",
-          "word-spacing",
-          "writing-mode",
-          "x",
-          "y",
-          "z-index",
-          "zoom"
-        ];
-        var cssKeywords = [
-            "inherit", "initial", "unset", "revert",
-            
-            "block", "inline", "grid", "list-item", "run-in", "table",
-            "static", "absolute", "fixed", "sticky",
-            "visible", "hidden", "collapse",
-            "left", "right", "both", "inline-start", "inline-end",
-            "content-box",
-            "scroll", "clip",
-            
-            "row", "row-reverse", "column", "column-reverse",
-            "nowrap", "wrap", "wrap-reverse",
-            "flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly",
-            "stretch", "baseline", "self-start", "self-end",
-            
-            "underline", "overline", "line-through", "blink",
-            "uppercase", "lowercase", "capitalize", "full-width",
-            "left", "right", "center", "justify", "start", "end", "match-parent",
-            "normal", "pre", "pre-wrap", "pre-line", "break-spaces", "nowrap",
-            
-            "italic", "oblique", "normal",
-            "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900",
-            
-            "disc", "circle", "square", "decimal", "decimal-leading-zero", "lower-roman",
-            "upper-roman", "lower-greek", "lower-latin", "upper-latin", "armenian", "georgian",
-            "lower-alpha", "upper-alpha", "none",
-            
-            "auto", "default", "pointer", "text", "wait", "crosshair", "move", "help",
-            "not-allowed", "grab", "grabbing", "progress", "alias", "copy",
-            
-            "solid", "dashed", "dotted", "double", "groove", "ridge", "inset", "outset",
-            
-            "rgb()", "rgba()", "hsl()", "hsla()", "url()", "var()", "calc()", "min()", "max()", "clamp()",
-            "rgb(0,0,0)", "rgb(255,255,255)", "rgba(0,0,0,1)", "rgba(255,255,255,1)",
-            "hsl(0,0%,0%)", "hsl(0,0%,100%)", "hsla(0,0%,0%,1)", "hsla(0,0%,100%,1)",
-            "url('black.png')", "url('white.png')", "var(--black)", "var(--white)",
-            "calc(0px)", "calc(100px)", "min(0,1)", "max(0,1)", "clamp(0,0,0)", "clamp(0,100,100)",
-            
-            "all", "visiblePainted", "visibleFill", "visibleStroke",
-            "painted", "bounding-box",
-            "@import", "@media", "@font-face", "@keyframes", "@supports", "@page",
-            "@charset", "@namespace", "@document", "@viewport", "@counter-style",
-            
-            ":hover", ":focus", ":active", ":visited", ":link", ":checked", ":disabled",
-            ":first-child", ":last-child", ":nth-child()", ":not()", ":root", ":before", ":after",
-            
-            "::before", "::after", "::first-letter", "::first-line", "::selection",
-            "::placeholder", "accent-color",
-            "@keyframes ", "@media", "@font-face", "@supports", "@import", "@namespace", "@container"
-        ];
-        
-        var jsKeywords = [
-            "await", "break", "case", "catch", "class", "const", "continue", "debugger", "default",
-            "delete", "do", "else", "enum", "export", "extends", "false", "finally", "for", "function",
-            "if", "import", "in", "instanceof", "new", "null", "return", "super", "switch", "this",
-            "throw", "true", "try", "typeof", "var", "void", "while", "with", "yield", "let", "static",
-            "implements", "interface", "package", "private", "protected", "public", "async"
-        ];
-        
-        var supportedConsoleMethods = [
-            "count", "countReset", "time", "timeLog", "timeEnd", "group", "groupEnd", "log", "debug", "warn", "trace"
-        ];
-        
-        var jsGlobals = [
-            "undefined", "NaN", "Infinity", "eval", "isFinite", "isNaN", "parseFloat", "parseInt",
-            "decodeURI", "decodeURIComponent", "encodeURI", "encodeURIComponent",
-            "Object", "Function", "Boolean", "Symbol", "Error", "EvalError", "InternalError", "RangeError",
-            "ReferenceError", "SyntaxError", "TypeError", "URIError", "Number", "BigInt", "Math", "Date",
-            "String", "RegExp", "Array", "Int8Array", "Uint8Array", "Uint8ClampedArray", "Int16Array",
-            "Uint16Array", "Int32Array", "Uint32Array", "Float32Array", "Float64Array", "BigInt64Array",
-            "BigUint64Array", "Map", "Set", "WeakMap", "WeakSet", "ArrayBuffer", "SharedArrayBuffer",
-            "Atomics", "DataView", "JSON", "Promise", "Generator", "GeneratorFunction", "AsyncFunction",
-            "Reflect", "Proxy", "Intl", "WebAssembly",
-            
-            "console", "arguments"
-        ];
-        var domAPIs = [
-            "window", "document",
-            "getElementById", "getElementsByClassName", "getElementsByTagName", "querySelector", "querySelectorAll",
-            "createElement", "createTextNode", "cloneNode",
-            "appendChild", "removeChild", "replaceChild", "insertBefore",
-            "setAttribute", "getAttribute", "removeAttribute", "hasAttribute",
-            "addEventListener", "removeEventListener", "dispatchEvent",
-            "getBoundingClientRect", "scrollTo", "scrollIntoView",
-            "focus", "blur", "designMode",
-            "setTimeout", "setInterval", "clearTimeout", "clearInterval"
-        ];
-        var cssProperties = [
-            "accentColor", "alignContent", "alignItems", "alignSelf", "animationDelay",
-            "animationDirection", "animationDuration", "animationFillMode", "animationIterationCount",
-            "animationName", "animationPlayState", "animationTimingFunction", "backfaceVisibility",
-            "backgroundAttachment", "backgroundBlendMode", "backgroundClip", "backgroundColor",
-            "backgroundImage", "backgroundOrigin", "backgroundPosition", "backgroundPositionX", "backgroundPositionY",
-            "backgroundRepeat", "backgroundSize", "border", "borderBottom", "borderBottomColor",
-            "borderBottomLeftRadius", "borderBottomRightRadius", "borderBottomStyle", "borderBottomWidth",
-            "borderCollapse", "borderColor", "borderImage", "borderImageOutset", "borderImageRepeat",
-            "borderImageSlice", "borderImageSource", "borderImageWidth", "borderLeft", "borderLeftColor",
-            "borderLeftStyle", "borderLeftWidth", "borderRadius", "borderRight", "borderRightColor",
-            "borderRightStyle", "borderRightWidth", "borderSpacing", "borderStyle", "borderTop",
-            "borderTopColor", "borderTopLeftRadius", "borderTopRightRadius", "borderTopStyle",
-            "borderTopWidth", "borderWidth", "bottom", "boxDecorationBreak", "boxShadow", "boxSizing",
-            "captionSide", "clear", "clip", "color", "columnCount", "columnFill", "columnGap", "columnRule",
-            "columnRuleColor", "columnRuleStyle", "columnRuleWidth", "columns", "columnSpan", "columnWidth",
-            "content", "counterIncrement", "counterReset", "direction", "display", "emptyCells", "flexBasis", "flexDirection", "flexFlow", "flexGrow", "flexShrink", "flexWrap",
-            "float", "font", "fontFamily", "fontFeatureSettings", "fontKerning", "fontSize", "fontSizeAdjust",
-            "fontStretch", "fontStyle", "fontVariant", "fontVariantCaps", "fontVariantEastAsian",
-            "fontVariantLigatures", "fontVariantNumeric", "fontWeight", "gap", "grid", "gridArea",
-            "gridAutoColumns", "gridAutoFlow", "gridAutoRows", "gridColumn", "gridColumnEnd", "gridColumnGap",
-            "gridColumnStart", "gridGap", "gridRow", "gridRowEnd", "gridRowGap", "gridRowStart", "gridTemplate",
-            "gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows", "hangingPunctuation", "height",
-            "hyphens", "imageRendering", "isolation", "justifyContent", "left", "letterSpacing", "lineHeight",
-            "listStyle", "listStyleImage", "listStylePosition", "listStyleType", "margin", "marginBottom",
-            "marginLeft", "marginRight", "marginTop", "maxHeight", "maxWidth", "minHeight", "minWidth",
-            "objectFit", "objectPosition", "opacity", "order", "outline", "outlineColor", "outlineOffset",
-            "outlineStyle", "outlineWidth", "overflow", "overflowWrap", "overflowX", "overflowY",
-            "paddingBottom", "paddingLeft", "paddingRight", "paddingTop", "pageBreakAfter", "pageBreakBefore",
-            "pageBreakInside", "perspectiveOrigin", "pointerEvents", "position", "quotes",
-            "resize", "right", "scrollBehavior", "tableLayout", "textAlign", "textAlignLast", "textDecoration",
-            "textDecorationColor", "textDecorationLine", "textDecorationStyle", "textIndent", "textJustify",
-            "textOverflow", "textShadow", "textTransform", "top", "transform", "transformOrigin",
-            "transformStyle", "transition", "transitionDelay", "transitionDuration", "transitionProperty",
-            "transitionTimingFunction", "unicodeBidi", "userSelect", "verticalAlign", "visibility",
-            "whiteSpace", "width", "wordBreak", "wordSpacing", "wordWrap", "writingMode", "zIndex"
-        ];
-        var webkitProperties = [
-            "-webkit-align-content",
-            "-webkit-align-items",
-            "-webkit-align-self",
-            "-webkit-animation",
-            "-webkit-animation-delay",
-            "-webkit-animation-direction",
-            "-webkit-animation-duration",
-            "-webkit-animation-fill-mode",
-            "-webkit-animation-iteration-count",
-            "-webkit-animation-name",
-            "-webkit-animation-play-state",
-            "-webkit-animation-timing-function",
-            "-webkit-appearance",
-            "-webkit-backdrop-filter",
-            "-webkit-background-clip",
-            "-webkit-background-composite",
-            "-webkit-background-origin",
-            "-webkit-background-size",
-            "-webkit-border-before",
-            "-webkit-border-before-color",
-            "-webkit-border-before-style",
-            "-webkit-border-before-width",
-            "-webkit-border-image",
-            "-webkit-border-radius",
-            "-webkit-border-top-left-radius",
-            "-webkit-border-top-right-radius",
-            "-webkit-border-bottom-left-radius",
-            "-webkit-border-bottom-right-radius",
-            "-webkit-box-align",
-            "-webkit-box-decoration-break",
-            "-webkit-box-direction",
-            "-webkit-box-flex",
-            "-webkit-box-flex-group",
-            "-webkit-box-lines",
-            "-webkit-box-ordinal-group",
-            "-webkit-box-orient",
-            "-webkit-box-pack",
-            "-webkit-box-reflect",
-            "-webkit-box-shadow",
-            "-webkit-clip-path",
-            "-webkit-color-correction",
-            "-webkit-column-count",
-            "-webkit-column-gap",
-            "-webkit-column-rule",
-            "-webkit-column-rule-color",
-            "-webkit-column-rule-style",
-            "-webkit-column-rule-width",
-            "-webkit-column-span",
-            "-webkit-column-width",
-            "-webkit-columns",
-            "-webkit-filter",
-            "-webkit-flex",
-            "-webkit-flex-basis",
-            "-webkit-flex-direction",
-            "-webkit-flex-flow",
-            "-webkit-flex-grow",
-            "-webkit-flex-shrink",
-            "-webkit-flex-wrap",
-            "-webkit-font-feature-settings",
-            "-webkit-font-kerning",
-            "-webkit-font-smoothing",
-            "-webkit-font-variant-ligatures",
-            "-webkit-hyphens",
-            "-webkit-justify-content",
-            "-webkit-line-break",
-            "-webkit-line-clamp",
-            "-webkit-margin-before",
-            "-webkit-margin-after",
-            "-webkit-margin-start",
-            "-webkit-margin-end",
-            "-webkit-mask",
-            "-webkit-mask-box-image",
-            "-webkit-mask-box-image-outset",
-            "-webkit-mask-box-image-repeat",
-            "-webkit-mask-box-image-slice",
-            "-webkit-mask-box-image-source",
-            "-webkit-mask-box-image-width",
-            "-webkit-mask-clip",
-            "-webkit-mask-composite",
-            "-webkit-mask-image",
-            "-webkit-mask-origin",
-            "-webkit-mask-position",
-            "-webkit-mask-repeat",
-            "-webkit-mask-size",
-            "-webkit-max-logical-height",
-            "-webkit-max-logical-width",
-            "-webkit-min-logical-height",
-            "-webkit-min-logical-width",
-            "-webkit-opacity",
-            "-webkit-order",
-            "-webkit-overflow-scrolling",
-            "-webkit-padding-before",
-            "-webkit-padding-after",
-            "-webkit-padding-start",
-            "-webkit-padding-end",
-            "-webkit-perspective",
-            "-webkit-perspective-origin",
-            "-webkit-print-color-adjust",
-            "-webkit-rtl-ordering",
-            "-webkit-ruby-position",
-            "-webkit-shape-image-threshold",
-            "-webkit-shape-margin",
-            "-webkit-shape-outside",
-            "-webkit-tap-highlight-color",
-            "-webkit-text-combine",
-            "-webkit-text-decoration",
-            "-webkit-text-decoration-color",
-            "-webkit-text-decoration-line",
-            "-webkit-text-decoration-style",
-            "-webkit-text-emphasis",
-            "-webkit-text-emphasis-color",
-            "-webkit-text-emphasis-position",
-            "-webkit-text-emphasis-style",
-            "-webkit-text-fill-color",
-            "-webkit-text-orientation",
-            "-webkit-text-security",
-            "-webkit-text-size-adjust",
-            "-webkit-text-stroke",
-            "-webkit-text-stroke-color",
-            "-webkit-text-stroke-width",
-            "-webkit-transform",
-            "-webkit-transform-origin",
-            "-webkit-transform-style",
-            "-webkit-transition",
-            "-webkit-transition-delay",
-            "-webkit-transition-duration",
-            "-webkit-transition-property",
-            "-webkit-transition-timing-function",
-            "-webkit-user-drag",
-            "-webkit-user-modify",
-            "-webkit-user-select",
-            "-webkit-writing-mode"
-        ];
-        var mozProperties = [
-            "-moz-appearance",
-            "-moz-backface-visibility",
-            "-moz-background-clip",
-            "-moz-background-inline-policy",
-            "-moz-background-origin",
-            "-moz-background-size",
-            "-moz-binding",
-            "-moz-border-bottom-colors",
-            "-moz-border-end-color",
-            "-moz-border-end-style",
-            "-moz-border-end-width",
-            "-moz-border-left-colors",
-            "-moz-border-right-colors",
-            "-moz-border-start-color",
-            "-moz-border-start-style",
-            "-moz-border-start-width",
-            "-moz-border-top-colors",
-            "-moz-box-align",
-            "-moz-box-direction",
-            "-moz-box-flex",
-            "-moz-box-ordinal-group",
-            "-moz-box-orient",
-            "-moz-box-pack",
-            "-moz-box-shadow",
-            "-moz-column-count",
-            "-moz-column-fill",
-            "-moz-column-gap",
-            "-moz-column-rule",
-            "-moz-column-rule-color",
-            "-moz-column-rule-style",
-            "-moz-column-rule-width",
-            "-moz-column-width",
-            "-moz-columns",
-            "-moz-context-properties",
-            "-moz-float-edge",
-            "-moz-font-feature-settings",
-            "-moz-font-language-override",
-            "-moz-force-broken-image-icon",
-            "-moz-hyphens",
-            "-moz-image-region",
-            "-moz-margin-end",
-            "-moz-margin-start",
-            "-moz-orient",
-            "-moz-outline-radius",
-            "-moz-outline-radius-bottomleft",
-            "-moz-outline-radius-bottomright",
-            "-moz-outline-radius-topleft",
-            "-moz-outline-radius-topright",
-            "-moz-padding-end",
-            "-moz-padding-start",
-            "-moz-perspective",
-            "-moz-perspective-origin",
-            "-moz-stack-sizing",
-            "-moz-tab-size",
-            "-moz-text-blink",
-            "-moz-text-decoration-color",
-            "-moz-text-decoration-line",
-            "-moz-text-decoration-style",
-            "-moz-transform",
-            "-moz-transform-origin",
-            "-moz-transform-style",
-            "-moz-transition",
-            "-moz-transition-delay",
-            "-moz-transition-duration",
-            "-moz-transition-property",
-            "-moz-transition-timing-function",
-            "-moz-user-focus",
-            "-moz-user-input",
-            "-moz-user-modify",
-            "-moz-user-select",
-            "-moz-window-shadow"
-        ];
-        var msProperties = [
-            "-ms-accelerator",
-            "-ms-align-self",
-            "-ms-block-progression",
-            "-ms-content-zoom-limit",
-            "-ms-content-zoom-limit-max",
-            "-ms-content-zoom-limit-min",
-            "-ms-content-zoom-snap",
-            "-ms-content-zoom-snap-points",
-            "-ms-content-zoom-snap-type",
-            "-ms-flow-from",
-            "-ms-flow-into",
-            "-ms-grid-column",
-            "-ms-grid-column-align",
-            "-ms-grid-column-span",
-            "-ms-grid-columns",
-            "-ms-grid-row",
-            "-ms-grid-row-align",
-            "-ms-grid-row-span",
-            "-ms-grid-rows",
-            "-ms-high-contrast-adjust",
-            "-ms-hyphenate-limit-chars",
-            "-ms-hyphenate-limit-lines",
-            "-ms-hyphenate-limit-zone",
-            "-ms-hyphens",
-            "-ms-ime-align",
-            "-ms-interpolation-mode",
-            "-ms-overflow-style",
-            "-ms-scroll-chaining",
-            "-ms-scroll-limit",
-            "-ms-scroll-limit-x-max",
-            "-ms-scroll-limit-x-min",
-            "-ms-scroll-limit-y-max",
-            "-ms-scroll-limit-y-min",
-            "-ms-scroll-rails",
-            "-ms-scroll-snap-points-x",
-            "-ms-scroll-snap-points-y",
-            "-ms-scroll-snap-type",
-            "-ms-scroll-snap-x",
-            "-ms-scroll-snap-y",
-            "-ms-scroll-translation",
-            "-ms-text-combine-horizontal",
-            "-ms-text-overflow",
-            "-ms-touch-action",
-            "-ms-touch-select",
-            "-ms-transform",
-            "-ms-transform-origin",
-            "-ms-transition",
-            "-ms-transition-delay",
-            "-ms-transition-duration",
-            "-ms-transition-property",
-            "-ms-transition-timing-function",
-            "-ms-user-select"
-        ];
-        var csscolors = [
-            "transparent",
-            "AliceBlue",
-            "AntiqueWhite",
-            "Aqua",
-            "Aquamarine",
-            "Azure",
-            "Beige",
-            "Bisque",
-            "Black",
-            "BlanchedAlmond",
-            "Blue",
-            "BlueViolet",
-            "Brown",
-            "BurlyWood",
-            "CadetBlue",
-            "Chartreuse",
-            "Chocolate",
-            "Coral",
-            "CornflowerBlue",
-            "Cornsilk",
-            "Crimson",
-            "Cyan",
-            "DarkBlue",
-            "DarkCyan",
-            "DarkGoldenRod",
-            "DarkGray",
-            "DarkGreen",
-            "DarkGrey",
-            "DarkKhaki",
-            "DarkMagenta",
-            "DarkOliveGreen",
-            "DarkOrange",
-            "DarkOrchid",
-            "DarkRed",
-            "DarkSalmon",
-            "DarkSeaGreen",
-            "DarkSlateBlue",
-            "DarkSlateGray",
-            "DarkSlateGrey",
-            "DarkTurquoise",
-            "DarkViolet",
-            "DeepPink",
-            "DeepSkyBlue",
-            "DimGray",
-            "DimGrey",
-            "DodgerBlue",
-            "FireBrick",
-            "FloralWhite",
-            "ForestGreen",
-            "Fuchsia",
-            "Gainsboro",
-            "GhostWhite",
-            "Gold",
-            "GoldenRod",
-            "Gray",
-            "Green",
-            "GreenYellow",
-            "Grey",
-            "HoneyDew",
-            "HotPink",
-            "IndianRed",
-            "Indigo",
-            "Ivory",
-            "Khaki",
-            "Lavender",
-            "LavenderBlush",
-            "LawnGreen",
-            "LemonChiffon",
-            "LightBlue",
-            "LightCoral",
-            "LightCyan",
-            "LightGoldenRodYellow",
-            "LightGray",
-            "LightGreen",
-            "LightGrey",
-            "LightPink",
-            "LightSalmon",
-            "LightSeaGreen",
-            "LightSkyBlue",
-            "LightSlateGray",
-            "LightSlateGrey",
-            "LightSteelBlue",
-            "LightYellow",
-            "Lime",
-            "LimeGreen",
-            "Linen",
-            "Magenta",
-            "Maroon",
-            "MediumAquaMarine",
-            "MediumBlue",
-            "MediumOrchid",
-            "MediumPurple",
-            "MediumSeaGreen",
-            "MediumSlateBlue",
-            "MediumSpringGreen",
-            "MediumTurquoise",
-            "MediumVioletRed",
-            "MidnightBlue",
-            "MintCream",
-            "MistyRose",
-            "Moccasin",
-            "NavajoWhite",
-            "Navy",
-            "OldLace",
-            "Olive",
-            "OliveDrab",
-            "Orange",
-            "OrangeRed",
-            "Orchid",
-            "PaleGoldenRod",
-            "PaleGreen",
-            "PaleTurquoise",
-            "PaleVioletRed",
-            "PapayaWhip",
-            "PeachPuff",
-            "Peru",
-            "Pink",
-            "Plum",
-            "PowderBlue",
-            "Purple",
-            "RebeccaPurple",
-            "Red",
-            "RosyBrown",
-            "RoyalBlue",
-            "SaddleBrown",
-            "Salmon",
-            "SandyBrown",
-            "SeaGreen",
-            "SeaShell",
-            "Sienna",
-            "Silver",
-            "SkyBlue",
-            "SlateBlue",
-            "SlateGray",
-            "SlateGrey",
-            "Snow",
-            "SpringGreen",
-            "SteelBlue",
-            "Tan",
-            "Teal",
-            "Thistle",
-            "Tomato",
-            "Turquoise",
-            "Violet",
-            "Wheat",
-            "White",
-            "WhiteSmoke",
-            "Yellow",
-            "YellowGreen"
-        ];
-        var vendorCSSProperties = [
-            "WebkitAlignContent",
-            "WebkitAlignItems",
-            "WebkitAlignSelf",
-            "WebkitAnimation",
-            "WebkitAnimationDelay",
-            "WebkitAnimationDirection",
-            "WebkitAnimationDuration",
-            "WebkitAnimationFillMode",
-            "WebkitAnimationIterationCount",
-            "WebkitAnimationName",
-            "WebkitAnimationPlayState",
-            "WebkitAnimationTimingFunction",
-            "WebkitAppearance",
-            "WebkitBackfaceVisibility",
-            "WebkitBackgroundClip",
-            "WebkitBackgroundOrigin",
-            "WebkitBackgroundSize",
-            "WebkitBorderBefore",
-            "WebkitBorderBeforeColor",
-            "WebkitBorderBeforeStyle",
-            "WebkitBorderBeforeWidth",
-            "WebkitBorderImage",
-            "WebkitBorderRadius",
-            "WebkitBorderTopLeftRadius",
-            "WebkitBorderTopRightRadius",
-            "WebkitBorderBottomLeftRadius",
-            "WebkitBorderBottomRightRadius",
-            "WebkitBoxAlign",
-            "WebkitBoxDecorationBreak",
-            "WebkitBoxDirection",
-            "WebkitBoxFlex",
-            "WebkitBoxFlexGroup",
-            "WebkitBoxLines",
-            "WebkitBoxOrdinalGroup",
-            "WebkitBoxOrient",
-            "WebkitBoxPack",
-            "WebkitBoxReflect",
-            "WebkitBoxShadow",
-            "WebkitClipPath",
-            "WebkitColumnCount",
-            "WebkitColumnGap",
-            "WebkitColumnRule",
-            "WebkitColumnRuleColor",
-            "WebkitColumnRuleStyle",
-            "WebkitColumnRuleWidth",
-            "WebkitColumnSpan",
-            "WebkitColumnWidth",
-            "WebkitColumns",
-            "WebkitFilter",
-            "WebkitFlex",
-            "WebkitFlexBasis",
-            "WebkitFlexDirection",
-            "WebkitFlexFlow",
-            "WebkitFlexGrow",
-            "WebkitFlexShrink",
-            "WebkitFlexWrap",
-            "WebkitFontFeatureSettings",
-            "WebkitFontKerning",
-            "WebkitFontSmoothing",
-            "WebkitFontVariantLigatures",
-            "WebkitHyphens",
-            "WebkitJustifyContent",
-            "WebkitLineClamp",
-            "WebkitMask",
-            "WebkitMaskBoxImage",
-            "WebkitMaskBoxImageOutset",
-            "WebkitMaskBoxImageRepeat",
-            "WebkitMaskBoxImageSlice",
-            "WebkitMaskBoxImageSource",
-            "WebkitMaskBoxImageWidth",
-            "WebkitMaskClip",
-            "WebkitMaskComposite",
-            "WebkitMaskImage",
-            "WebkitMaskOrigin",
-            "WebkitMaskPosition",
-            "WebkitMaskRepeat",
-            "WebkitMaskSize",
-            "WebkitPerspective",
-            "WebkitPerspectiveOrigin",
-            "WebkitPrintColorAdjust",
-            "WebkitTextFillColor",
-            "WebkitTextStroke",
-            "WebkitTextStrokeColor",
-            "WebkitTextStrokeWidth",
-            "WebkitTransform",
-            "WebkitTransformOrigin",
-            "WebkitTransformStyle",
-            "WebkitTransition",
-            "WebkitTransitionDelay",
-            "WebkitTransitionDuration",
-            "WebkitTransitionProperty",
-            "WebkitTransitionTimingFunction",
-            "WebkitUserDrag",
-            "WebkitUserModify",
-            "WebkitUserSelect",
-            "WebkitWritingMode",
-            
-            "msAccelerator",
-            "msAlignSelf",
-            "msBlockProgression",
-            "msContentZoomLimit",
-            "msContentZoomLimitMax",
-            "msContentZoomLimitMin",
-            "msContentZoomSnap",
-            "msContentZoomSnapPoints",
-            "msContentZoomSnapType",
-            "msFlowFrom",
-            "msFlowInto",
-            "msGridColumn",
-            "msGridColumnAlign",
-            "msGridColumnSpan",
-            "msGridColumns",
-            "msGridRow",
-            "msGridRowAlign",
-            "msGridRowSpan",
-            "msGridRows",
-            "msHighContrastAdjust",
-            "msHyphenateLimitChars",
-            "msHyphenateLimitLines",
-            "msHyphenateLimitZone",
-            "msHyphens",
-            "msImeAlign",
-            "msInterpolationMode",
-            "msOverflowStyle",
-            "msScrollChaining",
-            "msScrollLimit",
-            "msScrollLimitXMax",
-            "msScrollLimitXMin",
-            "msScrollLimitYMax",
-            "msScrollLimitYMin",
-            "msScrollRails",
-            "msScrollSnapPointsX",
-            "msScrollSnapPointsY",
-            "msScrollSnapType",
-            "msScrollSnapX",
-            "msScrollSnapY",
-            "msScrollTranslation",
-            "msTextCombineHorizontal",
-            "msTextOverflow",
-            "msTouchAction",
-            "msTouchSelect",
-            "msTransform",
-            "msTransformOrigin",
-            "msTransition",
-            "msTransitionDelay",
-            "msTransitionDuration",
-            "msTransitionProperty",
-            "msTransitionTimingFunction",
-            "msUserSelect",
-            
-            "MozAppearance",
-            "MozBackfaceVisibility",
-            "MozBackgroundClip",
-            "MozBackgroundInlinePolicy",
-            "MozBackgroundOrigin",
-            "MozBackgroundSize",
-            "MozBinding",
-            "MozBorderBottomColors",
-            "MozBorderEndColor",
-            "MozBorderEndStyle",
-            "MozBorderEndWidth",
-            "MozBorderLeftColors",
-            "MozBorderRightColors",
-            "MozBorderStartColor",
-            "MozBorderStartStyle",
-            "MozBorderStartWidth",
-            "MozBorderTopColors",
-            "MozBoxAlign",
-            "MozBoxDirection",
-            "MozBoxFlex",
-            "MozBoxOrdinalGroup",
-            "MozBoxOrient",
-            "MozBoxPack",
-            "MozBoxShadow",
-            "MozColumnCount",
-            "MozColumnFill",
-            "MozColumnGap",
-            "MozColumnRule",
-            "MozColumnRuleColor",
-            "MozColumnRuleStyle",
-            "MozColumnRuleWidth",
-            "MozColumnWidth",
-            "MozColumns",
-            "MozContextProperties",
-            "MozFloatEdge",
-            "MozFontFeatureSettings",
-            "MozFontLanguageOverride",
-            "MozForceBrokenImageIcon",
-            "MozHyphens",
-            "MozImageRegion",
-            "MozMarginEnd",
-            "MozMarginStart",
-            "MozOrient",
-            "MozOutlineRadius",
-            "MozOutlineRadiusBottomLeft",
-            "MozOutlineRadiusBottomRight",
-            "MozOutlineRadiusTopLeft",
-            "MozOutlineRadiusTopRight",
-            "MozPaddingEnd",
-            "MozPaddingStart",
-            "MozPerspective",
-            "MozPerspectiveOrigin",
-            "MozStackSizing",
-            "MozTabSize",
-            "MozTextBlink",
-            "MozTextDecorationColor",
-            "MozTextDecorationLine",
-            "MozTextDecorationStyle",
-            "MozTransform",
-            "MozTransformOrigin",
-            "MozTransformStyle",
-            "MozTransition",
-            "MozTransitionDelay",
-            "MozTransitionDuration",
-            "MozTransitionProperty",
-            "MozTransitionTimingFunction",
-            "MozUserFocus",
-            "MozUserInput",
-            "MozUserModify",
-            "MozUserSelect",
-            "MozWindowShadow",
-            
-            "OAnimation", "OAnimationDelay", "OAnimationDirection", "OAnimationDuration", "OAnimationFillMode",
-            "OAnimationIterationCount", "OAnimationName", "OAnimationPlayState", "OAnimationTimingFunction",
-            "OTransition", "OTransitionDelay", "OTransitionDuration", "OTransitionProperty", "OTransitionTimingFunction"
-        ];
-        var jsSyntax = [
-            ...jsKeywords,
-            ...supportedConsoleMethods,
-            ...jsGlobals,
-            ...domAPIs,
-            ...cssProperties,
-            ...vendorCSSProperties
-        ];
-        
-        var htmlTags = [
-            "<div>", "<span>", "<input>", "<button>", "<form>", "<select>", "<option>", "<table>", "<thead>",
-            "<tbody>", "<tr>", "<td>", "<ul>", "<ol>", "<li>", "<a>", "<p>", "<h1>", "<h2>", "<h3>", "<h4>",
-            "<h5>", "<h6>", "<article>", "<section>", "<header>", "<footer>", "<nav>", "<aside>", "<main>", "<mark>",
-            "<small>", "<strong>", "<em>", "<i>", "<b>", "<u>", "<code>", "<pre>", "<blockquote>", "<cite>", "<time>",
-            "<abbr>", "<address>", "<del>", "<ins>", "<sub>", "<sup>", "<figure>", "<figcaption>", "<details>", "<summary>",
-            "<progress>", "<meter>", "<canvas>", "<svg>", "<path>", "<g>", "<circle>", "<rect>", "<line>", "<polygon>",
-            "<polyline>", "<text>", "<style>", "<link>", "<meta>", "<title>", "<base>", "<script>", "<noscript>", "<iframe>",
-            "<audio>", "<video>", "<source>", "<track>", "<object>", "<param>", "<embed>", "<picture>", "<map>", "<area>",
-            "<use>",
-            "</div>", "</span>", "</input>", "</button>", "</form>", "</select>", "</option>", "</table>", "</thead>",
-            "</tbody>", "</tr>", "</td>", "</ul>", "</ol>", "</li>", "</a>", "</p>", "</h1>", "</h2>", "</h3>", "</h4>",
-            "</h5>", "</h6>", "</article>", "</section>", "</header>", "</footer>", "</nav>", "</aside>", "</main>", "</mark>",
-            "</small>", "</strong>", "</em>", "</i>", "</b>", "</u>", "</code>", "</pre>", "</blockquote>", "</cite>", "</time>",
-            "</abbr>", "</address>", "</del>", "</ins>", "</sub>", "</sup>", "</figure>", "</figcaption>", "</details>", "</summary>",
-            "</progress>", "</meter>", "</canvas>", "</svg>", "</path>", "</g>", "</circle>", "</rect>", "</line>", "</polygon>",
-            "</polyline>", "</text>", "</style>", "</link>", "</meta>", "</title>", "</base>", "<\/script>", "</noscript>", "</iframe>",
-            "</audio>", "</video>", "</source>", "</track>", "</object>", "</param>", "</embed>", "</picture>", "</map>", "</area>",
-            "</use>"
-        ];
-        var openJsTags = [
-            "a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "body",
-            "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del",
-            "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer",
-            "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "i", "iframe", "img", "input",
-            "ins", "kbd", "label", "legend", "li", "link", "main", "map", "mark", "meta", "meter", "nav", "noscript",
-            "object", "ol", "optgroup", "option", "output", "p", "param", "picture", "pre", "progress", "q", "rp",
-            "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strong", "style",
-            "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time",
-            "title", "tr", "track", "u", "ul", "var", "video", "wbr"
-        ];
-        var pythonUniqueKeys = [
-            "False",
-            "None",
-            "True",
-            "assert",
-            "def",
-            "elif",
-            "except",
-            "global",
-            "lambda",
-            "nonlocal",
-            "pass",
-            "raise",
-            "aiter",
-            "anext",
-            "any",
-            "ascii",
-            "bin",
-            "bool",
-            "breakpoint",
-            "bytearray",
-            "bytes",
-            "callable",
-            "chr",
-            "classmethod",
-            "compile",
-            "complex",
-            "delattr",
-            "dict",
-            "divmod",
-            "enumerate",
-            "frozenset",
-            "getattr",
-            "globals",
-            "hasattr",
-            "hash",
-            "hex",
-            "int",
-            "isinstance",
-            "issubclass",
-            "iter",
-            "len",
-            "list",
-            "locals",
-            "memoryview",
-            "next",
-            "oct",
-            "ord",
-            "repr",
-            "setattr",
-            "sorted",
-            "staticmethod",
-            "sum",
-            "tuple",
-            "vars",
-            "zip",
-            "__import__",
-            "re",
-            "fullmatch",
-            "findall",
-            "finditer",
-            "subn",
-            "purge",
-            "IGNORECASE",
-            "LOCALE",
-            "MULTILINE",
-            "DOTALL",
-            "VERBOSE",
-            "UNICODE",
-            "comb",
-            "copysign",
-            "degrees",
-            "dist",
-            "erf",
-            "erfc",
-            "fabs",
-            "factorial",
-            "fmod",
-            "frexp",
-            "fsum",
-            "gamma",
-            "gcd",
-            "isclose",
-            "isinf",
-            "isqrt",
-            "lcm",
-            "ldexp",
-            "lgamma",
-            "modf",
-            "nextafter",
-            "perm",
-            "prod",
-            "radians",
-            "remainder",
-            "tau",
-            "ulp",
-            "seed",
-            "getstate",
-            "setstate",
-            "randbytes",
-            "randrange",
-            "randint",
-            "getrandbits",
-            "choice",
-            "choices",
-            "shuffle",
-            "sample",
-            "uniform",
-            "triangular",
-            "betavariate",
-            "expovariate",
-            "gammavariate",
-            "gauss",
-            "lognormvariate",
-            "normalvariate",
-            "vonmisesvariate",
-            "paretovariate",
-            "weibullvariate",
-            "sys",
-            "argv",
-            "byteorder",
-            "displayhook",
-            "excepthook",
-            "executable",
-            "hexversion",
-            "maxsize",
-            "maxunicode",
-            "stderr",
-            "stdin",
-            "stdout",
-            "version_info",
-            "os",
-            "chdir",
-            "getcwd",
-            "fsencode",
-            "fsdecode",
-            "getpid",
-            "getppid",
-            "getuid"
-        ];
         
         var uniquevalues = [];
         var uniqueValCheckInterval = setInterval(() => {
