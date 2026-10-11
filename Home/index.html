@@ -33,6 +33,7 @@
             --av-font-size: 1.25rem;
             --nav-bg: #000000;
             --nav-bubble: #000000;
+            --transparent-nav-bubble: rgba(0, 0, 0, 0.5);
             --nav-text-active: #ffffff;
             --nav-text-inactive: #000000;
             --theme-con-color: #ec4899;
@@ -60,6 +61,7 @@
             --token-s: #97c278;
             --token-o: #E06C75;
             --nav-bubble: #ffffff;
+            --transparent-nav-bubble: rgba(255, 255, 255, 0.5);
             --nav-text-active: #000000;
             --nav-text-inactive: #ffffff;
         }
@@ -261,15 +263,19 @@
             border: none;
             border-radius: 0;
             max-width: 1280px;
+            box-shadow: none !important;
         }
         #navbar.scrolled {
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
             background: var(--card-bg-light);
             border: 1px solid var(--border-color);
             border-radius: 25px;
             top: 10px;
-            box-shadow: 0 0 40px -3px var(--navbar-shadow);
+            box-shadow: 0 0 40px -3px var(--navbar-shadow) !important;
+        }
+        #navbar:not(.scrolled) canvas {
+            display: none !important;
         }
 
 
@@ -511,7 +517,7 @@
             cursor: pointer;
             position: relative;
             z-index: 2;
-            transition: color 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: color 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .nav-item.active { color: var(--nav-text-active); }
         
@@ -522,7 +528,14 @@
             height: calc(100% - 6px);
             background: var(--nav-bubble);
             border-radius: 30px; z-index: 1;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .nav-bubble.moving {
+            background: var(--transparent-nav-bubble);
+        }
+        .nav-bubble:not(.moving) canvas {
+            display: none !important;
         }
         .content-container {
             display: content;
@@ -2147,14 +2160,14 @@
     </style>
 </head>
 <body class="antialiased">
-    <nav id="navbar" class="transformAllowed">
+    <nav id="navbar" class="transformAllowed" data-liquid-glass data-lg-bezel="50" data-lg-thickness="45">
         <div class="nav-content">
             <div style="display: flex; align-items: center; justify-content: flex-start; gap: 0.75rem;" class="nav-side-co" onclick="openAiluryDotCom()">
                 <div class="nav-logo-circle"></div>
                 <span id="topLeftHeader" class="font-display">ailury</span>
             </div>
             <nav class="top-nav" id="navigation-bar">
-                <div class="nav-bubble" id="navigation-bubble"></div>
+                <div class="nav-bubble" id="navigation-bubble" data-liquid-glass data-lg-bezel="50" data-lg-thickness="45"></div>
                 <button class="nav-item active" id="aboutNavEl" data-target="about">About</button>
                 <button class="nav-item" id="toolsNavEl" data-target="tools">Tools</button>
                 <button class="nav-item" id="featuresNavEl" data-target="features">Features</button>
@@ -5198,6 +5211,1248 @@
         <div id="hover"></div>
     </div>
     <script>
+        const LiquidGlass = (() => {
+            const DEF = { bezel: 40, thickness: 70, ior: 1.5, slab: 12, dispersion: .04, magnify: 1, specular: 1, tint: .05 };
+            const DK = {};
+            for (const k in DEF) DK[k] = 'lg' + k[0].toUpperCase() + k.slice(1);
+            const items = new Map();
+            const glc = document.createElement('canvas');
+            // depth/stencil are never used; preserveDrawingBuffer is unnecessary because we drawImage() from the
+            // GL canvas in the same task that rendered it.
+            const attrs = { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false, preserveDrawingBuffer: false };
+            let gl = glc.getContext('webgl2', attrs);
+            const isGL2 = !!gl;
+            if (!gl)
+                gl = glc.getContext('webgl', attrs);
+            if (!gl) {
+                console.error('LiquidGlass: WebGL unavailable');
+                const n = () => { };
+                return { add: n, remove: n, toggle: n, update: n, refresh: n, live: n };
+            }
+            const HDR = isGL2 ? '#version 300 es\n#define GL2\n' : '';
+            const VS = HDR + `
+        #ifdef GL2
+        in vec2 aPos;
+        #else
+        attribute vec2 aPos;
+        #endif
+        void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`;
+            const FS = HDR + `
+        #ifdef GL_FRAGMENT_PRECISION_HIGH
+        precision highp float;
+        #else
+        precision mediump float;
+        #endif
+        #ifdef GL2
+        out vec4 outColor;
+        #define texLod(s,uv,l) textureLod(s,uv,l)
+        #else
+        #define outColor gl_FragColor
+        #define texLod(s,uv,l) texture2D(s,uv)
+        #endif
+        uniform vec2 uSize; uniform vec2 uPx; uniform vec2 uPos; uniform vec2 uScroll; uniform vec2 uTexInv;
+        uniform sampler2D uTex; uniform sampler2D uUnder; uniform sampler2D uOver;
+        uniform vec4 uGeo;      // radius, bezel, thickness, ior
+        uniform vec3 uLook;     // specular, dispersion, magnify
+        uniform vec2 uMisc;     // slab, tint
+        uniform vec2 uLay;      // x: has underlay, y: has overlay
+        uniform vec2 uVpInv;    // 1 / css size of the viewport-space textures
+        uniform vec3 uUnderCol; // page background colour
+        uniform vec4 uBg;       // the glass element's own background colour (rgb + straight alpha)
+        uniform float uBlur;    // gaussian sigma in css px (backdrop-filter blur)
+        uniform vec2 uLod;      // mip level for page / viewport textures (precomputed on the CPU)
+        uniform vec2 uTaps[12]; // precomputed gaussian disc taps (unit sigma)
+    
+        vec3 bgAt(vec2 vp, float lp, float lv){
+            vec3 col = uUnderCol;
+            if (uLay.x > 0.5) col = texLod(uUnder, vp * uVpInv, lv).rgb;
+            vec4 pg = texLod(uTex, (vp + uScroll) * uTexInv, lp);
+            col = pg.rgb + col * (1.0 - pg.a);
+            if (uLay.y > 0.5) {
+                vec4 ov = texLod(uOver, vp * uVpInv, lv);
+                col = ov.rgb + col * (1.0 - ov.a);
+            }
+            return col;
+        }
+        vec3 bg(vec2 pl){
+            vec2 vp = uPos + pl;
+            if (uBlur < 0.3) return bgAt(vp, 0.0, 0.0);
+            vec3 acc = vec3(0.0);
+            for (int i = 0; i < 12; i++)
+                acc += bgAt(vp + uBlur * uTaps[i], uLod.x, uLod.y);
+            return acc / 12.0;
+        }
+    
+        float sdRR(vec2 p, vec2 c, vec2 hs, float r){
+            vec2 q = abs(p - c) - (hs - r);
+            return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+        }
+        vec2 refr(vec3 N, float ior, float h, float slab){
+            vec3 R = refract(vec3(0.0, 0.0, -1.0), N, 1.0 / ior);
+            return R.xy * (h + slab) / max(-R.z, 1e-3);
+        }
+        void main(){
+            vec2 p = vec2(gl_FragCoord.x, uPx.y - gl_FragCoord.y) * uSize / uPx;
+            float aa = uSize.x / uPx.x;
+            vec2 hs = uSize * 0.5; vec2 c = hs;
+            float rad = uGeo.x, bezel = uGeo.y, th = uGeo.z, ior = uGeo.w;
+            float sd = sdRR(p, c, hs, rad);
+            if (sd > aa) { outColor = vec4(0.0); return; }
+            float depth = max(-sd, 0.0);
+    
+            vec2 d = p - c; vec2 q = abs(d) - (hs - rad);
+            vec2 sg = vec2(d.x < 0.0 ? -1.0 : 1.0, d.y < 0.0 ? -1.0 : 1.0);
+            vec2 n2;
+            if (q.x > 0.0 || q.y > 0.0) n2 = sg * normalize(max(q, 0.0));
+            else n2 = (q.x > q.y) ? vec2(sg.x, 0.0) : vec2(0.0, sg.y);
+            float dl = dot(n2, vec2(-0.7071, -0.7071));
+    
+            float t = clamp(depth / bezel, 0.0, 1.0);
+            vec2 pm = c + (p - c) / uLook.z;
+            vec3 col;
+            float nz = 1.0, slope = 0.0;
+            if (t >= 1.0) {
+                // Flat interior: normal is (0,0,1), refraction offset is exactly zero for every channel,
+                // so one background fetch replaces three (and all the pow/sqrt below).
+                col = bg(pm);
+            } else {
+                float u = 1.0 - t; float u2 = u * u;
+                float f = max(1.0 - u2 * u2, 1e-5);
+                float s = sqrt(f), s4 = sqrt(s);            // f^0.5, f^0.25
+                float h = th * s4;                          // th * f^0.25
+                slope = th * (u2 * u) / (bezel * s * s4);   // th * u^3 * f^-0.75 / bezel
+                nz = inversesqrt(1.0 + slope * slope);
+                vec3 N = vec3(n2 * (slope * nz), nz);
+                if (uLook.y < 1e-4) {
+                    col = bg(pm + refr(N, ior, h, uMisc.x));
+                } else {
+                    col.r = bg(pm + refr(N, ior - uLook.y, h, uMisc.x)).r;
+                    col.g = bg(pm + refr(N, ior,           h, uMisc.x)).g;
+                    col.b = bg(pm + refr(N, ior + uLook.y, h, uMisc.x)).b;
+                }
+            }
+    
+            // The canvas sits above the element's own background and fully covers it, so the background colour
+            // has to be painted here: over the refracted/blurred backdrop, under the glass reflections/highlights.
+            col = mix(col, uBg.rgb, uBg.a);
+    
+            float x = 1.0 - nz; float x2 = x * x;
+            float k0 = (ior - 1.0) / (ior + 1.0); float F0 = k0 * k0;
+            float F = F0 + (1.0 - F0) * x2 * x2 * x;
+            // reflect(I,N).xy for I=(0,0,-1) is 2*nz*N.xy = 2*nz*nz*slope*n2
+            float rl = 2.0 * nz * nz * slope * dl;
+            float env = 0.35 + 0.65 * clamp(0.5 + 0.5 * rl, 0.0, 1.0);
+            col = mix(col, vec3(env), clamp(F, 0.0, 1.0) * 0.45);
+    
+            float m = abs(dl);
+            float dir = m * sqrt(m) * (dl > 0.0 ? 1.0 : 0.65);
+            float line = exp(-depth * 0.7142857143);
+            col += uLook.x * (dir * (0.9 * x2 + 0.55 * line) + 0.12 * line);
+    
+            col = mix(col, vec3(1.0), uMisc.y);
+            float cov = clamp(0.5 - sd / aa, 0.0, 1.0);
+            outColor = vec4(clamp(col, 0.0, 1.0) * cov, cov);
+        }`;
+            const sh = (type, src) => {
+                const s = gl.createShader(type);
+                gl.shaderSource(s, src);
+                gl.compileShader(s);
+                if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+                    throw new Error(gl.getShaderInfoLog(s));
+                return s;
+            };
+            const prog = gl.createProgram();
+            gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+            gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+            gl.linkProgram(prog);
+            if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+                throw new Error(gl.getProgramInfoLog(prog));
+            gl.useProgram(prog);
+            gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+            const aPos = gl.getAttribLocation(prog, 'aPos');
+            gl.enableVertexAttribArray(aPos);
+            gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+            const U = {};
+            ['uSize', 'uPx', 'uPos', 'uScroll', 'uTexInv', 'uTex', 'uUnder', 'uOver', 'uGeo', 'uLook', 'uMisc', 'uLay', 'uVpInv', 'uUnderCol', 'uBlur', 'uLod', 'uTaps', 'uBg']
+                .forEach(n => U[n] = gl.getUniformLocation(prog, n));
+            // Gaussian disc taps: constant for every pixel, so compute once instead of log/sqrt/cos/sin x36 per fragment.
+            {
+                const taps = new Float32Array(24);
+                for (let i = 0; i < 12; i++) {
+                    const r = Math.sqrt(-2 * Math.log(1 - (i + 0.5) / 12)), a = i * 2.39996323;
+                    taps[2 * i] = r * Math.cos(a);
+                    taps[2 * i + 1] = r * Math.sin(a);
+                }
+                gl.uniform2fv(U.uTaps, taps);
+            }
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+            const MAXT = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+            const TI = [{ w: 0, h: 0 }, { w: 0, h: 0 }, { w: 0, h: 0 }];
+            const mkTex = unit => {
+                const t = gl.createTexture();
+                gl.activeTexture(gl.TEXTURE0 + unit);
+                gl.bindTexture(gl.TEXTURE_2D, t);
+                [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]
+                    .forEach(([k, v]) => gl.texParameteri(gl.TEXTURE_2D, k, v));
+                return t;
+            };
+            // Re-uses texture storage when the size is unchanged (texSubImage2D) and only builds mipmaps
+            // when some glass actually blurs (mips are only sampled in the blur path).
+            const up = (unit, t, c, mip) => {
+                gl.activeTexture(gl.TEXTURE0 + unit);
+                gl.bindTexture(gl.TEXTURE_2D, t);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+                const ti = TI[unit];
+                if (ti.w === c.width && ti.h === c.height)
+                    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+                else {
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+                    ti.w = c.width;
+                    ti.h = c.height;
+                }
+                if (mip)
+                    gl.generateMipmap(gl.TEXTURE_2D);
+            };
+            const tex = mkTex(0), underTex = mkTex(1), overTex = mkTex(2);
+            {
+                const ph = document.createElement('canvas');
+                ph.width = ph.height = 1;
+                up(0, tex, ph, false);
+                up(1, underTex, ph, false);
+                up(2, overTex, ph, false);
+            }
+            gl.uniform1i(U.uTex, 0);
+            gl.uniform1i(U.uUnder, 1);
+            gl.uniform1i(U.uOver, 2);
+    
+            let cap = { x: 0, y: 0, w: 1, h: 1, tw: 1, th: 1 };
+            let lay = { under: false, over: false, sp: 1, sv: 1, vw: 1, vh: 1, col: [1, 1, 1] };
+            let texReady = false, texVer = 0, busy = false, pending = false, timer = 0, liveT = 0, hasSticky = false;
+            let raf = 0, mipOn = false, mipAsk = false, lastSx = NaN, lastSy = NaN;
+            // stale = a snapshot was requested while nothing was visible, so it was skipped; it is taken
+            // as soon as a glass element becomes visible again.
+            let stale = false;
+            const PIXEL_BUDGET = 24e6;
+            // Glass this many px outside the viewport still counts as "visible" so it is already drawn when it
+            // scrolls in (avoids a blank frame). Set to 0 for strictly on-screen only.
+            const PREROLL = 48;
+            const padX = () => 200;
+            const padY = () => Math.max(600, innerHeight * 0.75);
+            const DOC = document.documentElement;
+            const docW = () => Math.max(DOC.scrollWidth, innerWidth);
+            const docH = () => Math.max(DOC.scrollHeight, innerHeight);
+    
+            // ---- hoisted regexes / tables (were re-created inside hot functions) ----
+            const TRANSP = /rgba\(.*,\s*0\)$|transparent/;
+            const SKIP = /^(SCRIPT|STYLE|LINK|META|TITLE|HEAD|NOSCRIPT|TEMPLATE|SVG)$/i;
+            const SH_RE = /^(rgba?\([^)]*\)|#[0-9a-f]+|[a-z]+)\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s*([\d.]+)?(?:px)?\s*(-?[\d.]+)?/i;
+            const TS_RE = /^(rgba?\([^)]*\)|#[0-9a-f]+|[a-z]+)\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s*([\d.]+)?/i;
+            const URL_RE = /^url\((["']?)([\s\S]*)\1\)$/;
+            const LG_RE = /^linear-gradient\(([\s\S]*)\)$/;
+            const BLUR_RE = /blur\(\s*([\d.]+)px/;
+            const WORD = /\S+/g, NONWS = /\S/;
+            const BR = ['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomRightRadius', 'borderBottomLeftRadius'];
+            const BCK = ['borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor'];
+            const BSK = ['borderTopStyle', 'borderRightStyle', 'borderBottomStyle', 'borderLeftStyle'];
+            const HAS_LS = typeof CanvasRenderingContext2D !== 'undefined' && 'letterSpacing' in CanvasRenderingContext2D.prototype;
+            const RG = document.createRange();
+            const ASC = new Map();
+            const CV = typeof Element !== 'undefined' && 'checkVisibility' in Element.prototype;
+            const CV_OPTS = { checkOpacity: true, checkVisibilityCSS: true, visibilityProperty: true, contentVisibilityAuto: true, opacityProperty: true };
+    
+            const pageBg = () => { for (const e of [document.body, DOC]) {
+                const c = getComputedStyle(e).backgroundColor;
+                if (c && !TRANSP.test(c))
+                    return c;
+            } return '#ffffff'; };
+            const rgbCv = document.createElement('canvas');
+            rgbCv.width = rgbCv.height = 1;
+            const rgbCtx = rgbCv.getContext('2d', { willReadFrequently: true });
+            const pageRgb = bg => {
+                rgbCtx.fillStyle = '#fff';
+                rgbCtx.fillRect(0, 0, 1, 1);
+                rgbCtx.fillStyle = bg;
+                rgbCtx.fillRect(0, 0, 1, 1);
+                const d = rgbCtx.getImageData(0, 0, 1, 1).data;
+                return [d[0] / 255, d[1] / 255, d[2] / 255];
+            };
+            // CSS colour -> [r,g,b,a] in 0..1 (straight alpha). Cached by string so the per-frame lookup is a Map hit.
+            const bgCache = new Map();
+            const parseColor = s => {
+                let v = bgCache.get(s);
+                if (v)
+                    return v;
+                v = null;
+                if (!s || s === 'transparent')
+                    v = [0, 0, 0, 0];
+                else {
+                    const m = /^rgba?\(([^)]*)\)$/.exec(s);
+                    if (m) {
+                        const p = m[1].split(/[\s,\/]+/).filter(Boolean);
+                        const a = p.length > 3 ? (p[3].endsWith('%') ? parseFloat(p[3]) / 100 : parseFloat(p[3])) : 1;
+                        const t = [parseFloat(p[0]) / 255, parseFloat(p[1]) / 255, parseFloat(p[2]) / 255, a];
+                        if (t.every(Number.isFinite))
+                            v = t;
+                    }
+                    if (!v) { // exotic colour spaces (oklch, color(display-p3 ...), ...): let the canvas resolve the rgb
+                        rgbCtx.clearRect(0, 0, 1, 1);
+                        rgbCtx.fillStyle = s;
+                        rgbCtx.fillRect(0, 0, 1, 1);
+                        const d = rgbCtx.getImageData(0, 0, 1, 1).data, a = alphaOf(s);
+                        v = [d[0] / 255, d[1] / 255, d[2] / 255, Number.isFinite(a) ? a : 1];
+                    }
+                }
+                v[3] = Math.min(1, Math.max(0, v[3]));
+                if (bgCache.size > 64)
+                    bgCache.clear();
+                bgCache.set(s, v);
+                return v;
+            };
+            const imgs = new Map();
+            const loadImg = u => { if (!imgs.has(u))
+                imgs.set(u, new Promise(res => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = u; })); return imgs.get(u); };
+            const splitTop = str => { const out = []; let d = 0, cur = ''; for (const ch of str) {
+                if (ch === '(')
+                    d++;
+                if (ch === ')')
+                    d--;
+                if (ch === ',' && !d) {
+                    out.push(cur.trim());
+                    cur = '';
+                }
+                else
+                    cur += ch;
+            } if (cur.trim())
+                out.push(cur.trim()); return out; };
+            const toPx = (v, ref) => v.endsWith('%') ? parseFloat(v) * ref / 100 : parseFloat(v);
+            function radii(cs, w, h) {
+                const out = [0, 0, 0, 0];
+                for (let i = 0; i < 4; i++) {
+                    const v = cs[BR[i]];
+                    out[i] = (parseFloat(v) || 0) * (v.includes('%') ? Math.min(w, h) / 100 : 1);
+                }
+                return out;
+            }
+            function rrPath(c, x, y, w, h, r) {
+                let [a, b, d, e] = r;
+                c.beginPath();
+                if (!(a || b || d || e)) { // square corners: a plain rect is far cheaper than 4 arcTo calls
+                    c.rect(x, y, w, h);
+                    return;
+                }
+                const f = Math.min(1, w / (a + b || 1), w / (e + d || 1), h / (a + e || 1), h / (b + d || 1));
+                a *= f;
+                b *= f;
+                d *= f;
+                e *= f;
+                c.moveTo(x + a, y);
+                c.lineTo(x + w - b, y);
+                c.arcTo(x + w, y, x + w, y + b, b);
+                c.lineTo(x + w, y + h - d);
+                c.arcTo(x + w, y + h, x + w - d, y + h, d);
+                c.lineTo(x + e, y + h);
+                c.arcTo(x, y + h, x, y + h - e, e);
+                c.lineTo(x, y + a);
+                c.arcTo(x, y, x + a, y, a);
+                c.closePath();
+            }
+            function linGrad(c, str, x, y, w, h) {
+                const m = str.match(LG_RE);
+                if (!m)
+                    return null;
+                const a = splitTop(m[1]);
+                let ang = 180;
+                if (/^-?[\d.]+deg$/.test(a[0]))
+                    ang = parseFloat(a.shift());
+                else if (/^to /.test(a[0]))
+                    ang = ({ 'to top': 0, 'to right': 90, 'to bottom': 180, 'to left': 270 })[a.shift()] ?? 180;
+                const t = ang * Math.PI / 180, dx = Math.sin(t), dy = -Math.cos(t), len = Math.abs(w * dx) + Math.abs(h * dy), cx = x + w / 2, cy = y + h / 2;
+                const g = c.createLinearGradient(cx - dx * len / 2, cy - dy * len / 2, cx + dx * len / 2, cy + dy * len / 2);
+                a.forEach((st, i) => {
+                    const mm = st.match(/^([\s\S]*?)(?:\s+(-?[\d.]+)%)?$/), p = mm[2] !== undefined ? parseFloat(mm[2]) / 100 : i / Math.max(1, a.length - 1);
+                    try {
+                        g.addColorStop(Math.min(1, Math.max(0, p)), mm[1].trim());
+                    }
+                    catch (e) { }
+                });
+                return g;
+            }
+    
+            // ops = list the element paints into. st = { pend, under, over, sticky, preg, vreg }.
+            // tf  = an ancestor makes fixed descendants behave like absolute (transform/filter/...).
+            // inFx = we are already inside a viewport-fixed subtree (ops is then a viewport-space list).
+            // cs is passed in (computed once by the parent while ordering children).
+            function walk(el, cs, ops, st, pa, tf, inFx) {
+                if (cs.display === 'none')
+                    return;
+                const pos = cs.position;
+                if (!inFx && !tf && pos === 'fixed') {
+                    // Viewport-fixed content goes to its own viewport-space layer so it doesn't slide with the page.
+                    const z = parseInt(cs.zIndex);
+                    return walk(el, cs, z < 0 ? st.under : st.over, st, pa, tf, true);
+                }
+                if (pos === 'sticky')
+                    st.sticky = true;
+                const alpha = pa * (parseFloat(cs.opacity) || 0);
+                if (alpha < 0.002) // whole subtree is invisible
+                    return;
+                const ntf = tf || cs.transform !== 'none' || cs.perspective !== 'none' || cs.filter !== 'none'
+                    || (!!cs.backdropFilter && cs.backdropFilter !== 'none') || /paint|layout|strict|content/.test(cs.contain)
+                    || /transform|perspective|filter/.test(cs.willChange);
+                const r = el.getBoundingClientRect();
+                const root = el === DOC || el === document.body;
+                const x = r.left, y = r.top, w = r.width, h = r.height;
+                const reg = inFx ? st.vreg : st.preg;
+                let rad = null;
+                if (cs.visibility === 'visible' && w > 0 && h > 0 && !root) {
+                    const bsh = cs.boxShadow;
+                    if (bsh && bsh !== 'none')
+                        for (const s of splitTop(bsh)) {
+                            if (/inset/.test(s))
+                                continue;
+                            const m = s.match(SH_RE);
+                            if (!m)
+                                continue;
+                            const ox = parseFloat(m[2]), oy = parseFloat(m[3]), bl = parseFloat(m[4]) || 0, sp = parseFloat(m[5]) || 0, col = m[1];
+                            const ext = Math.max(Math.abs(ox), Math.abs(oy)) + bl + Math.abs(sp) + 2;
+                            if (x - ext > reg.r || x + w + ext < reg.l || y - ext > reg.b || y + h + ext < reg.t)
+                                continue; // shadow can't reach the captured area
+                            rad = rad || radii(cs, w, h);
+                            const srad = sp ? rad.map(q => q + sp) : rad;
+                            ops.push((c, S) => {
+                                c.save();
+                                c.globalAlpha = alpha;
+                                c.shadowColor = col;
+                                c.shadowBlur = bl * S;
+                                c.shadowOffsetX = ox * S + 100000;
+                                c.shadowOffsetY = oy * S;
+                                c.translate(-100000 / S, 0);
+                                rrPath(c, x - sp, y - sp, w + 2 * sp, h + 2 * sp, srad);
+                                c.fillStyle = '#000';
+                                c.fill();
+                                c.restore();
+                            });
+                        }
+                    if (x < reg.r + 2 && x + w > reg.l - 2 && y < reg.b + 2 && y + h > reg.t - 2) {
+                        const bgc = cs.backgroundColor;
+                        if (bgc && bgc !== 'rgba(0, 0, 0, 0)' && !TRANSP.test(bgc)) {
+                            rad = rad || radii(cs, w, h);
+                            const rr = rad;
+                            ops.push(c => { c.globalAlpha = alpha; c.fillStyle = bgc; rrPath(c, x, y, w, h, rr); c.fill(); });
+                        }
+                        const bi = cs.backgroundImage;
+                        if (bi !== 'none') {
+                            rad = rad || radii(cs, w, h);
+                            const rr = rad, layers = splitTop(bi), sizes = splitTop(cs.backgroundSize), poss = splitTop(cs.backgroundPosition);
+                            for (let i = layers.length - 1; i >= 0; i--) {
+                                const L = layers[i], size = sizes[i % sizes.length] || 'auto', pos2 = poss[i % poss.length] || '0% 0%', um = L.match(URL_RE), hold = {};
+                                if (um)
+                                    st.pend.push(loadImg(um[2]).then(im => { hold.im = im; }));
+                                ops.push(c => {
+                                    c.save();
+                                    c.globalAlpha = alpha;
+                                    rrPath(c, x, y, w, h, rr);
+                                    c.clip();
+                                    if (um) {
+                                        const im = hold.im;
+                                        if (im) {
+                                            const iw = im.naturalWidth, ih = im.naturalHeight;
+                                            let dw, dh;
+                                            if (size === 'cover') {
+                                                const k = Math.max(w / iw, h / ih);
+                                                dw = iw * k;
+                                                dh = ih * k;
+                                            }
+                                            else if (size === 'contain') {
+                                                const k = Math.min(w / iw, h / ih);
+                                                dw = iw * k;
+                                                dh = ih * k;
+                                            }
+                                            else {
+                                                const [sw, sh] = size.split(' ');
+                                                dw = !sw || sw === 'auto' ? null : toPx(sw, w);
+                                                dh = !sh || sh === 'auto' ? null : toPx(sh, h);
+                                                if (dw == null && dh == null) {
+                                                    dw = iw;
+                                                    dh = ih;
+                                                }
+                                                else if (dw == null)
+                                                    dw = iw * dh / ih;
+                                                else if (dh == null)
+                                                    dh = ih * dw / iw;
+                                            }
+                                            const [px, py] = pos2.split(' '), ox = px.endsWith('%') ? (w - dw) * parseFloat(px) / 100 : parseFloat(px), oy = py.endsWith('%') ? (h - dh) * parseFloat(py) / 100 : parseFloat(py);
+                                            c.drawImage(im, x + ox, y + oy, dw, dh);
+                                        }
+                                    }
+                                    else {
+                                        const g = linGrad(c, L, x, y, w, h);
+                                        if (g) {
+                                            c.fillStyle = g;
+                                            c.fillRect(x, y, w, h);
+                                        }
+                                    }
+                                    c.restore();
+                                });
+                            }
+                        }
+                        if (el.tagName === 'IMG' && el.currentSrc) {
+                            rad = rad || radii(cs, w, h);
+                            const rr = rad, hold = {}, fit = cs.objectFit;
+                            st.pend.push(loadImg(el.currentSrc).then(im => { hold.im = im; }));
+                            ops.push(c => {
+                                const im = hold.im;
+                                if (!im)
+                                    return;
+                                const iw = im.naturalWidth, ih = im.naturalHeight;
+                                let dw = w, dh = h;
+                                if (fit === 'cover') {
+                                    const k = Math.max(w / iw, h / ih);
+                                    dw = iw * k;
+                                    dh = ih * k;
+                                }
+                                else if (fit === 'contain') {
+                                    const k = Math.min(w / iw, h / ih);
+                                    dw = iw * k;
+                                    dh = ih * k;
+                                }
+                                c.save();
+                                c.globalAlpha = alpha;
+                                rrPath(c, x, y, w, h, rr);
+                                c.clip();
+                                c.drawImage(im, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+                                c.restore();
+                            });
+                        }
+                        const bwT = parseFloat(cs.borderTopWidth) || 0, bwR = parseFloat(cs.borderRightWidth) || 0, bwB = parseFloat(cs.borderBottomWidth) || 0, bwL = parseFloat(cs.borderLeftWidth) || 0;
+                        if (bwT > 0 || bwR > 0 || bwB > 0 || bwL > 0) {
+                            rad = rad || radii(cs, w, h);
+                            const rr = rad, bw = [bwT, bwR, bwB, bwL], bcol = BCK.map(k => cs[k]), bst = BSK.map(k => cs[k]);
+                            ops.push(c => {
+                                c.save();
+                                c.globalAlpha = alpha;
+                                if (bw[0] === bw[1] && bw[0] === bw[2] && bw[0] === bw[3] && bcol[0] === bcol[1] && bcol[0] === bcol[2] && bcol[0] === bcol[3] && bst[0] === 'solid') {
+                                    const k = bw[0] / 2;
+                                    rrPath(c, x + k, y + k, w - bw[0], h - bw[0], rr.map(q => Math.max(0, q - k)));
+                                    c.lineWidth = bw[0];
+                                    c.strokeStyle = bcol[0];
+                                    c.stroke();
+                                }
+                                else {
+                                    const rects = [[x, y, w, bw[0]], [x + w - bw[1], y, bw[1], h], [x, y + h - bw[2], w, bw[2]], [x, y, bw[3], h]];
+                                    for (let i = 0; i < 4; i++)
+                                        if (bw[i] > 0 && bst[i] !== 'none') {
+                                            c.fillStyle = bcol[i];
+                                            c.fillRect(rects[i][0], rects[i][1], rects[i][2], rects[i][3]);
+                                        }
+                                }
+                                c.restore();
+                            });
+                        }
+                        if (el.tagName === 'CANVAS')
+                            ops.push(c => { try {
+                                c.save();
+                                c.globalAlpha = alpha;
+                                c.drawImage(el, x, y, w, h);
+                                c.restore();
+                            }
+                            catch (e) { } });
+                    }
+                }
+                const clip = !root && (cs.overflowX !== 'visible' || cs.overflowY !== 'visible');
+                if (clip) {
+                    rad = rad || radii(cs, w, h);
+                    const rr = rad;
+                    ops.push(c => { c.save(); rrPath(c, x, y, w, h, rr); c.clip(); });
+                }
+                // Children: one getComputedStyle per child (shared with the recursive call), and the z-order sort
+                // only happens when some child actually has a non-zero z-index.
+                const kids = el.childNodes, n = kids.length;
+                if (n) {
+                    const css = new Array(n);
+                    let zs = null;
+                    for (let i = 0; i < n; i++) {
+                        const k = kids[i];
+                        if (k.nodeType !== 1 || SKIP.test(k.tagName) || k.hasAttribute('data-lg-on') || k.hasAttribute('data-lg-canvas')) {
+                            css[i] = null;
+                            continue;
+                        }
+                        const kc = getComputedStyle(k);
+                        if (kc.display === 'none') {
+                            css[i] = null;
+                            continue;
+                        }
+                        css[i] = kc;
+                        if (kc.position !== 'static' && kc.zIndex !== 'auto') {
+                            const z = parseInt(kc.zIndex) || 0;
+                            if (z) {
+                                if (!zs)
+                                    zs = new Array(n).fill(0);
+                                zs[i] = z;
+                            }
+                        }
+                    }
+                    let order = null;
+                    if (zs)
+                        order = Array.from({ length: n }, (_, i) => i).sort((a, b) => zs[a] - zs[b] || a - b);
+                    const vis = cs.visibility === 'visible';
+                    for (let j = 0; j < n; j++) {
+                        const i = order ? order[j] : j, k = kids[i], kc = css[i];
+                        if (kc)
+                            walk(k, kc, ops, st, alpha, ntf, inFx);
+                        else if (k.nodeType === 3 && vis)
+                            text(k, cs, alpha, ops, reg);
+                    }
+                }
+                if (clip)
+                    ops.push(c => c.restore());
+            }
+            function text(node, cs, alpha, ops, reg) {
+                const s = node.nodeValue;
+                if (!NONWS.test(s))
+                    return;
+                // One rect for the whole node: skip per-word layout queries for text far outside the capture region.
+                RG.selectNodeContents(node);
+                const br = RG.getBoundingClientRect();
+                if (br.right < reg.l - 64 || br.left > reg.r + 64 || br.bottom < reg.t - 64 || br.top > reg.b + 64)
+                    return;
+                const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`, tt = cs.textTransform, color = cs.color;
+                const ls = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
+                const words = [];
+                let m;
+                WORD.lastIndex = 0;
+                while ((m = WORD.exec(s))) {
+                    RG.setStart(node, m.index);
+                    RG.setEnd(node, m.index + m[0].length);
+                    const rc = RG.getClientRects()[0];
+                    if (!rc)
+                        continue;
+                    let t = m[0];
+                    if (tt === 'uppercase')
+                        t = t.toUpperCase();
+                    else if (tt === 'lowercase')
+                        t = t.toLowerCase();
+                    else if (tt === 'capitalize')
+                        t = t[0].toUpperCase() + t.slice(1);
+                    words.push([t, rc.left, rc.top, rc.height]);
+                }
+                if (!words.length)
+                    return;
+                const ts = cs.textShadow, tm = ts && ts !== 'none' && ts.match(TS_RE);
+                ops.push((c, S) => {
+                    c.save();
+                    c.globalAlpha = alpha;
+                    c.font = font;
+                    c.fillStyle = color;
+                    c.textBaseline = 'alphabetic';
+                    if (HAS_LS)
+                        c.letterSpacing = ls;
+                    if (tm) {
+                        c.shadowColor = tm[1];
+                        c.shadowOffsetX = parseFloat(tm[2]) * S;
+                        c.shadowOffsetY = parseFloat(tm[3]) * S;
+                        c.shadowBlur = (parseFloat(tm[4]) || 0) * S;
+                    }
+                    // font ascent is identical for every word of this node (and cached per font per capture)
+                    let asc = ASC.get(font);
+                    if (asc === undefined) {
+                        asc = c.measureText('M').fontBoundingBoxAscent;
+                        if (asc === undefined)
+                            asc = null;
+                        ASC.set(font, asc);
+                    }
+                    for (let i = 0; i < words.length; i++) {
+                        const wd = words[i];
+                        c.fillText(wd[0], wd[1], wd[2] + (asc !== null ? asc : wd[3] * 0.8));
+                    }
+                    c.restore();
+                });
+            }
+    
+            // Reused canvases: avoids allocating (and later GC-ing) up to ~96 MB of pixels on every capture.
+            const pageCv = document.createElement('canvas');
+            const vpCv = [document.createElement('canvas'), document.createElement('canvas')];
+            const prep = (cv, w, h) => {
+                if (cv.width !== w || cv.height !== h) {
+                    cv.width = w;
+                    cv.height = h;
+                }
+                else {
+                    const q = cv.getContext('2d');
+                    q.setTransform(1, 0, 0, 1, 0, 0);
+                    q.globalAlpha = 1;
+                    q.clearRect(0, 0, w, h);
+                }
+                return cv;
+            };
+            async function renderPage(x, y, w, h, scale) {
+                // Everything that depends on scroll/viewport is read here, in the same tick as the DOM walk,
+                // so the recorded rects and the transform below always agree.
+                const wsx = scrollX, wsy = scrollY, vw = innerWidth, vh = innerHeight;
+                const st = {
+                    pend: [], under: [], over: [], sticky: false,
+                    preg: { l: x - wsx, t: y - wsy, r: x - wsx + w, b: y - wsy + h },
+                    vreg: { l: 0, t: 0, r: vw, b: vh }
+                };
+                const ops = [];
+                ASC.clear();
+                walk(DOC, getComputedStyle(DOC), ops, st, 1, false, false);
+                hasSticky = st.sticky;
+                const bgc = pageBg(), col = pageRgb(bgc);
+                await Promise.all(st.pend);
+                const page = prep(pageCv, Math.max(1, Math.round(w * scale)), Math.max(1, Math.round(h * scale)));
+                const g = page.getContext('2d');
+                g.setTransform(scale, 0, 0, scale, (wsx - x) * scale, (wsy - y) * scale);
+                for (let i = 0; i < ops.length; i++)
+                    ops[i](g, scale);
+                const vs = Math.min(devicePixelRatio || 1, 2, MAXT / vw, MAXT / vh);
+                const mkVp = (list, fill, idx) => {
+                    if (!list.length)
+                        return null;
+                    const c = prep(vpCv[idx], Math.max(1, Math.round(vw * vs)), Math.max(1, Math.round(vh * vs)));
+                    const q = c.getContext('2d');
+                    if (fill) {
+                        q.fillStyle = '#fff';
+                        q.fillRect(0, 0, c.width, c.height);
+                        q.fillStyle = bgc;
+                        q.fillRect(0, 0, c.width, c.height);
+                    }
+                    q.setTransform(vs, 0, 0, vs, 0, 0);
+                    for (let i = 0; i < list.length; i++)
+                        list[i](q, vs);
+                    return c;
+                };
+                return { page, under: mkVp(st.under, true, 0), over: mkVp(st.over, false, 1), vs, col };
+            }
+            // True when the viewport is getting close to the edge of the captured region
+            // (and that edge isn't just the edge of the page). Layout is only queried when actually near an edge.
+            function nearEdge() {
+                if (!texReady)
+                    return false;
+                const sx = scrollX, sy = scrollY, mx = padX() * 0.4, my = padY() * 0.4;
+                const nT = sy - cap.y < my, nB = cap.y + cap.h - (sy + innerHeight) < my, nL = sx - cap.x < mx, nR = cap.x + cap.w - (sx + innerWidth) < mx;
+                if (!(nT || nB || nL || nR))
+                    return false;
+                const dw = docW(), dh = docH();
+                return (cap.y > 0 && nT) || (cap.y + cap.h < dh - 1 && nB) || (cap.x > 0 && nL) || (cap.x + cap.w < dw - 1 && nR);
+            }
+            const blurOf = it => isGL2 ? Math.max(0, it.opts.blur ?? it.st.blur) : 0;
+            const wantMip = () => {
+                if (!isGL2)
+                    return false;
+                for (const [el, it] of items) {
+                    if (it.vis === false)
+                        continue; // hidden glass doesn't need mipmaps
+                    if (!it.st)
+                        readStyle(el, it);
+                    if (blurOf(it) > 0)
+                        return true;
+                }
+                return false;
+            };
+            function setGlobals() {
+                gl.uniform2f(U.uTexInv, 1 / cap.tw, 1 / cap.th);
+                gl.uniform2f(U.uLay, lay.under ? 1 : 0, lay.over ? 1 : 0);
+                gl.uniform2f(U.uVpInv, 1 / lay.vw, 1 / lay.vh);
+                gl.uniform3fv(U.uUnderCol, lay.col);
+            }
+    
+            // ================= visibility =================
+            // A glass element is only refreshed (GL redraw and page snapshot) when it can actually be seen:
+            //  - it has a box (not display:none itself or through a parent, not zero-sized)
+            //  - not visibility:hidden / opacity:0 / content-visibility:hidden (self or ancestors)
+            //  - inside the viewport (plus PREROLL) and not clipped away by a scrolling/overflow ancestor
+            //  - not completely covered by opaque elements stacked above it
+            //  - the tab itself is visible
+            const alphaOf = c => {
+                if (!c || c === 'transparent')
+                    return 0;
+                let m = /^rgba?\(([^)]*)\)$/.exec(c);
+                if (m) {
+                    const p = m[1].split(/[\s,\/]+/).filter(Boolean);
+                    if (p.length < 4)
+                        return 1;
+                    return p[3].endsWith('%') ? parseFloat(p[3]) / 100 : parseFloat(p[3]);
+                }
+                m = /\/\s*([\d.]+%?)\s*\)$/.exec(c);
+                if (m)
+                    return m[1].endsWith('%') ? parseFloat(m[1]) / 100 : parseFloat(m[1]);
+                return /^(color|lab|lch|oklab|oklch|hsl|hwb)/.test(c) ? 1 : 0; // unknown format => treat as see-through (safe)
+            };
+            // Does this element fully hide whatever is behind it at the point it was hit-tested?
+            const covers = (c, memo) => {
+                let v = memo.get(c);
+                if (v !== undefined)
+                    return v;
+                v = false;
+                const cs = getComputedStyle(c);
+                if (cs.visibility === 'visible' && cs.backgroundClip === 'border-box' && cs.mixBlendMode === 'normal'
+                    && (cs.maskImage || cs.webkitMaskImage || 'none') === 'none' && alphaOf(cs.backgroundColor) >= 0.99) {
+                    v = true;
+                    for (let p = c; p && p.nodeType === 1; p = p.parentElement) {
+                        const pc = p === c ? cs : getComputedStyle(p);
+                        if (parseFloat(pc.opacity) < 0.99) {
+                            v = false;
+                            break;
+                        }
+                    }
+                }
+                memo.set(c, v);
+                return v;
+            };
+            // True only if every sample point inside the visible part of the element is under an opaque element.
+            // Anything unclear (element not hit-testable, any uncovered sample) counts as visible.
+            function occluded(el, r, it) {
+                const vw = innerWidth, vh = innerHeight;
+                const x0 = Math.max(r.left, 0), y0 = Math.max(r.top, 0), x1 = Math.min(r.right, vw), y1 = Math.min(r.bottom, vh);
+                if (x1 - x0 < 2 || y1 - y0 < 2)
+                    return false;
+                const hx = r.width / 2, hy = r.height / 2, cx = r.left + hx, cy = r.top + hy;
+                const rv = it.st.rv, rn = parseFloat(rv) || 0;
+                const rad = Math.min(rv.includes('%') ? rn * Math.min(r.width, r.height) / 100 : rn, hx, hy);
+                // pointer-events:none glass is common; force hit-testing on for this synchronous probe only.
+                const es = el.style, pv = es.getPropertyValue('pointer-events'), pp = es.getPropertyPriority('pointer-events');
+                es.setProperty('pointer-events', 'auto', 'important');
+                const memo = new Map();
+                let tested = 0, hidden = true;
+                try {
+                    outer: for (let j = 0; j < 5; j++)
+                        for (let i = 0; i < 5; i++) {
+                            const px = x0 + (x1 - x0) * (0.1 + 0.2 * i), py = y0 + (y1 - y0) * (0.1 + 0.2 * j);
+                            const qx = Math.abs(px - cx) - (hx - rad), qy = Math.abs(py - cy) - (hy - rad);
+                            if (qx > 0 && qy > 0 && qx * qx + qy * qy > rad * rad)
+                                continue; // sample is outside the rounded shape
+                            const stack = document.elementsFromPoint(px, py);
+                            let ei = -1;
+                            for (let k = 0; k < stack.length; k++)
+                                if (stack[k] === el || el.contains(stack[k])) {
+                                    ei = k;
+                                    break;
+                                }
+                            if (ei < 0) {
+                                hidden = false;
+                                break outer;
+                            }
+                            let cov = false;
+                            for (let k = 0; k < ei; k++)
+                                if (covers(stack[k], memo)) {
+                                    cov = true;
+                                    break;
+                                }
+                            if (!cov) {
+                                hidden = false;
+                                break outer;
+                            }
+                            tested++;
+                        }
+                }
+                finally {
+                    if (pv)
+                        es.setProperty('pointer-events', pv, pp);
+                    else
+                        es.removeProperty('pointer-events');
+                }
+                return hidden && tested > 0;
+            }
+            // Returns the element's bounding rect if it is visible right now, otherwise null.
+            function visRect(el, it, now) {
+                const ow = el.offsetWidth, oh = el.offsetHeight, rend = ow > 0 && oh > 0;
+                // The IntersectionObserver reports asynchronously: when an element first gets a box, trust it for
+                // this frame so the glass doesn't pop in one frame late.
+                if (rend && !it.rend)
+                    it.io = true;
+                it.rend = rend;
+                if (!rend || document.hidden)
+                    return null;
+                if (CV && !el.checkVisibility(CV_OPTS))
+                    return null;
+                const r = el.getBoundingClientRect();
+                if (r.width < 0.5 || r.height < 0.5)
+                    return null;
+                if (r.right < -PREROLL || r.left > innerWidth + PREROLL || r.bottom < -PREROLL || r.top > innerHeight + PREROLL)
+                    return null;
+                if (it.io === false)
+                    return null;
+                if (!it.st)
+                    readStyle(el, it);
+                if (!CV && (!it.st.vis || it.st.op < 0.01))
+                    return null;
+                // Occlusion probing is throttled: hit-tests are comparatively expensive.
+                const moved = !(Math.abs(r.left - it.ox) <= 0.5 && Math.abs(r.top - it.oy) <= 0.5);
+                const gap = it.occ ? (moved ? 33 : 100) : 400;
+                if (now - it.occT >= gap) {
+                    it.occ = occluded(el, r, it);
+                    it.occT = now;
+                    it.ox = r.left;
+                    it.oy = r.top;
+                }
+                return it.occ ? null : r;
+            }
+            function anyVisible() {
+                if (document.hidden)
+                    return false;
+                const now = performance.now();
+                for (const [el, it] of items)
+                    if (visRect(el, it, now))
+                        return true;
+                return false;
+            }
+    
+            async function capture() {
+                if (busy) {
+                    pending = true;
+                    return;
+                }
+                // Nothing to show -> don't pay for a snapshot. It is taken when something becomes visible (see frame()).
+                if (!anyVisible()) {
+                    stale = true;
+                    return;
+                }
+                stale = false;
+                busy = true;
+                mipAsk = false;
+                const sx = scrollX, sy = scrollY;
+                try {
+                    const px = padX(), py = padY(), dw = docW(), dh = docH();
+                    const x = Math.floor(Math.max(0, sx - px)), y = Math.floor(Math.max(0, sy - py));
+                    const w = Math.max(1, Math.ceil(Math.min(dw, sx + innerWidth + px)) - x);
+                    const h = Math.max(1, Math.ceil(Math.min(dh, sy + innerHeight + py)) - y);
+                    const scale = Math.min(devicePixelRatio || 1, 2, MAXT / w, MAXT / h, Math.sqrt(PIXEL_BUDGET / (w * h)));
+                    const R = await renderPage(x, y, w, h, scale);
+                    const mip = wantMip();
+                    up(0, tex, R.page, mip);
+                    if (R.under)
+                        up(1, underTex, R.under, mip);
+                    if (R.over)
+                        up(2, overTex, R.over, mip);
+                    mipOn = mip;
+                    const vc = R.under || R.over;
+                    cap = { x, y, w, h, tw: R.page.width / scale, th: R.page.height / scale };
+                    lay = { under: !!R.under, over: !!R.over, sp: scale, sv: R.vs, vw: vc ? vc.width / R.vs : 1, vh: vc ? vc.height / R.vs : 1, col: R.col };
+                    setGlobals(); // per-capture uniforms are uploaded once here, not per item per frame
+                    texReady = true;
+                    texVer++;
+                }
+                catch (e) {
+                    console.warn('LiquidGlass: snapshot failed', e);
+                }
+                busy = false;
+                if (pending) {
+                    pending = false;
+                    schedule(0);
+                }
+                else if (nearEdge())
+                    schedule(0);
+                else if (hasSticky && (scrollX !== sx || scrollY !== sy))
+                    schedule(120);
+            }
+            const schedule = (ms = 150) => { clearTimeout(timer); timer = setTimeout(capture, ms); };
+            const list = t => typeof t === 'string' ? [...document.querySelectorAll(t)] : t instanceof Element ? [t] : [...(t || [])];
+            const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => schedule()) : null;
+            // Tells us when glass is clipped away by overflow ancestors or scrolled out of view.
+            const io = typeof IntersectionObserver !== 'undefined'
+                ? new IntersectionObserver(es => { for (const e of es) { const it = items.get(e.target); if (it) it.io = e.isIntersecting; } }, { rootMargin: PREROLL + 'px', threshold: 0 })
+                : null;
+            const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+            function add(target, o = {}, auto = false) {
+                for (const el of list(target)) {
+                    const it = items.get(el);
+                    if (it) {
+                        Object.assign(it.opts, o);
+                        continue;
+                    }
+                    if (/^(IMG|INPUT|TEXTAREA|SELECT|BR|HR|VIDEO|CANVAS|IFRAME)$/.test(el.tagName)) {
+                        console.warn('LiquidGlass: wrap <' + el.tagName.toLowerCase() + '> in a div first');
+                        continue;
+                    }
+                    const cs = getComputedStyle(el), s = el.style;
+                    const saved = { position: s.position, display: s.display, isolation: s.isolation, boxShadow: s.boxShadow, shadowSet: false };
+                    if (cs.position === 'static')
+                        s.position = 'relative';
+                    if (cs.display === 'inline')
+                        s.display = 'inline-block';
+                    s.isolation = 'isolate';
+                    if (o.shadow !== false && cs.boxShadow === 'none') {
+                        s.boxShadow = '0 10px 32px rgba(0,0,0,.28)';
+                        saved.shadowSet = true;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.setAttribute('data-lg-canvas', '');
+                    Object.assign(canvas.style, { position: 'absolute', zIndex: -1, pointerEvents: 'none', display: 'block', borderRadius: 'inherit' });
+                    el.prepend(canvas);
+                    el.setAttribute('data-lg-on', '');
+                    const ctx = canvas.getContext('2d');
+                    ctx.globalCompositeOperation = 'copy'; // replaces the previous frame: no clearRect needed
+                    items.set(el, {
+                        opts: o, canvas, ctx, saved, auto, st: null, dp: null, rvT: 0, rvW: 0, rvH: 0,
+                        sg: new Float64Array(22).fill(Infinity), lk: new Float64Array(5).fill(Infinity), cs,
+                        vis: true, io: true, rend: false, occ: false, occT: -Infinity, ox: NaN, oy: NaN
+                    });
+                    if (ro)
+                        ro.observe(el);
+                    if (io)
+                        io.observe(el);
+                }
+                schedule(0);
+                kick();
+                return target;
+            }
+            function remove(target) {
+                for (const el of list(target)) {
+                    const it = items.get(el);
+                    if (!it)
+                        continue;
+                    items.delete(el);
+                    if (ro)
+                        ro.unobserve(el);
+                    if (io)
+                        io.unobserve(el);
+                    it.canvas.remove();
+                    el.removeAttribute('data-lg-on');
+                    const s = el.style, v = it.saved;
+                    s.position = v.position;
+                    s.display = v.display;
+                    s.isolation = v.isolation;
+                    if (v.shadowSet)
+                        s.boxShadow = v.boxShadow;
+                }
+                schedule(0);
+                return target;
+            }
+            const toggle = (target, o) => { list(target).forEach(el => items.has(el) ? remove(el) : add(el, o)); return target; };
+            const update = (target, o) => { list(target).forEach(el => items.has(el) && Object.assign(items.get(el).opts, o)); return target; };
+            function syncAttr() {
+                document.querySelectorAll('[data-liquid-glass]').forEach(el => { if (!items.has(el))
+                    add(el, {}, true); });
+                for (const [el, it] of items)
+                    if (!el.isConnected || (it.auto && !el.hasAttribute('data-liquid-glass')))
+                        remove(el);
+            }
+            const ours = n => n.nodeType === 1 && n.hasAttribute('data-lg-canvas');
+            const allOurs = l => { for (let i = 0; i < l.length; i++)
+                if (!ours(l[i]))
+                    return false; return true; };
+            new MutationObserver(recs => {
+                let changed = false, sync = false;
+                for (let i = 0; i < recs.length && !(changed && sync); i++) {
+                    const r = recs[i];
+                    if (r.type === 'attributes' && r.attributeName === 'data-liquid-glass') {
+                        sync = true;
+                        continue;
+                    }
+                    if (r.type === 'childList') {
+                        sync = true;
+                        if (allOurs(r.addedNodes) && allOurs(r.removedNodes))
+                            continue;
+                    }
+                    if (changed)
+                        continue;
+                    const t = r.target.nodeType === 1 ? r.target : r.target.parentElement;
+                    if (t && t.closest('[data-lg-on]'))
+                        continue;
+                    changed = true;
+                }
+                if (sync)
+                    syncAttr();
+                if (changed)
+                    schedule();
+            }).observe(DOC, { subtree: true, childList: true, attributes: true, characterData: true });
+            const inGlass = t => !!(t && t.nodeType === 1 && t.closest('[data-lg-on]'));
+            let nsT = 0, nsTrail = 0;
+            // Something other than the window scrolled behind the glass: refresh the snapshot
+            // (throttled while scrolling, plus one final capture when it settles).
+            const nestedScroll = () => {
+                if (!nsT)
+                    nsT = setTimeout(() => { nsT = 0; capture(); }, 90);
+                clearTimeout(nsTrail);
+                nsTrail = setTimeout(() => schedule(0), 140);
+            };
+            addEventListener('resize', () => schedule(200));
+            // Capture phase so we also see scroll events from nested scroll containers (they don't bubble).
+            addEventListener('scroll', e => {
+                const t = e.target;
+                if (t === document || t === window || t === DOC || t === document.scrollingElement) {
+                    // No re-capture while scrolling unless we're about to run out of texture.
+                    if (busy)
+                        return;
+                    if (nearEdge())
+                        schedule(0);
+                    else if (hasSticky)
+                        schedule(120);
+                    return;
+                }
+                if (t && t.nodeType === 1 && !inGlass(t))
+                    nestedScroll();
+            }, { passive: true, capture: true });
+            // Late-arriving content changes the snapshot: fonts, images, finished transitions/animations.
+            if (document.fonts) {
+                document.fonts.ready.then(() => schedule(0));
+                if (document.fonts.addEventListener)
+                    document.fonts.addEventListener('loadingdone', () => schedule(50));
+            }
+            addEventListener('load', () => schedule(50), true);
+            addEventListener('transitionend', e => { if (!inGlass(e.target)) schedule(60); }, true);
+            addEventListener('animationend', e => { if (!inGlass(e.target)) schedule(60); }, true);
+            // Computed style + data-attribute params are cached per item and refreshed on resize / every 250 ms
+            // (el.dataset and getComputedStyle were previously hit every frame).
+            function readStyle(el, it) {
+                const cs = getComputedStyle(el);
+                const bf = cs.backdropFilter || cs.webkitBackdropFilter || '';
+                const m = BLUR_RE.exec(bf), ds = el.dataset;
+                const dp = it.dp || (it.dp = {});
+                for (const k in DEF) {
+                    const a = ds[DK[k]];
+                    dp[k] = a !== undefined ? parseFloat(a) : DEF[k];
+                }
+                const b = ds.lgBlur;
+                it.st = {
+                    rv: cs.borderTopLeftRadius,
+                    pad: /auto|scroll|overlay/.test(cs.overflowX + ' ' + cs.overflowY),
+                    blur: b !== undefined ? parseFloat(b) || 0 : (m ? parseFloat(m[1]) : 0),
+                    vis: cs.visibility !== 'hidden' && cs.visibility !== 'collapse', // fallback when checkVisibility() is missing
+                    op: parseFloat(cs.opacity)
+                };
+            }
+            const SC = new Float64Array(22); // scratch signature, compared numerically (no per-frame string building)
+            function frame() {
+                raf = 0;
+                if (!items.size)
+                    return; // idle: stop the loop entirely; add() restarts it
+                const dpr = Math.min(devicePixelRatio || 1, 3), sx = scrollX - cap.x, sy = scrollY - cap.y, now = performance.now();
+                let nvis = 0;
+                for (const [el, it] of items) {
+                    // Hidden / clipped / covered / display:none glass: no style reads, no GL work, no 2D copy.
+                    const r = visRect(el, it, now);
+                    if (!r) {
+                        it.vis = false;
+                        continue;
+                    }
+                    it.vis = true;
+                    nvis++;
+                    if (!texReady)
+                        continue;
+                    const ow = el.offsetWidth, oh = el.offsetHeight, o = it.opts;
+                    if (!it.st || it.rvW !== ow || it.rvH !== oh || now - it.rvT > 250) {
+                        readStyle(el, it);
+                        it.rvT = now;
+                        it.rvW = ow;
+                        it.rvH = oh;
+                    }
+                    const stl = it.st, dp = it.dp, pad = stl.pad, cl = el.clientLeft, ct = el.clientTop;
+                    // Scrollable elements: the canvas covers the padding box and is counter-offset by the
+                    // element's own scroll, so it stays put while the content scrolls over it.
+                    const lw = pad ? el.clientWidth : ow, lh = pad ? el.clientHeight : oh;
+                    if (!lw || !lh)
+                        continue;
+                    const rn = parseFloat(stl.rv) || 0, hso = Math.min(ow, oh) / 2, hs = Math.min(lw, lh) / 2;
+                    let rad = Math.min(o.radius ?? (stl.rv.includes('%') ? rn * 2 * hso / 100 : rn), hso);
+                    if (pad)
+                        rad = Math.max(0, rad - Math.max(cl, ct));
+                    rad = Math.min(rad, hs);
+                    const cx = pad ? el.scrollLeft : el.scrollLeft - cl, cy = pad ? el.scrollTop : el.scrollTop - ct;
+                    const rr = pad ? rad : -1, lk = it.lk;
+                    if (lk[0] !== cx || lk[1] !== cy || lk[2] !== lw || lk[3] !== lh || lk[4] !== rr) {
+                        lk[0] = cx;
+                        lk[1] = cy;
+                        lk[2] = lw;
+                        lk[3] = lh;
+                        lk[4] = rr;
+                        const cst = it.canvas.style;
+                        cst.left = cx + 'px';
+                        cst.top = cy + 'px';
+                        cst.width = lw + 'px';
+                        cst.height = lh + 'px';
+                        cst.borderRadius = pad ? rad + 'px' : 'inherit';
+                    }
+                    const blur = blurOf(it);
+                    if (blur > 0 && !mipOn && !mipAsk) { // a blur showed up after the last capture: rebuild with mipmaps
+                        mipAsk = true;
+                        schedule(0);
+                    }
+                    const ux = r.left + (pad ? cl : 0), uy = r.top + (pad ? ct : 0);
+                    const bezel = Math.max(1, Math.min(o.bezel ?? dp.bezel, hs)), th = o.thickness ?? dp.thickness, ior = o.ior ?? dp.ior;
+                    const spec = o.specular ?? dp.specular, disp = o.dispersion ?? dp.dispersion, mag = o.magnify ?? dp.magnify;
+                    const slab = o.slab ?? dp.slab, tint = o.tint ?? dp.tint;
+                    SC[0] = ux;
+                    SC[1] = uy;
+                    SC[2] = lw;
+                    SC[3] = lh;
+                    SC[4] = sx;
+                    SC[5] = sy;
+                    SC[6] = dpr;
+                    SC[7] = texVer;
+                    SC[8] = blur;
+                    SC[9] = rad;
+                    SC[10] = bezel;
+                    SC[11] = th;
+                    SC[12] = ior;
+                    SC[13] = spec;
+                    SC[14] = disp;
+                    SC[15] = mag;
+                    SC[16] = slab;
+                    SC[17] = tint;
+                    // Live computed style read each frame (cheap string read, parse is cached) so background
+                    // transitions/hover changes animate smoothly instead of updating at the 250 ms style refresh.
+                    const bc = parseColor(it.cs.backgroundColor);
+                    SC[18] = bc[0];
+                    SC[19] = bc[1];
+                    SC[20] = bc[2];
+                    SC[21] = bc[3];
+                    const sg = it.sg;
+                    let dirty = false;
+                    for (let i = 0; i < 22; i++)
+                        if (!Object.is(SC[i], sg[i])) {
+                            dirty = true;
+                            break;
+                        }
+                    if (!dirty)
+                        continue;
+                    sg.set(SC);
+                    const w = Math.max(1, Math.round(lw * dpr)), h = Math.max(1, Math.round(lh * dpr));
+                    if (glc.width < w || glc.height < h) {
+                        glc.width = Math.max(glc.width, w);
+                        glc.height = Math.max(glc.height, h);
+                    }
+                    if (it.canvas.width !== w || it.canvas.height !== h) {
+                        it.canvas.width = w;
+                        it.canvas.height = h;
+                        it.ctx.globalCompositeOperation = 'copy'; // resizing resets 2D state
+                    }
+                    gl.viewport(0, 0, w, h); // the fullscreen triangle writes every pixel, so no gl.clear needed
+                    if (sx !== lastSx || sy !== lastSy) {
+                        gl.uniform2f(U.uScroll, sx, sy);
+                        lastSx = sx;
+                        lastSy = sy;
+                    }
+                    gl.uniform2f(U.uSize, lw, lh);
+                    gl.uniform2f(U.uPx, w, h);
+                    gl.uniform2f(U.uPos, ux, uy);
+                    gl.uniform4f(U.uGeo, rad, bezel, th, ior);
+                    gl.uniform3f(U.uLook, spec, disp, mag);
+                    gl.uniform2f(U.uMisc, slab, tint);
+                    gl.uniform4f(U.uBg, bc[0], bc[1], bc[2], bc[3]);
+                    gl.uniform1f(U.uBlur, blur);
+                    if (blur >= 0.3)
+                        gl.uniform2f(U.uLod, Math.max(Math.log2(blur * lay.sp) - 0.5, 0), Math.max(Math.log2(blur * lay.sv) - 0.5, 0));
+                    gl.drawArrays(gl.TRIANGLES, 0, 3);
+                    it.ctx.drawImage(glc, 0, glc.height - h, w, h, 0, 0, w, h);
+                }
+                // A snapshot was skipped while everything was hidden: take it now that something is visible.
+                if (stale && nvis) {
+                    stale = false;
+                    schedule(0);
+                }
+                raf = requestAnimationFrame(frame);
+            }
+            syncAttr();
+            schedule(0);
+            kick();
+            return { add, remove, toggle, update, refresh: () => schedule(0), live: ms => { clearInterval(liveT); if (ms)
+                liveT = setInterval(() => schedule(0), ms); } };
+        })();
+
+
         function scrollToToolInToolSec(toolId) {
             clickOnNavItem('toolsNavEl');
             const tool = document.getElementById(toolId);
@@ -5683,16 +6938,25 @@
                 editEl.classList.toggle(classVal);
             }
         }
+        let movingTimeout;
         const navBubble = document.getElementById("navigation-bubble");
         function computeNavBubblePlacement(element) {
             if (!element || !navBubble) return;
+            if (movingTimeout) {
+                clearTimeout(movingTimeout);
+            }
+            navBubble.classList.add("moving");
             navBubble.style.width = `${element.offsetWidth}px`;
             navBubble.style.transform = `translateX(${element.offsetLeft - 3}px)`;
+            movingTimeout = setTimeout(() => {
+                navBubble.classList.remove("moving");
+            }, 400);
         }
         const navItems = document.querySelectorAll(".nav-item");
         const tabContents = document.querySelectorAll(".tab-content");
         let activeTabId = "about";
         let currentNavId = "aboutNavEl";
+        let navColorTimeout;
         
         function clickOnNavItem(itemId) {
             if (currentNavId != itemId) {
@@ -5700,8 +6964,16 @@
             }
             currentNavId = itemId;
             const item = document.getElementById(itemId);
+            if (navColorTimeout) {
+                clearTimeout(navColorTimeout);
+                navColorTimeout = null;
+            }
             navItems.forEach(i => i.classList.remove("active"));
-            item.classList.add("active");
+            navColorTimeout = setTimeout(() => {
+                item.classList.add("active");
+                navColorTimeout = null;
+            }, 400);
+            
             computeNavBubblePlacement(item);
             activeTabId = item.getAttribute("data-target");
             
