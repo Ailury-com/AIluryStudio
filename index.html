@@ -22829,7 +22829,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         }
         
         function closeviewthisfile() {
-            if (!viewcontainer && viewcontainer.classList.contains("viewthisfileExpanded")) return;
+            if (!viewcontainer || !viewcontainer.classList.contains("viewthisfileExpanded")) return;
             
             section.style.display = "flex";
             
