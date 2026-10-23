@@ -21372,15 +21372,46 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 state._lastRender = { startVisible, visibleMap };
             }
             state.render = render;
+
+            const _scrollHasClass = (data, name) => {
+                const c = data && data.classes;
+                return !!(c && ((Array.isArray(c) && c.includes(name)) || (typeof c === 'string' && c.split(/\s+/).includes(name))));
+            };
+            
+            function _scrollWriteNode(node, trueAllIndex, all, getSelMap) {
+                const data = all[trueAllIndex];
+                node.style.transition = "none";
+                noSelectTime = true;
+                node.id = data.id || '';
+                node.className = Array.isArray(data.classes) ? data.classes.join(' ') : (data.classes || 'code-editor-line');
+                node.setAttribute('line-index', String(trueAllIndex));
+                node.style.setProperty('--lineNumber', `"${trueAllIndex + 1}"`);
+                node.textContent = data.text || '';
+                if (_scrollHasClass(data, 'selected')) {
+                    const ord = getSelMap().get(trueAllIndex);
+                    if (ord != null) node.style.setProperty('--selectedLineNumber', `"${ord + 1}"`);
+                    else node.style.removeProperty('--selectedLineNumber');
+                } else {
+                    node.style.removeProperty('--selectedLineNumber');
+                }
+                safe_highlightSyntax(node);
+                node.style.display = '';
+            }
+            function _scrollHideNode(node) {
+                node.textContent = '';
+                node.style.display = 'none';
+                node.setAttribute('line-index', '-1');
+            }
+
             let editorScrollRafPending = false;
             editor.addEventListener('scroll', (event) => {
+                const targetElement = event.target;
+                if (targetElement && targetElement.holdTimer) clearTimeout(targetElement.holdTimer);
                 if (editorScrollRafPending) return;
                 editorScrollRafPending = true;
                 requestAnimationFrame(() => {
                     editorScrollRafPending = false;
                     const all = _getAllLines(editor, innum) || [];
-                    const targetElement = event.target;
-                    if (targetElement && targetElement.holdTimer) clearTimeout(targetElement.holdTimer);
                     const container = document.querySelector('.suggestioncontainer');
                     if (container) {
                         try {
@@ -21400,134 +21431,136 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         } catch (e) {}
                     }
                     try {
-                        const lineOpTE = (typeof section !== 'undefined' && section.querySelector) ? section.querySelector(`.code-editor-line[line-index="${typeof currentLineOpTargetIndex !== 'undefined' ? currentLineOpTargetIndex : -1}"]`) : null;
+                        const opIdx = (typeof currentLineOpTargetIndex !== 'undefined') ? currentLineOpTargetIndex : -1;
+                        const lineOpTE = (opIdx !== null && typeof section !== 'undefined' && section.querySelector) ? section.querySelector(`.code-editor-line[line-index="${opIdx}"]`) : null;
                         if (lineOpTE) safePerformLongPressAction(lineOpTE, true);
                         else safeCloseLineOptionsContainer();
                     } catch (e) {
                         console.warn(e);
                     }
-                    
+
                     recomputeCumulativeHeights();
                     const visibleMap = buildVisibleIndexMap();
                     const totalVisible = visibleMap.length;
+                    const cum = state.cumulativeHeights;
                     
-                    const visibleCum = new Array(Math.max(1, totalVisible) + 1).fill(0);
-                    for (let v = 0; v < totalVisible; v++) {
-                        visibleCum[v] = state.cumulativeHeights[visibleMap[v]] || 0;
-                    }
-                    visibleCum[totalVisible] = state.cumulativeHeights[all.length] || 0;
-            
                     const scrollTop = editor.scrollTop;
                     let low = 0, high = totalVisible;
                     while (low < high) {
                         const mid = (low + high) >> 1;
-                        if (visibleCum[mid] <= scrollTop) low = mid + 1;
+                        if ((cum[visibleMap[mid]] || 0) <= scrollTop) low = mid + 1;
                         else high = mid;
                     }
                     const newFirstVisible = totalVisible === 0 ? 0 : Math.max(0, Math.min(totalVisible - 1, low - 1));
                     const prevStartVisible = (state._lastRender && typeof state._lastRender.startVisible === 'number') ? state._lastRender.startVisible : 0;
-            
-                    if (newFirstVisible !== prevStartVisible) {
-                        let focusedEl = getFocusedLineElement();
-                        if (focusedEl) {
-                            const focusedIndex = parseInt(focusedEl.getAttribute('line-index'), 10);
-                            const firstAllForNew = visibleMap[newFirstVisible] || 0;
-                            const lastVisibleIndexForNew = Math.min(totalVisible - 1, newFirstVisible + visibleLines - 1);
-                            const lastAllForNew = (visibleMap[lastVisibleIndexForNew] != null) ? visibleMap[lastVisibleIndexForNew] : firstAllForNew;
-                            if (isNaN(focusedIndex) || focusedIndex < firstAllForNew || focusedIndex > lastAllForNew) {
-                                try { focusedEl.blur(); } catch (e) {}
-                                const sel = window.getSelection();
-                                if (sel) sel.removeAllRanges();
-                                safeCloseLineOptionsContainer();
-                                document.querySelectorAll('.suggestioncontainer').forEach(s => s.remove());
-                                focusedEl = null;
-                            }
+
+                    if (newFirstVisible === prevStartVisible) return;
+
+                    let focusedEl = getFocusedLineElement();
+                    if (focusedEl) {
+                        const focusedIndex = parseInt(focusedEl.getAttribute('line-index'), 10);
+                        const firstAllForNew = visibleMap[newFirstVisible] || 0;
+                        const lastVisibleIndexForNew = Math.min(totalVisible - 1, newFirstVisible + visibleLines - 1);
+                        const lastAllForNew = (visibleMap[lastVisibleIndexForNew] != null) ? visibleMap[lastVisibleIndexForNew] : firstAllForNew;
+                        if (isNaN(focusedIndex) || focusedIndex < firstAllForNew || focusedIndex > lastAllForNew) {
+                            try { focusedEl.blur(); } catch (e) {}
+                            const sel = window.getSelection();
+                            if (sel) sel.removeAllRanges();
+                            safeCloseLineOptionsContainer();
+                            document.querySelectorAll('.suggestioncontainer').forEach(s => s.remove());
+                            focusedEl = null;
                         }
-                        
-                        const delta = newFirstVisible - prevStartVisible;
-                        
-                        if (focusedEl && Math.abs(delta) > 0 && Math.abs(delta) < visibleLines) {
+                    }
+
+                    const delta = newFirstVisible - prevStartVisible;
+                    const steps = Math.abs(delta);
+                    
+                    if (steps < visibleLines) {
+                        if (focusedEl) {
                             let focusedPos = -1;
                             for (let i = 0; i < lineNodes.length; i++) {
                                 if (lineNodes[i] === focusedEl) { focusedPos = i; break; }
                             }
-            
                             let safeToRecycle = true;
                             if (delta > 0 && focusedPos === 0) safeToRecycle = false;
                             if (delta < 0 && focusedPos === (visibleLines - 1)) safeToRecycle = false;
-            
                             if (!safeToRecycle) {
-                                requestAnimationFrame(() => render(newFirstVisible));
+                                render(newFirstVisible);
                                 return;
                             }
-            
-                            if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.add('noLineTransition');
-                            noSelectTime = true;
-            
-                            const steps = Math.abs(delta);
+                        }
+
+                        if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.add('noLineTransition');
+                        noSelectTime = true;
+
+                        let selMapCache = null;
+                        const getSelMap = () => selMapCache || (selMapCache = computeSelectedOrdinals());
+                        const movedNodes = [];
+                        const movedAllIdx = [];
+                        
+                        for (let s = 0; s < steps; s++) {
+                            let moved, newVisibleIndex;
                             if (delta > 0) {
-                                for (let s = 0; s < steps; s++) {
-                                    const moved = lineNodes.shift();
-                                    viewport.appendChild(moved);
-                                    lineNodes.push(moved);
-                                    const newVisibleIndex = prevStartVisible + visibleLines + s;
-                                    if (newVisibleIndex < totalVisible) updateNodeToIndex(moved, newVisibleIndex);
-                                    else {
-                                        moved.textContent = '';
-                                        moved.style.display = 'none';
-                                        moved.setAttribute('line-index', '-1');
-                                    }
-                                }
+                                moved = lineNodes.shift();
+                                viewport.appendChild(moved);
+                                lineNodes.push(moved);
+                                newVisibleIndex = prevStartVisible + visibleLines + s;
                             } else {
-                                for (let s = 0; s < steps; s++) {
-                                    const moved = lineNodes.pop();
-                                    viewport.insertBefore(moved, viewport.firstChild);
-                                    lineNodes.unshift(moved);
-                                    const newVisibleIndex = prevStartVisible - (s + 1);
-                                    if (newVisibleIndex >= 0) updateNodeToIndex(moved, newVisibleIndex);
-                                    else {
-                                        moved.textContent = '';
-                                        moved.style.display = 'none';
-                                        moved.setAttribute('line-index', '-1');
-                                    }
+                                moved = lineNodes.pop();
+                                viewport.insertBefore(moved, viewport.firstChild);
+                                lineNodes.unshift(moved);
+                                newVisibleIndex = prevStartVisible - (s + 1);
+                            }
+                            const allIdx = (newVisibleIndex >= 0 && newVisibleIndex < totalVisible) ? visibleMap[newVisibleIndex] : undefined;
+                            if (typeof allIdx === 'number' && all[allIdx]) {
+                                _scrollWriteNode(moved, allIdx, all, getSelMap);
+                                movedNodes.push(moved);
+                                movedAllIdx.push(allIdx);
+                            } else {
+                                _scrollHideNode(moved);
+                            }
+                        }
+                        
+                        for (let k = 0; k < movedNodes.length; k++) {
+                            const idx = movedAllIdx[k];
+                            state.lineHeights[idx] = _scrollHasClass(all[idx], 'hidden') ? 0 : (movedNodes[k].offsetHeight || 24);
+                        }
+
+                        recomputeCumulativeHeights();
+                        const firstAll = visibleMap[newFirstVisible] || 0;
+                        const endIndexAfter = Math.min(newFirstVisible + visibleLines, visibleMap.length) - 1;
+                        const lastAllExclusive = (visibleMap[endIndexAfter] != null) ? (visibleMap[endIndexAfter] + 1) : firstAll;
+                        state.spacerTop.style.height = `${state.cumulativeHeights[firstAll] || 0}px`;
+                        const bottomHeight = Math.max(0, (state.cumulativeHeights[all.length] || 0) - (state.cumulativeHeights[lastAllExclusive] || 0));
+                        state.spacerBottom.style.height = `${Math.max(0, bottomHeight)}px`;
+
+                        requestAnimationFrame(() => {
+                            let changed = false;
+                            const allNow = _getAllLines(editor, innum) || [];
+                            for (let i = 0; i < lineNodes.length; i++) {
+                                const node = lineNodes[i];
+                                if (!node) continue;
+                                node.style.transition = '';
+                                const allIdx = parseInt(node.getAttribute('line-index'), 10);
+                                if (isNaN(allIdx) || allIdx < 0 || !allNow[allIdx]) continue;
+                                const newH = _scrollHasClass(allNow[allIdx], 'hidden') ? 0 : (node.offsetHeight || 24);
+                                if (state.lineHeights[allIdx] !== newH) {
+                                    state.lineHeights[allIdx] = newH;
+                                    changed = true;
                                 }
                             }
-                            recomputeCumulativeHeights();
-                            const firstAll = visibleMap[newFirstVisible] || 0;
-                            const endIndexAfter = Math.min(newFirstVisible + visibleLines, visibleMap.length) - 1;
-                            const lastAllExclusive = (visibleMap[endIndexAfter] != null) ? (visibleMap[endIndexAfter] + 1) : firstAll;
-                            state.spacerTop.style.height = `${state.cumulativeHeights[firstAll] || 0}px`;
-                            const bottomHeight = Math.max(0, (state.cumulativeHeights[all.length] || 0) - (state.cumulativeHeights[lastAllExclusive] || 0));
-                            state.spacerBottom.style.height = `${Math.max(0, bottomHeight)}px`;
-            
-                            requestAnimationFrame(() => {
-                                let changed = false;
-                                const visNow = buildVisibleIndexMap();
-                                for (let i = 0; i < visibleLines; i++) {
-                                    const idx = newFirstVisible + i;
-                                    const allIdx = visNow[idx];
-                                    const node = lineNodes[i];
-                                    if (!node || typeof allIdx !== 'number') continue;
-                                    const classes = all[allIdx] && all[allIdx].classes;
-                                    const isHidden = !!(classes && ((Array.isArray(classes) && classes.includes('hidden')) || (typeof classes === 'string' && classes.split(/\s+/).includes('hidden'))));
-                                    const newH = isHidden ? 0 : (node.offsetHeight || 24);
-                                    if (state.lineHeights[allIdx] !== newH) {
-                                        state.lineHeights[allIdx] = newH;
-                                        changed = true;
-                                    }
-                                }
-                                if (changed) recomputeCumulativeHeights();
-                                noSelectTime = false;
-                                if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.remove('noLineTransition');
-                            });
-            
-                            state._lastRender = { startVisible: newFirstVisible, visibleMap: buildVisibleIndexMap() };
-                        } else {
-                            requestAnimationFrame(() => render(newFirstVisible));
-                        }
+                            if (changed) recomputeCumulativeHeights();
+                            noSelectTime = false;
+                            if (divcodeeditorcontainerft) divcodeeditorcontainerft.classList.remove('noLineTransition');
+                        });
+
+                        state._lastRender = { startVisible: newFirstVisible, visibleMap };
+                    } else {
+                        render(newFirstVisible);
                     }
                 });
             });
+
             function updateNodeToIndex(node, visibleIndex) {
                 const allLinesData1 = _getAllLines(editor, innum) || [];
                 const visible = [];
@@ -21735,13 +21768,12 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
         async function scrolltolinenumber(targetIndex, editor = inputDiv, opts = {}, callback) {
             globalScrollTaskId++;
             const myScrollTaskId = globalScrollTaskId;
-            let didSucceed = false;
-            
+        
             try {
                 const { tolerancePx = 6, settleDelay = 80 } = opts || {};
-                
-                if (!editor || typeof targetIndex !== 'number') return false;
-                
+        
+                if (!editor || typeof targetIndex !== 'number' || Number.isNaN(targetIndex)) return false;
+        
                 const state = editor._loadingState;
                 if (!state) {
                     console.warn('Editor has no _loadingState.');
@@ -21750,94 +21782,121 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 const innum = state.innum;
                 const all = _getAllLines(editor, innum);
                 if (!all || all.length === 0) return false;
+        
+                const isStale = () => fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId;
+                const sleep = ms => new Promise(r => setTimeout(r, ms));
                 
-                targetIndex = Math.max(0, Math.min(targetIndex, all.length - 1));
-                
+                const nextFrame = () => new Promise(r => {
+                    let done = false;
+                    const fin = () => { if (!done) { done = true; r(); } };
+                    requestAnimationFrame(fin);
+                    setTimeout(fin, 50);
+                });
+                const setTop = y => {
+                    const top = Math.max(0, y);
+                    try { editor.scrollTo({ top, behavior: 'instant' }); } catch (e) { editor.scrollTop = top; }
+                };
+                const lineSelector = i => `.code-editor-line[line-index="${i}"]`;
+        
                 state.recomputeCumulativeHeights();
-                
-                const classes = all[targetIndex] && all[targetIndex].classes;
-                const isHidden = !!(classes && ((Array.isArray(classes) && classes.includes('hidden')) || (typeof classes === 'string' && classes.split(/\s+/).includes('hidden'))));
-                if (isHidden) {
-                    let forward = -1, backward = -1;
-                    for (let i = targetIndex + 1; i < all.length; i++) {
-                        const c = all[i] && all[i].classes;
-                        if (!(c && ((Array.isArray(c) && c.includes('hidden')) || (typeof c === 'string' && c.split(/\s+/).includes('hidden'))))) { forward = i; break; }
-                    }
-                    for (let i = targetIndex - 1; i >= 0; i--) {
-                        const c = all[i] && all[i].classes;
-                        if (!(c && ((Array.isArray(c) && c.includes('hidden')) || (typeof c === 'string' && c.split(/\s+/).includes('hidden'))))) { backward = i; break; }
-                    }
-                    if (forward !== -1) targetIndex = forward;
-                    else if (backward !== -1) targetIndex = backward;
+        
+                targetIndex = Math.floor(Math.max(0, Math.min(targetIndex, all.length - 1)));
+                const visibleMap = _buildVisibleIndexMap(all);
+                if (visibleMap.length === 0) return false;
+                let lo = 0, hi = visibleMap.length;
+                while (lo < hi) {
+                    const mid = (lo + hi) >> 1;
+                    if (visibleMap[mid] < targetIndex) lo = mid + 1; else hi = mid;
                 }
-            
-                const cum = state.cumulativeHeights;
-                const heightAbove = cum[targetIndex] || 0;
-                const totalH = cum[all.length] || editor.scrollHeight;
-            
-                const nodeHeight = Math.max(1, (cum[targetIndex + 1] || (heightAbove + (state.lineHeights[targetIndex] || 24))) - heightAbove);
-                let desired = Math.max(0, Math.min(totalH - editor.clientHeight, heightAbove - (editor.clientHeight / 2) + (nodeHeight / 2)));
-                const renderedIndices = (state.lineNodes || []).map(n => {
-                    const a = n && n.getAttribute && n.getAttribute('line-index');
-                    return (a != null && a !== '-1') ? parseInt(a, 10) : null;
-                }).filter(v => v != null);
-            
-                let sumRenderedAbove = 0;
-                for (const allIdx of renderedIndices) {
-                    if (allIdx < targetIndex) sumRenderedAbove += (state.lineHeights[allIdx] || 24);
-                }
-                desired = Math.max(0, Math.min(totalH - editor.clientHeight, desired - sumRenderedAbove));
-                
-                editor.scrollTop = desired;
-                
-                await new Promise(r => setTimeout(r, 50));
-                if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
+                const targetVisible = lo < visibleMap.length ? lo : visibleMap.length - 1;
+                targetIndex = visibleMap[targetVisible];
+        
+                const visibleLines = state.visibleLines || 65;
+                const maxStart = Math.max(0, visibleMap.length - visibleLines);
+        
+                const modelTop = () => {
+                    const cum = state.cumulativeHeights;
+                    const above = cum[targetIndex] || 0;
+                    const h = Math.max(1, (cum[targetIndex + 1] || (above + 24)) - above);
+                    return Math.max(0, above + h / 2 - editor.clientHeight / 2);
+                };
+                const startFor = scrollTop => {
+                    const cum = state.cumulativeHeights;
+                    let low = 0, high = visibleMap.length;
+                    while (low < high) {
+                        const mid = (low + high) >> 1;
+                        if ((cum[visibleMap[mid]] || 0) <= scrollTop) low = mid + 1; else high = mid;
+                    }
+                    let s = Math.max(0, Math.min(visibleMap.length - 1, low - 1));
+                    if (targetVisible < s) s = targetVisible;
+                    else if (targetVisible > s + visibleLines - 1) s = targetVisible - visibleLines + 1;
+                    return Math.max(0, Math.min(s, maxStart));
+                };
+                const syncSpacers = () => {
+                    state.recomputeCumulativeHeights();
+                    const cum = state.cumulativeHeights;
+                    const total = all.length;
+                    const s = (state._lastRender && typeof state._lastRender.startVisible === 'number') ? state._lastRender.startVisible : 0;
+                    const firstAll = visibleMap[s] != null ? visibleMap[s] : 0;
+                    const endIdx = Math.min(s + visibleLines, visibleMap.length) - 1;
+                    const lastExcl = visibleMap[endIdx] != null ? visibleMap[endIdx] + 1 : firstAll;
+                    state.spacerTop.style.height = `${cum[firstAll] || 0}px`;
+                    state.spacerBottom.style.height = `${Math.max(0, (cum[total] || 0) - (cum[lastExcl] || 0))}px`;
+                };
+                const renderWindow = startVisible => {
+                    try { refreshEditorLines(editor, innum, startVisible, null, true); } catch (e) {}
+                    syncSpacers();
+                };
+        
+                if (fileTransitionRN || editorIndex !== innum) {
+                    setTop(modelTop());
+                    await sleep(50);
                     return false;
                 }
-                
-                let rendered = editor.querySelector(`.code-editor-line[line-index="${targetIndex}"]`);
-                if (!rendered) {
-                    const visibleMap = _buildVisibleIndexMap(all);
-                    let targetVisible = 0;
-                    for (let v = 0; v < visibleMap.length; v++) {
-                        if (visibleMap[v] == targetIndex) { targetVisible = v; break; }
+        
+                renderWindow(startFor(modelTop()));
+                setTop(modelTop());
+        
+                let stable = 0;
+                const deadline = Date.now() + 1000;
+                for (let i = 0; i < 12 && Date.now() < deadline; i++) {
+                    await nextFrame();
+                    await nextFrame();
+                    if (isStale()) return false;
+        
+                    const node = editor.querySelector(lineSelector(targetIndex));
+                    if (!node) {
+                        state.recomputeCumulativeHeights();
+                        renderWindow(startFor(modelTop()));
+                        setTop(modelTop());
+                        stable = 0;
+                        continue;
                     }
-                    
-                    await refreshEditorLines(editor, innum, targetVisible, undefined, true);
-                    if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
-                        return false;
+                    const viewH = editor.clientHeight;
+                    if (!viewH) break;
+                    const er = editor.getBoundingClientRect();
+                    const nr = node.getBoundingClientRect();
+                    const delta = (nr.top + nr.height / 2) - (er.top + editor.clientTop + viewH / 2);
+                    if (Math.abs(delta) <= tolerancePx) {
+                        if (++stable >= 2) break;
+                        continue;
                     }
-                    
-                    await new Promise(r => setTimeout(r, 30));
-                    if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
-                        return false; 
-                    }
-            
-                    rendered = editor.querySelector(`.code-editor-line[line-index="${targetIndex}"]`);
-                }
-            
-                if (rendered) {
-                    try { rendered.scrollIntoView({ block: 'center', inline: "center", block: "nearest" }); } catch (e) {}
-                    await new Promise(r => setTimeout(r, settleDelay));
-                    if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
-                        return false;
-                    }
-                    rendered = editor.querySelector(`.code-editor-line[line-index="${targetIndex}"]`);
-                    if (rendered) {
-                        try { focuseceline(rendered) } catch (e) {}
-            
-                        await new Promise(r => setTimeout(r, settleDelay));
-                        if (fileTransitionRN || editorIndex !== innum || globalScrollTaskId !== myScrollTaskId) {
-                            return false;
-                        }
-            
-                        didSucceed = true;
-                        return true;
-                    }
+                    stable = 0;
+                    const before = editor.scrollTop;
+                    setTop(before + delta);
+                    if (Math.abs(editor.scrollTop - before) < 0.5) break;
                 }
         
-                editor.scrollTop = Math.max(0, Math.min(totalH - editor.clientHeight, heightAbove));
-                await new Promise(r => setTimeout(r, settleDelay));
+                const rendered = editor.querySelector(lineSelector(targetIndex));
+                if (rendered) {
+                    try { focuseceline(rendered); } catch (e) {}
+                    await sleep(settleDelay);
+                    if (isStale()) return false;
+                    return true;
+                }
+        
+                setTop(state.cumulativeHeights[targetIndex] || 0);
+                await sleep(settleDelay);
                 return false;
             } finally {
                 if (globalScrollTaskId === myScrollTaskId && callback) {
@@ -27041,380 +27100,420 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (!div || div.tagName != "DIV") {
                 return;
             }
-
+        
             const code = div.textContent;
             div.textContent = "";
-      
-            const jstextstring = [
-                { regex: /(?<!\\)`(?![^"]*"(?:[^"\\]*\\.)*[^"]*$)(?![^']*'(?:[^'\\]*\\.)*[^']*$)(?![^/]*\/(?:[^/\\]*\\.)*[^/]*\/[gimsuy]*)(?![^/]*\/\/.*)[^`]*/, className: "syntaxstring" }
-            ];
-            
-            function escapeRegex(str) {
-                return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            }
-            
-            const wtList = allRegex.map(item => escapeRegex(item.wt)).filter(item => item.length == 1);
-            const signregex = new RegExp(
-                "(" +
-                    [
-                        "\\+", "-", "\\*", "\\/", "%", "=", ">", "<", "!", "\\^", ":",
-                        ...wtList
-                    ].join("|") +
-                ")",
-                "g"
-            );
+        
             const indentSize = parseInt(editorIndentSize);
-            const indentSizeRegex = new RegExp(`(?<=^\\s*)[\\s \\u00A0]{${indentSize}}`, "g");
-            let commentPatterns = [
-                { regex: indentSizeRegex, className: "syntaxspace" },
-                { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true" },
-                { regex: /(?<=rgba\(\s*)\d+\s*,\s*\d+\s*,\s*\d+,/, className: "syntaxrgb syntaxrgba" },
-                { regex: /(?<=rgb\(\s*)\d+\s*,\s*\d+\s*,\s*\d+(?=\s*\))/, className: "syntaxrgb" },
-                { regex: /\/(?!\/)(?=\S)(.*?)(\/[gimsuy]*)/g, className: "syntaxregex" },
-                { regex: /#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g, className: "syntaxhex" }
-            ];
-            const allExistingFilePaths = new RegExp(
-                `(${Array.from(document.querySelectorAll('.filedot .filePathInput'))
-                .map(el => el.value)
-                .join("|")})`,
-                "g"
-            );
-            const allExistingImgFilePaths = new RegExp(
-                `(Image.jpg${Object.keys(allimages).length > 0 ? "|" + Object.keys(allimages)
-                .map(key => key.trim())
-                .join("|") : ""})`,
-                "g"
-            );
-            
-            let spatterns = [
-                { regex: /(?<=re\.(?:compile|search|match|fullmatch|findall|finditer|sub|subn|split)\s*\(\s*)(?:r|R)?(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
-                { regex: /(?<![\w])(?:r|R)(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
-                { regex: allExistingFilePaths, className: "syntaxfilepath" }, 
-                { regex: allExistingImgFilePaths, className: "syntaximgfilepath" },
-                { regex: /(["'])(?:(?!\1)[^\\]|\\.)*\1|f(["'])(?:(?!\2)[^\\{]|\\.)*(?:\2|\{)|`(?:[^\\`$]|\\.)*(?:`|\$\{)|(?<=\{[^{}]*)\}(?:[^\\{}"'`]|\\.)*(?:["'`]|\$?\{)/g, className: "syntaxstring" },
-                { regex: /#(?=[\s#]).*/g, className: "syntaxpycomment" },
-                { regex: indentSizeRegex, className: "syntaxspace" },
-                { regex: /<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, className: "syntaxhtmlcomment" },
-                { regex: /\/\*[\s\S]*?\*\/|((?:(?!\/\*)[\s\S])*)\*\/|\/\*[\s\S]*$/g, className: "syntaxcomment" },
-                { regex: /\/\/.*/g, className: "syntaxcomment" },
-                { regex: /(?<=rgba\(\s*)\d+\s*,\s*\d+\s*,\s*\d+,/, className: "syntaxrgb syntaxrgba syntaxnumber" },
-                { regex: /(?<=rgb\(\s*)\d+\s*,\s*\d+\s*,\s*\d+(?=\s*\))/, className: "syntaxrgb syntaxnumber" },
-                { regex: /\/(?!\/)(?=\S)(.*?)(\/[gimsuy]*)/g, className: "syntaxregex" },
-
-                { regex: /\b(?<=^|[:()[\]{}.\s])(@charset|@namespace|@viewport|@counter-style|await|break|const|continue|debugger|delete|false|in|instanceof|new|null|return|super|this|throw|true|typeof|var|void|yield|let|static|undefined|NaN|Infinity|eval|isFinite|isNaN|parseFloat|parseInt|decodeURI|decodeURIComponent|encodeURI|encodeURIComponent|Object|Function|Boolean|Symbol|Error|EvalError|InternalError|RangeError|ReferenceError|SyntaxError|TypeError|URIError|Number|BigInt|Math|Date|String|RegExp|Array|Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array|BigInt64Array|BigUint64Array|Map|Set|WeakMap|WeakSet|ArrayBuffer|SharedArrayBuffer|Atomics|DataView|JSON|Promise|Generator|Reflect|Proxy|Intl|WebAssembly|solid|dashed|dotted|double|groove|ridge|inset|outset|False|None|True|and|as|assert|del|from|global|is|lambda|nonlocal|not|or|pass|raise)\b(?=$|[:()[\]{}.\s])/g, className: "syntaxkeyword" },
-                { regex: /\b(case|catch|class(?!=)|default|do|else|enum|export|extends|finally|def|function|if|elif|import|switch|try|while|with|implements|interface|package|private|protected|public|async|GeneratorFunction|AsyncFunction|for|match|except)\b/g, className: "syntaxblock" },
-                { regex: /@(container|page|supports|keyframes|import|font-face|media|document)\b/g, className: "syntaxkeyword" },
-                { regex: /\-\-[\w\-]+(?=\:)/g, className: "syntaxvariable", goto: "def" },
-                { regex: /(?<=\b(?:def|function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "def" },
-                { regex: /(?<!\b(?:function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "function ", isBefore: true }, 
-                { regex: /(?<!\b(?:def)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "def ", isBefore: true },
-                { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true", additionalTxt: ":" },
-                { regex: /[-\w]+(?=:)/g, className: "syntaxcommand" },
-                { regex: /(?<=<\/?)([^\s>/]+)(?=[\s>])/g, className: "syntaxhtmltagcontent" },
-                { regex: signregex, className: "syntaxoperator" },
-                { regex: /(#|0x)([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g, className: "syntaxhex" },
-                { regex: /([\[\]{}()])/g, className: "syntaxbracket" },
+            const fileVals = Array.from(document.querySelectorAll('.filedot .filePathInput'), el => el.value);
+            const imgKeys = Object.keys(allimages);
+            const sameList = (a, b) => {
+                if (a.length !== b.length) return false;
+                for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+                return true;
+            };
+            let cache = _highlightSyntax._cache;
+            if (!cache || !Object.is(cache.indentSize, indentSize) || cache.wtCount !== allRegex.length ||
+                !sameList(cache.fileVals, fileVals) || !sameList(cache.imgKeys, imgKeys)) {
+        
+                function escapeRegex(str) {
+                    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                }
                 
-                { regex: /([.,&|;])/g, className: "syntaxsign" },
-                { regex: /\b\d+(\.\d+)?\b/g, className: "syntaxnumber" },
-                { regex: /[-+]?(?:\d*\.\d+|\d+)(?:px|rem|em|%|vh|vw|dvh|vmin|vmax|ch|ex|s|cm|mm|deg|in|pt|pc)?/g, className: "syntaxnumber" },
-                { regex: /\b[a-zA-Z_]\w*\b(?=\s*=)/g, className: "syntaxvariable" },
-                { regex: /\b[\w\-]+(?=\()/g, className: "syntaxvariable" },
-                { regex: /\b(console|Math\.\w+|Date|window|document)\b/g, className: "syntaxcommand" },
-                { regex: /(?<=\.)\b[\w\-]+\b/g, className: "syntaxvariable" },
-                { regex: /(?<=\:\s*)\b[\w\-\s]+\b(?=;)/g, className: "syntaxkeyword" },
-                { regex: /\#\b[\w\-]+\b/g, className: "syntaxvariable" },
-                { regex: /\w+/g, className: "notpartofesyntax" }
-            ];
-            
-            function processText(text, container, patterns) {
-                let lastIndex = 0;
+                const wtList = allRegex.map(item => escapeRegex(item.wt)).filter(item => item.length == 1);
+                const signregex = new RegExp(
+                    "(" +
+                        [
+                            "\\+", "-", "\\*", "\\/", "%", "=", ">", "<", "!", "\\^", ":",
+                            ...wtList
+                        ].join("|") +
+                    ")",
+                    "g"
+                );
+                const indentSizeRegex = new RegExp(`(?<=^\\s*)[\\s \\u00A0]{${indentSize}}`, "g");
+                const commentDefs = [
+                    { regex: indentSizeRegex, className: "syntaxspace" },
+                    { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true" },
+                    { regex: /(?<=rgba\(\s*)\d+\s*,\s*\d+\s*,\s*\d+,/, className: "syntaxrgb syntaxrgba" },
+                    { regex: /(?<=rgb\(\s*)\d+\s*,\s*\d+\s*,\s*\d+(?=\s*\))/, className: "syntaxrgb" },
+                    { regex: /\/(?!\/)(?=\S)(.*?)(\/[gimsuy]*)/g, className: "syntaxregex" },
+                    { regex: /#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g, className: "syntaxhex" }
+                ];
+                const allExistingFilePaths = new RegExp(
+                    `(${fileVals.join("|")})`,
+                    "g"
+                );
+                const allExistingImgFilePaths = new RegExp(
+                    `(Image.jpg${imgKeys.length > 0 ? "|" + imgKeys
+                    .map(key => key.trim())
+                    .join("|") : ""})`,
+                    "g"
+                );
                 
-                while (lastIndex < text.length) {
-                    let matched = false;
+                const spatternDefs = [
+                    { regex: /(?<=re\.(?:compile|search|match|fullmatch|findall|finditer|sub|subn|split)\s*\(\s*)(?:r|R)?(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
+                    { regex: /(?<![\w])(?:r|R)(["'])(?:\\.|(?!\1).)*\1/g, className: "syntaxpyregex" },
+                    { regex: allExistingFilePaths, className: "syntaxfilepath" }, 
+                    { regex: allExistingImgFilePaths, className: "syntaximgfilepath" },
+                    { regex: /(["'])(?:(?!\1)[^\\]|\\.)*\1|f(["'])(?:(?!\2)[^\\{]|\\.)*(?:\2|\{)|`(?:[^\\`$]|\\.)*(?:`|\$\{)|(?<=\{[^{}]*)\}(?:[^\\{}"'`]|\\.)*(?:["'`]|\$?\{)/g, className: "syntaxstring" },
+                    { regex: /#(?=[\s#]).*/g, className: "syntaxpycomment" },
+                    { regex: indentSizeRegex, className: "syntaxspace" },
+                    { regex: /<!--[\s\S]*?-->|((?:(?!<!--)[\s\S])*)-->|<!--[\s\S]*$/g, className: "syntaxhtmlcomment" },
+                    { regex: /\/\*[\s\S]*?\*\/|((?:(?!\/\*)[\s\S])*)\*\/|\/\*[\s\S]*$/g, className: "syntaxcomment" },
+                    { regex: /\/\/.*/g, className: "syntaxcomment" },
+                    { regex: /(?<=rgba\(\s*)\d+\s*,\s*\d+\s*,\s*\d+,/, className: "syntaxrgb syntaxrgba syntaxnumber" },
+                    { regex: /(?<=rgb\(\s*)\d+\s*,\s*\d+\s*,\s*\d+(?=\s*\))/, className: "syntaxrgb syntaxnumber" },
+                    { regex: /\/(?!\/)(?=\S)(.*?)(\/[gimsuy]*)/g, className: "syntaxregex" },
+            
+                    { regex: /\b(?<=^|[:()[\]{}.\s])(@charset|@namespace|@viewport|@counter-style|await|break|const|continue|debugger|delete|false|in|instanceof|new|null|return|super|this|throw|true|typeof|var|void|yield|let|static|undefined|NaN|Infinity|eval|isFinite|isNaN|parseFloat|parseInt|decodeURI|decodeURIComponent|encodeURI|encodeURIComponent|Object|Function|Boolean|Symbol|Error|EvalError|InternalError|RangeError|ReferenceError|SyntaxError|TypeError|URIError|Number|BigInt|Math|Date|String|RegExp|Array|Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array|BigInt64Array|BigUint64Array|Map|Set|WeakMap|WeakSet|ArrayBuffer|SharedArrayBuffer|Atomics|DataView|JSON|Promise|Generator|Reflect|Proxy|Intl|WebAssembly|solid|dashed|dotted|double|groove|ridge|inset|outset|False|None|True|and|as|assert|del|from|global|is|lambda|nonlocal|not|or|pass|raise)\b(?=$|[:()[\]{}.\s])/g, className: "syntaxkeyword" },
+                    { regex: /\b(case|catch|class(?!=)|default|do|else|enum|export|extends|finally|def|function|if|elif|import|switch|try|while|with|implements|interface|package|private|protected|public|async|GeneratorFunction|AsyncFunction|for|match|except)\b/g, className: "syntaxblock" },
+                    { regex: /@(container|page|supports|keyframes|import|font-face|media|document)\b/g, className: "syntaxkeyword" },
+                    { regex: /\-\-[\w\-]+(?=\:)/g, className: "syntaxvariable", goto: "def" },
+                    { regex: /(?<=\b(?:def|function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "def" },
+                    { regex: /(?<!\b(?:function)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "function ", isBefore: true }, 
+                    { regex: /(?<!\b(?:def)\s+)\b[a-zA-Z_]\w*(?=\s*\()/g, className: "syntaxvariable", goto: "true", additionalTxt: "def ", isBefore: true },
+                    { regex: /(?<=var\()\-\-[\w-]+(?=\))/g, className: "syntaxvariable", goto: "true", additionalTxt: ":" },
+                    { regex: /[-\w]+(?=:)/g, className: "syntaxcommand" },
+                    { regex: /(?<=<\/?)([^\s>/]+)(?=[\s>])/g, className: "syntaxhtmltagcontent" },
+                    { regex: signregex, className: "syntaxoperator" },
+                    { regex: /(#|0x)([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})\b/g, className: "syntaxhex" },
+                    { regex: /([\[\]{}()])/g, className: "syntaxbracket" },
                     
-                    for (const { regex, className, goto = false, additionalTxt = "", isBefore = false} of patterns) {
-                        const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
-                        r.lastIndex = lastIndex;
-                        const match = r.exec(text);
-                        
-                        if (match && match.index === lastIndex) {
-                            matched = true;
-                            
-                            if (text.slice(lastIndex, match.index)) {
-                                const before = document.createElement("span");
-                                before.textContent = text.slice(lastIndex, match.index);
-                                container.appendChild(before);
+                    { regex: /([.,&|;])/g, className: "syntaxsign" },
+                    { regex: /\b\d+(\.\d+)?\b/g, className: "syntaxnumber" },
+                    { regex: /[-+]?(?:\d*\.\d+|\d+)(?:px|rem|em|%|vh|vw|dvh|vmin|vmax|ch|ex|s|cm|mm|deg|in|pt|pc)?/g, className: "syntaxnumber" },
+                    { regex: /\b[a-zA-Z_]\w*\b(?=\s*=)/g, className: "syntaxvariable" },
+                    { regex: /\b[\w\-]+(?=\()/g, className: "syntaxvariable" },
+                    { regex: /\b(console|Math\.\w+|Date|window|document)\b/g, className: "syntaxcommand" },
+                    { regex: /(?<=\.)\b[\w\-]+\b/g, className: "syntaxvariable" },
+                    { regex: /(?<=\:\s*)\b[\w\-\s]+\b(?=;)/g, className: "syntaxkeyword" },
+                    { regex: /\#\b[\w\-]+\b/g, className: "syntaxvariable" },
+                    { regex: /\w+/g, className: "notpartofesyntax" }
+                ];
+                
+                const compile = defs => defs.map(d => {
+                    const { regex, className, goto = false, additionalTxt = "", isBefore = false } = d;
+                    let kind = 0;
+                    if (className.includes("syntaxfilepath")) kind = 1;
+                    else if (className.includes("syntaximgfilepath")) kind = 2;
+                    else if (className.includes("syntaxstring")) kind = 3;
+                    else if (className.includes("syntaxrgb")) kind = 4;
+                    else if (className.includes("syntaxhex")) kind = 5;
+                    else if (className.includes("syntaxregex")) kind = 6;
+                    else if (className.includes("syntaxvariable") && goto == "def") kind = 7;
+                    else if (goto == "true") kind = 8;
+                    return {
+                        re: new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g"),
+                        className, cls: className + " syntax", goto, additionalTxt, isBefore, kind
+                    };
+                });
+                
+                let names = null;
+                const allNames = [
+                        ...fileVals.filter(Boolean).map(name => ({ name, type: "file" })),
+                        ...["Image.jpg", ...imgKeys.map(key => key.trim())].filter(Boolean).map(name => ({ name, type: "img" }))
+                    ].sort((a, b) => b.name.length - a.name.length);
+                if (allNames.length) {
+                    const types = new Map();
+                    for (const o of allNames) if (!types.has(o.name)) types.set(o.name, o.type);
+                    names = { regex: new RegExp(allNames.map(o => escapeRegex(o.name)).join("|"), "g"), types };
+                }
+                
+                cache = {
+                    indentSize, wtCount: allRegex.length, fileVals, imgKeys, names,
+                    commentPatterns: compile(commentDefs),
+                    spatterns: compile(spatternDefs)
+                };
+                _highlightSyntax._cache = cache;
+            }
+            const commentPatterns = cache.commentPatterns;
+            const spatterns = cache.spatterns;
+            const names = cache.names;
+            const tst = (re, s, needle) => s.includes(needle) && re.test(s);
+        
+            function processText(text, container, patterns) {
+                const textLen = text.length;
+                const patternCount = patterns.length;
+                const nextAt = new Array(patternCount).fill(-2);
+                const nextMatch = new Array(patternCount);
+                let lastIndex = 0;
+        
+                while (lastIndex < textLen) {
+                    let picked = null;
+                    let match = null;
+        
+                    for (let pi = 0; pi < patternCount; pi++) {
+                        let at = nextAt[pi];
+                        if (at === -1) continue;
+                        const pat = patterns[pi];
+                        if (at < lastIndex) {
+                            const re = pat.re;
+                            re.lastIndex = lastIndex;
+                            const found = re.exec(text);
+                            if (!found) {
+                                nextAt[pi] = -1;
+                                continue;
                             }
-                            
-                            const span = document.createElement("span");
-                            span.textContent = match[0];
-                            span.className = className;
-                            span.classList.add("syntax");
-                            if (className.includes("syntaxfilepath")) {
-                                span.onclick = () => {
-                                    notify("open file", "open", () => {
-                                        checkiffileandgoto(span.textContent.trim());
-                                    });
-                                };
-                            } 
-                            else if (className.includes("syntaximgfilepath")) {
-                                span.onclick = () => {
-                                    notify("open image", "open", () => {
-                                        showOverlay('#files_overlay', "files", false);
-                                        checkiffileandexpand(span.textContent);
-                                    });
-                                };
-                            }
-                            else if (className.includes("syntaxstring")) {
-                                const filePathNames = Array.from(document.querySelectorAll('.filedot .filePathInput'))
-                                    .map(el => el.value)
-                                    .filter(Boolean)
-                                    .map(name => ({ name, type: "file" }));
-                                
-                                const imageFileNames = [
-                                        "Image.jpg",
-                                        ...Object.keys(allimages).map(key => key.trim())
-                                    ]
-                                    .filter(Boolean)
-                                    .map(name => ({ name, type: "img" }));
-                                
-                                const allNames = [...filePathNames, ...imageFileNames]
-                                    .sort((a, b) => b.name.length - a.name.length);
-                                
-                                if (allNames.length) {
-                                    const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                                    const nameRegex = new RegExp(allNames.map(o => escape(o.name)).join("|"), "g");
-                                    const text = match[0];
-                                    
-                                    if (nameRegex.test(text)) {
-                                        nameRegex.lastIndex = 0;
-                                        span.textContent = ""; // clear BEFORE building sub-spans
-                                        let last = 0;
-                                        let nm;
-                                        while ((nm = nameRegex.exec(text))) {
-                                            if (nm.index > last) {
-                                                const before = document.createElement("span");
-                                                before.textContent = text.slice(last, nm.index);
-                                                span.appendChild(before);
-                                            }
-                                            const foundName = allNames.find(o => o.name === nm[0]);
-                                            const nameSpan = document.createElement("span");
-                                            nameSpan.textContent = nm[0];
-                                            nameSpan.classList.add("syntax");
-                                            if (foundName.type === "img") {
-                                                nameSpan.classList.add("syntaximgfilepath");
-                                                nameSpan.onclick = () => {
-                                                    notify("open image", "open", () => {
-                                                        showOverlay('#files_overlay', "files", false);
-                                                        checkiffileandexpand(nameSpan.textContent);
-                                                    });
-                                                };
-                                            } else {
-                                                nameSpan.classList.add("syntaxfilepath");
-                                                nameSpan.onclick = () => {
-                                                    notify("open file", "open", () => {
-                                                        checkiffileandgoto(nameSpan.textContent.trim());
-                                                    });
-                                                };
-                                            }
-                                            span.appendChild(nameSpan);
-                                            last = nm.index + nm[0].length;
-                                        }
-                                        if (last < text.length) {
-                                            const after = document.createElement("span");
-                                            after.textContent = text.slice(last);
-                                            span.appendChild(after);
-                                        }
-                                    }
-                                }
-                            }
-                            else if (className.includes("syntaxrgb")) {
-                                function expandRgb(rgbString) {
-                                    if (!rgbString) return "#000000";
-                                    
-                                    const m = rgbString
-                                        .replace(/\s+/g, '')
-                                        .match(/^(\d+),(\d+),(\d+)/);
-                                    
-                                    if (!m) return "#000000";
-                                    
-                                    const r = Math.max(0, Math.min(255, parseInt(m[1], 10)))
-                                        .toString(16).padStart(2, "0");
-                                    const g = Math.max(0, Math.min(255, parseInt(m[2], 10)))
-                                        .toString(16).padStart(2, "0");
-                                    const b = Math.max(0, Math.min(255, parseInt(m[3], 10)))
-                                        .toString(16).padStart(2, "0");
-                                    
-                                    return `#${r}${g}${b}`;
-                                }
-                                
-                                const spanspan = document.createElement("span");
-                                spanspan.className = "ajshspanspan";
-                                spanspan.textContent = match[0];
-                                
-                                const colorInput = document.createElement("input");
-                                colorInput.type = "color";
-                                colorInput.className = "syntaxcolorinput";
-                                
-                                try {
-                                    colorInput.value = expandRgb(spanspan.textContent);
-                                } catch {
-                                    colorInput.value = "#000000";
-                                }
-                                
-                                span.textContent = "";
-                                span.appendChild(spanspan);
-                                span.appendChild(colorInput);
-                                
-                                colorInput.addEventListener("input", () => {
-                                    const allLines = editorFiles[editorIndex];
-                                    const spanCCEL = spanspan.closest(".code-editor-line");
-                                    if (!spanCCEL) return;
-                                    
-                                    const celineEIndex = spanCCEL.getAttribute("line-index");
-                                    if (!celineEIndex) return;
-                                    
-                                    const lineIndex = parseInt(celineEIndex, 10);
-                                    if (!allLines || !allLines[lineIndex]) return;
-                                    
-                                    const newpast = {
-                                        type: "text",
-                                        text: allLines[lineIndex].text,
-                                        index: lineIndex
-                                    };
-                                    
-                                    lasteventsparentsection = section;
-                                    pendNewPast(lasteventsparentsection, [newpast]);
-                                    
-                                    const hex = colorInput.value;
-                                    const r = parseInt(hex.slice(1, 3), 16);
-                                    const g = parseInt(hex.slice(3, 5), 16);
-                                    const b = parseInt(hex.slice(5, 7), 16);
-                                    if (className.includes("syntaxrgba")) {
-                                        spanspan.textContent = `${r}, ${g}, ${b},`;
-                                    } else {
-                                        spanspan.textContent = `${r}, ${g}, ${b}`;
-                                    }
-                                    updateAttribute(spanCCEL);
-                                });
-                            }
-                            else if (className.includes("syntaxhex")) {
-                                const starter = span.textContent.trim().startsWith("0x") ? "0x" : "#";
-                                function expandHex(shortHex) {
-                                    let shortHexR = shortHex.replace(/^#/, '');
-                                    if (shortHexR.length === 3) {
-                                        return "#" + shortHexR.split("").map(c => c + c).join("");
-                                    }
-                                    if (shortHexR.length === 6) {
-                                        return "#" + shortHexR;
-                                    }
-                                    return "#000000";
-                                }
-                                
-                                const spanspan = document.createElement("span");
-                                spanspan.className = "ajshspanspan";
-                                spanspan.textContent = match[0];
-                                
-                                const colorInput = document.createElement("input");
-                                colorInput.type = "color";
-                                try {
-                                    colorInput.value = expandHex(span.textContent.replace(starter, "#"));
-                                } catch (e) {
-                                    colorInput.value = "#000000";
-                                }
-                                colorInput.className = "syntaxcolorinput";
-                                
-                                span.textContent = "";
-                                span.appendChild(spanspan);
-                                span.appendChild(colorInput);
-                                
-                                colorInput.addEventListener("input", () => {
-                                    const allLines = editorFiles[editorIndex];
-                                    const spanCCEL = spanspan.closest(".code-editor-line");
-                                    const celineEIndex = spanCCEL.getAttribute("line-index");
-                                    if (!celineEIndex) return;
-                                    const lineIndex = parseInt(celineEIndex);
-                                    if (lineIndex == null || lineIndex == undefined || isNaN(lineIndex) || allLines[lineIndex] == null || allLines[lineIndex] == undefined) return;
-                                    let newpast = {
-                                        type: "text",
-                                        text: allLines[lineIndex].text,
-                                        index: lineIndex
-                                    };
-                                    lasteventsparentsection = section;
-                                    pendNewPast(lasteventsparentsection, [newpast]);
-                                    spanspan.textContent = colorInput.value.replace("#", starter);
-                                    updateAttribute(spanCCEL);
-                                });
-                            } else if (className.includes("syntaxregex")) {
-                                
-                                span.onclick = () => {
-                                    notify("edit regex", "open", () => {
-                                        showRegexTester(removeAbbreviations(span.textContent), (back) => {
-                                            if (back) {
-                                                const allLines = editorFiles[editorIndex];
-                                                const spanCCEL = span.closest(".code-editor-line");
-                                                if (!spanCCEL) return;
-                                                
-                                                const celineEIndex = spanCCEL.getAttribute("line-index");
-                                                if (!celineEIndex) return;
-                                                
-                                                const lineIndex = parseInt(celineEIndex, 10);
-                                                if (!allLines || !allLines[lineIndex]) return;
-                                                const newpast = {
-                                                    type: "text",
-                                                    text: allLines[lineIndex].text,
-                                                    index: lineIndex
-                                                };
-                                                
-                                                lasteventsparentsection = section;
-                                                pendNewPast(lasteventsparentsection, [newpast]);
-                                                span.textContent = addAbbreviations(back);
-                                                updateAttribute(spanCCEL);
-                                                shortNotificationmessageelement("regex successfully updated");
-                                            }
-                                        });
-                                    });
-                                };
-                            } else if (className.includes("syntaxvariable") && goto == "def") {
-                                span.classList.add("cssvardef");
-                            } else if (goto == "true") {
-                                span.onclick = () => {
-                                    let definition = null;
-                                    const allLines = editorFiles[fileEditorIndex];
-                                    const alldeflines = allLines.filter(el => el.classes.includes('cssvardef'));
-                                    if (alldeflines) {
-                                        for (let sv of alldeflines) {
-                                            const txtForSearch = `${isBefore == true ? additionalTxt : ""}${span.textContent}${isBefore == false ? additionalTxt : ""}`;
-                                            if (normalizeSpaces(sv.text).includes(txtForSearch)) {
-                                                definition = editorFiles[fileEditorIndex].indexOf(sv);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (definition) {
-                                        notify("go to definition", "go", () => {
-                                            scrolltolinenumber(definition);
-                                        });
-                                    }
-                                };
-                            }
-                            
-                            if (selectedTextToHighlight && span.textContent.includes(selectedTextToHighlight)) {
-                                span.classList.add('highlighted');
-                            }
-                            
-                            container.appendChild(span);
-                            
-                            lastIndex = match.index + match[0].length;
+                            nextMatch[pi] = found;
+                            nextAt[pi] = at = found.index;
+                        }
+                        if (at === lastIndex) {
+                            picked = pat;
+                            match = nextMatch[pi];
                             break;
                         }
                     }
-                    
-                    if (!matched) {
+        
+                    if (picked) {
+                        const { className, goto, additionalTxt, isBefore, kind } = picked;
+        
+                        const span = document.createElement("span");
+                        span.textContent = match[0];
+                        span.className = picked.cls;
+        
+                        if (kind === 1) {
+                            span.onclick = () => {
+                                notify("open file", "open", () => {
+                                    checkiffileandgoto(span.textContent.trim());
+                                });
+                            };
+                        } 
+                        else if (kind === 2) {
+                            span.onclick = () => {
+                                notify("open image", "open", () => {
+                                    showOverlay('#files_overlay', "files", false);
+                                    checkiffileandexpand(span.textContent);
+                                });
+                            };
+                        }
+                else if (kind === 3) {
+                    if (names) {
+                        const nameRegex = names.regex;
+                        const text = match[0];
+                        nameRegex.lastIndex = 0;
+                        let nm = nameRegex.exec(text);
+                        if (nm) {
+                            span.textContent = ""; // clear BEFORE building sub-spans
+                            let last = 0;
+                            do {
+                                if (nm.index > last) {
+                                    const before = document.createElement("span");
+                                    before.textContent = text.slice(last, nm.index);
+                                    span.appendChild(before);
+                                }
+                                const nameSpan = document.createElement("span");
+                                nameSpan.textContent = nm[0];
+                                nameSpan.classList.add("syntax");
+                                if (names.types.get(nm[0]) === "img") {
+                                    nameSpan.classList.add("syntaximgfilepath");
+                                    nameSpan.onclick = () => {
+                                        notify("open image", "open", () => {
+                                            showOverlay('#files_overlay', "files", false);
+                                            checkiffileandexpand(nameSpan.textContent);
+                                        });
+                                    };
+                                } else {
+                                    nameSpan.classList.add("syntaxfilepath");
+                                    nameSpan.onclick = () => {
+                                        notify("open file", "open", () => {
+                                            checkiffileandgoto(nameSpan.textContent.trim());
+                                        });
+                                    };
+                                }
+                                span.appendChild(nameSpan);
+                                last = nm.index + nm[0].length;
+                            } while ((nm = nameRegex.exec(text)));
+                            if (last < text.length) {
+                                const after = document.createElement("span");
+                                after.textContent = text.slice(last);
+                                span.appendChild(after);
+                            }
+                        }
+                    }
+                }
+                        else if (kind === 4) {
+                            function expandRgb(rgbString) {
+                                if (!rgbString) return "#000000";
+                                
+                                const m = rgbString
+                                    .replace(/\s+/g, '')
+                                    .match(/^(\d+),(\d+),(\d+)/);
+                                
+                                if (!m) return "#000000";
+                                
+                                const r = Math.max(0, Math.min(255, parseInt(m[1], 10)))
+                                    .toString(16).padStart(2, "0");
+                                const g = Math.max(0, Math.min(255, parseInt(m[2], 10)))
+                                    .toString(16).padStart(2, "0");
+                                const b = Math.max(0, Math.min(255, parseInt(m[3], 10)))
+                                    .toString(16).padStart(2, "0");
+                                
+                                return `#${r}${g}${b}`;
+                            }
+                            
+                            const spanspan = document.createElement("span");
+                            spanspan.className = "ajshspanspan";
+                            spanspan.textContent = match[0];
+                            
+                            const colorInput = document.createElement("input");
+                            colorInput.type = "color";
+                            colorInput.className = "syntaxcolorinput";
+                            
+                            try {
+                                colorInput.value = expandRgb(spanspan.textContent);
+                            } catch {
+                                colorInput.value = "#000000";
+                            }
+                            
+                            span.textContent = "";
+                            span.appendChild(spanspan);
+                            span.appendChild(colorInput);
+                            
+                            colorInput.addEventListener("input", () => {
+                                const allLines = editorFiles[editorIndex];
+                                const spanCCEL = spanspan.closest(".code-editor-line");
+                                if (!spanCCEL) return;
+                                
+                                const celineEIndex = spanCCEL.getAttribute("line-index");
+                                if (!celineEIndex) return;
+                                
+                                const lineIndex = parseInt(celineEIndex, 10);
+                                if (!allLines || !allLines[lineIndex]) return;
+                                
+                                const newpast = {
+                                    type: "text",
+                                    text: allLines[lineIndex].text,
+                                    index: lineIndex
+                                };
+                                
+                                lasteventsparentsection = section;
+                                pendNewPast(lasteventsparentsection, [newpast]);
+                                
+                                const hex = colorInput.value;
+                                const r = parseInt(hex.slice(1, 3), 16);
+                                const g = parseInt(hex.slice(3, 5), 16);
+                                const b = parseInt(hex.slice(5, 7), 16);
+                                if (className.includes("syntaxrgba")) {
+                                    spanspan.textContent = `${r}, ${g}, ${b},`;
+                                } else {
+                                    spanspan.textContent = `${r}, ${g}, ${b}`;
+                                }
+                                updateAttribute(spanCCEL);
+                            });
+                        }
+                        else if (kind === 5) {
+                            const starter = span.textContent.trim().startsWith("0x") ? "0x" : "#";
+                            function expandHex(shortHex) {
+                                let shortHexR = shortHex.replace(/^#/, '');
+                                if (shortHexR.length === 3) {
+                                    return "#" + shortHexR.split("").map(c => c + c).join("");
+                                }
+                                if (shortHexR.length === 6) {
+                                    return "#" + shortHexR;
+                                }
+                                return "#000000";
+                            }
+                            
+                            const spanspan = document.createElement("span");
+                            spanspan.className = "ajshspanspan";
+                            spanspan.textContent = match[0];
+                            
+                            const colorInput = document.createElement("input");
+                            colorInput.type = "color";
+                            try {
+                                colorInput.value = expandHex(span.textContent.replace(starter, "#"));
+                            } catch (e) {
+                                colorInput.value = "#000000";
+                            }
+                            colorInput.className = "syntaxcolorinput";
+                            
+                            span.textContent = "";
+                            span.appendChild(spanspan);
+                            span.appendChild(colorInput);
+                            
+                            colorInput.addEventListener("input", () => {
+                                const allLines = editorFiles[editorIndex];
+                                const spanCCEL = spanspan.closest(".code-editor-line");
+                                const celineEIndex = spanCCEL.getAttribute("line-index");
+                                if (!celineEIndex) return;
+                                const lineIndex = parseInt(celineEIndex);
+                                if (lineIndex == null || lineIndex == undefined || isNaN(lineIndex) || allLines[lineIndex] == null || allLines[lineIndex] == undefined) return;
+                                let newpast = {
+                                    type: "text",
+                                    text: allLines[lineIndex].text,
+                                    index: lineIndex
+                                };
+                                lasteventsparentsection = section;
+                                pendNewPast(lasteventsparentsection, [newpast]);
+                                spanspan.textContent = colorInput.value.replace("#", starter);
+                                updateAttribute(spanCCEL);
+                            });
+                        } else if (kind === 6) {
+                            
+                            span.onclick = () => {
+                                notify("edit regex", "open", () => {
+                                    showRegexTester(removeAbbreviations(span.textContent), (back) => {
+                                        if (back) {
+                                            const allLines = editorFiles[editorIndex];
+                                            const spanCCEL = span.closest(".code-editor-line");
+                                            if (!spanCCEL) return;
+                                            
+                                            const celineEIndex = spanCCEL.getAttribute("line-index");
+                                            if (!celineEIndex) return;
+                                            
+                                            const lineIndex = parseInt(celineEIndex, 10);
+                                            if (!allLines || !allLines[lineIndex]) return;
+                                            const newpast = {
+                                                type: "text",
+                                                text: allLines[lineIndex].text,
+                                                index: lineIndex
+                                            };
+                                            
+                                            lasteventsparentsection = section;
+                                            pendNewPast(lasteventsparentsection, [newpast]);
+                                            span.textContent = addAbbreviations(back);
+                                            updateAttribute(spanCCEL);
+                                            shortNotificationmessageelement("regex successfully updated");
+                                        }
+                                    });
+                                });
+                            };
+                        } else if (kind === 7) {
+                            span.classList.add("cssvardef");
+                        } else if (kind === 8) {
+                            span.onclick = () => {
+                                let definition = null;
+                                const allLines = editorFiles[fileEditorIndex];
+                                const alldeflines = allLines.filter(el => el.classes.includes('cssvardef'));
+                                if (alldeflines) {
+                                    for (let sv of alldeflines) {
+                                        const txtForSearch = `${isBefore == true ? additionalTxt : ""}${span.textContent}${isBefore == false ? additionalTxt : ""}`;
+                                        if (normalizeSpaces(sv.text).includes(txtForSearch)) {
+                                            definition = editorFiles[fileEditorIndex].indexOf(sv);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (definition) {
+                                    notify("go to definition", "go", () => {
+                                        scrolltolinenumber(definition);
+                                    });
+                                }
+                            };
+                        }
+                        
+        
+                        if (selectedTextToHighlight && span.textContent.includes(selectedTextToHighlight)) {
+                            span.classList.add('highlighted');
+                        }
+        
+                        container.appendChild(span);
+        
+                        lastIndex = match.index + match[0].length;
+                    } else {
                         const span = document.createElement("span");
                         span.textContent = text[lastIndex];
-                        span.classList.add("syntax");
+                        span.className = "syntax";
                         container.appendChild(span);
                         lastIndex++;
                     }
@@ -27424,15 +27523,15 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             function checkifcontinuedcomment() {
                 const testthisregex = /^[\s\S]*\/\*(?![\s\S]*\*\/)[\s\S]*$/;
                 const closeRegex = /^([^/]|\/(?!\*)|\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)*\*\/([^/]|\/(?!\*)|\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)*$/;
-                if (!testthisregex.test(code)) {
+                if (!tst(testthisregex, code, "/*")) {
                     return;
                 }
-
+        
                 let currentdiv = div;
                 while (currentdiv.nextElementSibling) {
                     currentdiv = currentdiv.nextElementSibling;
-    
-                    if (!closeRegex.test(currentdiv.textContent)) {
+            
+                    if (!tst(closeRegex, currentdiv.textContent, "*/")) {
                         let currentdivtextcontent = currentdiv.textContent;
                         currentdiv.innerHTML = "";
                         
@@ -27448,8 +27547,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             }
             function processDiv() {
                 const regexCommentEnd = /^([^/]|\/(?!\*)|\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)*\*\/([^/]|\/(?!\*)|\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)*$/;
-
-                if (regexCommentEnd.test(code)) {
+        
+                if (tst(regexCommentEnd, code, "*/")) {
                     let nextSibling = div;
                     while (nextSibling && nextSibling.classList.contains('syntaxcomment')) {
                         nextSibling.classList.remove('syntaxcomment');
@@ -27469,7 +27568,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             function checkcomments(div, text) {
                 let openRegex = /^[\s\S]*\/\*(?![\s\S]*\*\/)[\s\S]*$/;
                 const closeRegex = /^([^/]|\/(?!\*)|\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)*\*\/([^/]|\/(?!\*)|\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)*$/;
-                if (div.nextElementSibling && div.nextElementSibling.classList.contains('syntaxcomment') && !div.classList.contains('syntaxcomment') && !openRegex.test(text)) {
+                if (div.nextElementSibling && div.nextElementSibling.classList.contains('syntaxcomment') && !div.classList.contains('syntaxcomment') && !tst(openRegex, text, "/*")) {
                     let nextelement = div.nextElementSibling;
                     while (nextelement && nextelement.classList.contains('syntaxcomment')){
                         nextelement.classList.remove('syntaxcomment');
@@ -27480,7 +27579,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         updateAttribute(nextelement, fileEditorIndex);
                         nextelement = nextelement.nextElementSibling;
                     }
-                }else if (div.previousElementSibling && div.previousElementSibling.classList.contains('syntaxcomment') && !div.classList.contains('syntaxcomment') && !closeRegex.test(text)){
+                }else if (div.previousElementSibling && div.previousElementSibling.classList.contains('syntaxcomment') && !div.classList.contains('syntaxcomment') && !tst(closeRegex, text, "*/")){
                     div.classList.add('syntaxcomment');
                     div.innerHTML = "";
                     const container = document.createDocumentFragment();
@@ -27488,7 +27587,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     div.appendChild(container);
                     
                     let currentdiv = div.nextElementSibling;
-                    while (currentdiv && !closeRegex.test(currentdiv.textContent)) {
+                    while (currentdiv && !tst(closeRegex, currentdiv.textContent, "*/")) {
                         if (!currentdiv.classList.contains('syntaxcomment')){
                             let currentdivtextcontent = currentdiv.textContent;
                             currentdiv.innerHTML = "";
@@ -27501,13 +27600,13 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         }
                     }
                 }
-   
+           
             }
             
             function checkifcontinuedcomment2() {
                 const testthisregex = /^[\s\S]*<!--(?![\s\S]*-->)[\s\S]*$/;
                 const closeRegex = /^([^<]|<(?!\!--)|<!--[^-]*-+(?:[^-][^-]*-+)*-->)*-->([^<]|<(?!\!--)|<!--[^-]*-+(?:[^-][^-]*-+)*-->)*$/;
-                if (!testthisregex.test(code)) {
+                if (!tst(testthisregex, code, "<!--")) {
                     return;
                 }
                 
@@ -27515,7 +27614,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 while (currentdiv.nextElementSibling) {
                     currentdiv = currentdiv.nextElementSibling;
                     
-                    if (!closeRegex.test(currentdiv.textContent)) {
+                    if (!tst(closeRegex, currentdiv.textContent, "-->")) {
                         let currentdivtextcontent = currentdiv.textContent;
                         currentdiv.innerHTML = "";
                         
@@ -27533,7 +27632,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             function processDiv2() {
                 const regexCommentEnd = /^([^<]|<(?!\!--)|<!--[^-]*-+(?:[^-][^-]*-+)*-->)*-->([^<]|<(?!\!--)|<!--[^-]*-+(?:[^-][^-]*-+)*-->)*$/;
                 
-                if (regexCommentEnd.test(code)) {
+                if (tst(regexCommentEnd, code, "-->")) {
                     let nextSibling = div;
                     while (nextSibling && nextSibling.classList.contains('syntaxhtmlcomment')) {
                         nextSibling.classList.remove('syntaxhtmlcomment');
@@ -27552,7 +27651,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             function checkcomments2(div, text) {
                 let openRegex = /^[\s\S]*<!--(?![\s\S]*-->)[\s\S]*$/;
                 const closeRegex = /^([^<]|<(?!\!--)|<!--[^-]*-+(?:[^-][^-]*-+)*-->)*-->([^<]|<(?!\!--)|<!--[^-]*-+(?:[^-][^-]*-+)*-->)*$/;
-                if (div.nextElementSibling && div.nextElementSibling.classList.contains('syntaxhtmlcomment') && !div.classList.contains('syntaxhtmlcomment') && !openRegex.test(text)) {
+                if (div.nextElementSibling && div.nextElementSibling.classList.contains('syntaxhtmlcomment') && !div.classList.contains('syntaxhtmlcomment') && !tst(openRegex, text, "<!--")) {
                     let nextelement = div.nextElementSibling;
                     while (nextelement && nextelement.classList.contains('syntaxhtmlcomment')) {
                         nextelement.classList.remove('syntaxhtmlcomment');
@@ -27563,7 +27662,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                         updateAttribute(nextelement, fileEditorIndex);
                         nextelement = nextelement.nextElementSibling;
                     }
-                } else if (div.previousElementSibling && div.previousElementSibling.classList.contains('syntaxhtmlcomment') && !div.classList.contains('syntaxhtmlcomment') && !closeRegex.test(text)) {
+                } else if (div.previousElementSibling && div.previousElementSibling.classList.contains('syntaxhtmlcomment') && !div.classList.contains('syntaxhtmlcomment') && !tst(closeRegex, text, "-->")) {
                     div.classList.add('syntaxhtmlcomment');
                     div.innerHTML = "";
                     const container = document.createDocumentFragment();
@@ -27571,7 +27670,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     div.appendChild(container);
                     
                     let currentdiv = div.nextElementSibling;
-                    while (currentdiv && !closeRegex.test(currentdiv.textContent)) {
+                    while (currentdiv && !tst(closeRegex, currentdiv.textContent, "-->")) {
                         if (!currentdiv.classList.contains('syntaxhtmlcomment')) {
                             let currentdivtextcontent = currentdiv.textContent;
                             currentdiv.innerHTML = "";
@@ -27586,9 +27685,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 }
                 
             }
-            const divChildWC = document.querySelector(".cssvardef");
-            if (divChildWC) {
-                const allDivChildWC = document.querySelectorAll(".cssvardef");
+            const allDivChildWC = document.querySelectorAll(".cssvardef");
+            if (allDivChildWC.length) {
                 allDivChildWC.forEach(child => {
                     child.classList.remove("cssvardef");
                 });
@@ -27990,8 +28088,14 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             }
             pendingPasts = [];
         }
+        
         function handleKeyDown(event) {
-            removeAllHighlightedTexts();
+            selectedTextToHighlight = null;
+            const highlightedNow = document.getElementsByClassName('highlighted');
+            if (highlightedNow.length) {
+                const hlList = Array.from(highlightedNow);
+                for (let i = 0; i < hlList.length; i++) hlList[i].classList.remove('highlighted');
+            }
             const notif = document.querySelector('.notificationmessage');
             if (notif && notif.style.display !== "none") {
                 hidenotificationmessage();
@@ -28006,7 +28110,14 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 return;
             }
             
-            let celine = section.querySelector('.code-editor-line:focus');
+            let celine = null;
+            const activeNow = document.activeElement;
+            if (activeNow && activeNow.classList && activeNow.classList.contains('code-editor-line') && section.contains(activeNow)) {
+                celine = activeNow;
+            } else {
+                celine = section.querySelector('.code-editor-line:focus');
+            }
+            if (!celine) return;
             let nodelete = false;
             const newpast = [];
             let selection = window.getSelection();
@@ -28061,9 +28172,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 return;
             }
             
-            if (celine) {
+            const navKey = event.key;
+            const isPureNavKey = selectedText === "" && (navKey === 'ArrowLeft' || navKey === 'ArrowRight' || navKey === 'ArrowUp' || navKey === 'ArrowDown' || navKey === 'Home' || navKey === 'End' || navKey === 'PageUp' || navKey === 'PageDown');
+            if (celine && !isPureNavKey) {
                 const ctext = replaceNormalSpaces(celine.textContent);
-                celine.innerHTML = "";
                 celine.textContent = ctext;
                 if (cursorPosition !== null) {
                     setCursorPosition(celine, cursorPosition);
@@ -28121,7 +28233,10 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 noKeyDown = true;
                 event.preventDefault();
                 const allLines = editorFiles[editorIndex];
-                if (!celine || !allLines || allLines == undefined) return;
+                if (!celine || !allLines || allLines == undefined) {
+                    noKeyDown = false;
+                    return;
+                }
                 
                 if (celine.classList.contains('hiddenlinesparent')) {
                     celine.classList.remove('hiddenlinesparent');
@@ -28130,29 +28245,37 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 
                 const newid = createCodeEditorLineId();
                 lasteventsparentsection = section;
-                pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
-                
                 const text = celine.textContent;
+                pushPastTo(newpast, { type: "text", index: lineIndex, text: text, cursor: cursorPosition });
+                
                 const textBehindCursor = text.substring(cursorOffset);
-                celine.textContent = text.substring(0, cursorOffset);
+                const textBeforeCursor = text.substring(0, cursorOffset);
+                celine.textContent = textBeforeCursor;
                 updateAttribute(celine);
                 
                 let spaces = "";
-                for (let i = 0, len = celine.textContent.length; i < len; i++) {
-                    const ch = celine.textContent[i];
+                for (let i = 0, len = textBeforeCursor.length; i < len; i++) {
+                    const ch = textBeforeCursor[i];
                     if (ch === " " || ch === "\u00A0") spaces += "\u00A0";
                     else break;
                 }
                 const firstspaces = spaces;
                 
-                const lastsignincelineelement = getLastNonSpaceCharInText(celine.textContent);
+                const lastsignincelineelement = getLastNonSpaceCharInText(textBeforeCursor);
                 const firstsignintextbehindcursor = getFirstNonSpaceCharInTextaftercursor(textBehindCursor);
                 const openingsignsincssandjavascript = ["{", "[", "(", ":"];
                 const clisingsignsincssandjavascript = ["}", "]", ")", "\""];
                 
                 const indentSize = parseInt(editorIndentSize);
-                const openTagMatch = celine.textContent.trim().match(/<(\w+)([^>]*)>$/);
-                if (openingsignsincssandjavascript.includes(lastsignincelineelement) || (openTagMatch && !SELF_CLOSING_TAGS.has(openTagMatch[1]))) {
+                let opensIndent = openingsignsincssandjavascript.includes(lastsignincelineelement);
+                if (!opensIndent) {
+                    const trimmedBefore = textBeforeCursor.trim();
+                    if (trimmedBefore.charCodeAt(trimmedBefore.length - 1) === 62) {
+                        const openTagMatch = trimmedBefore.match(/<(\w+)([^>]*)>$/);
+                        opensIndent = !!(openTagMatch && !SELF_CLOSING_TAGS.has(openTagMatch[1]));
+                    }
+                }
+                if (opensIndent) {
                     spaces += "\u00A0".repeat(indentSize);
                 }
                 
@@ -28171,29 +28294,35 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 if (celine.nextElementSibling && celine.nextElementSibling.classList.contains('syntaxstring')) newline.classes.push('syntaxstring');
                 
                 try {
-                    if (/\/\*(?!.*\*\/)/g.test(celine)) newline.classes.push('syntaxcomment');
-                    if (/(?<!<!--.*)-->$/g.test(celine)) newline.classes.push('syntaxhtmlcomment');
+                    if (/\/\*(?!.*\*\/)/.test(textBeforeCursor)) newline.classes.push('syntaxcomment');
+                    if (/<!--(?!.*-->)/.test(textBeforeCursor)) newline.classes.push('syntaxhtmlcomment');
                 } catch (e) {
                     console.warn(e);
                 }
                 
+                let newlineIndex;
                 if (allLines[lineIndex + 1]) {
                     allLines.splice(lineIndex + 1, 0, newline);
+                    newlineIndex = lineIndex + 1;
                 } else {
                     allLines.push(newline);
+                    newlineIndex = allLines.length - 1;
                 }
-                pushPastTo(newpast, { element: {...newline}, type: "create", index: allLines.indexOf(newline), cursor: 0 });
+                pushPastTo(newpast, { element: {...newline}, type: "create", index: newlineIndex, cursor: 0 });
                 let offset = -1;
                 if (clisingsignsincssandjavascript.includes(firstsignintextbehindcursor) || closingTagMatch) {
                     const newline2text = firstspaces + textBehindCursor;
                     const newline2 = {id:createCodeEditorLineId(),classes:["code-editor-line"],text:newline2text};
-                    if (allLines[allLines.indexOf(newline) + 1]) {
-                        allLines.splice(allLines.indexOf(newline) + 1, 0, newline2);
+                    let newline2Index;
+                    if (allLines[newlineIndex + 1]) {
+                        allLines.splice(newlineIndex + 1, 0, newline2);
+                        newline2Index = newlineIndex + 1;
                     } else {
                         allLines.push(newline2);
+                        newline2Index = allLines.length - 1;
                     }
                     offset = -2;
-                    pushPastTo(newpast, { element: {...newline2}, type: "create", index: allLines.indexOf(newline2), cursor: 0 });
+                    pushPastTo(newpast, { element: {...newline2}, type: "create", index: newline2Index, cursor: 0 });
                 }
                 
                 if ((celine.nextElementSibling && offset != -2) || (celine.nextElementSibling && celine.nextElementSibling.nextElementSibling)) {
@@ -28229,8 +28358,11 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 noKeyDown = true;
                 lasteventsparentsection = section;
                 const allFileLines = editorFiles[editorIndex];
-                if (celine && celine.textContent != "") {
-                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                if (celine) {
+                    const bsText = celine.textContent;
+                    if (bsText != "") {
+                        pushPastTo(newpast, { type: "text", index: lineIndex, text: bsText, cursor: cursorPosition });
+                    }
                 }
                 
                 
@@ -28360,19 +28492,20 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             else if (event.key === '>') {
                 lasteventsparentsection = section;
                 const allLines = editorFiles[editorIndex];
-                pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
+                const gtText = celine.textContent;
+                pushPastTo(newpast, { type: "text", index: lineIndex, text: gtText, cursor: cursorPosition });
                 const sel = window.getSelection();
                 if (!sel || !sel.rangeCount) return;
                 const r = sel.getRangeAt(0);
                 const offs = r.startOffset;
-                const left = celine.textContent.substring(0, offs);
+                const left = gtText.substring(0, offs);
                 const openTagMatch = left.match(/<(\w+)([^>]*)$/);
                 if (openTagMatch) {
                     const tagName = openTagMatch[1];
                     if (SELF_CLOSING_TAGS.has(tagName)) return;
                     event.preventDefault();
                     const tagEnd = `</${tagName}>`;
-                    const after = celine.textContent.substring(offs);
+                    const after = gtText.substring(offs);
                     celine.textContent = left + '>' + tagEnd + after;
                     const node = celine.firstChild || celine;
                     r.setStart(node, offs + 1);
@@ -28459,6 +28592,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             }
             pendNewPast(lasteventsparentsection, newpast);
         }
+
 
         const undolimitnum = document.querySelector('.undolimitnum');
         const undolimit = document.querySelector('.undolimit input[type="checkbox"]');
