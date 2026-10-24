@@ -26794,22 +26794,33 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 
                 const caretPosition = cursorOffset + processedLines[0].length;
                 
+                const finishSinglePaste = () => {
+                    cPasting = false;
+                    noKeyDown = false;
+                    const theCeline = section.querySelector(`.code-editor-line[line-index="${lineIndex}"]`);
+                    if (theCeline) {
+                        theCeline.focus();
+                        setCursorPosition(theCeline, caretPosition);
+                    }
+                    
+                    if (newpast2.length > 0) {
+                        resolvePendingPast();
+                        pasteventPrep();
+                        pastevents[lasteventsparentsection.id].push(newpast2);
+                        enablepastbtn();
+                        updateSaveFile();
+                    }
+                    
+                    if (theCeline) preserveCursorAndHighlight(theCeline);
+                };
+                
                 updateSelectedClasses(0, () => {
                     setTimeout(() => {
-                        cPasting = false;
-                        noKeyDown = false;
-                        celine.focus();
-                        setCursorPosition(celine, caretPosition);
-                        
-                        if (newpast2.length > 0) {
-                            resolvePendingPast();
-                            pasteventPrep();
-                            pastevents[lasteventsparentsection.id].push(newpast2);
-                            enablepastbtn();
-                            updateSaveFile();
+                        if (section.querySelector(`.code-editor-line[line-index="${lineIndex}"]`)) {
+                            finishSinglePaste();
+                        } else {
+                            scrolltolinenumber(lineIndex, undefined, undefined, finishSinglePaste);
                         }
-                        
-                        preserveCursorAndHighlight(celine);
                     }, 0);
                 });
                 
@@ -26858,6 +26869,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 });
             });
         }
+
         function analyzeAndHideElements(relement) {
             const allLines = editorFiles[editorIndex];
             if (!relement || !allLines || !allLines.includes(relement)) return;
