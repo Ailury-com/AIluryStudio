@@ -21451,7 +21451,10 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                         if ((cum[visibleMap[mid]] || 0) <= scrollTop) low = mid + 1;
                         else high = mid;
                     }
-                    const newFirstVisible = totalVisible === 0 ? 0 : Math.max(0, Math.min(totalVisible - 1, low - 1));
+                    // FIX: clamp to the same maximum start that render() uses, so the stored
+                    // window start is identical whether it came from render() or from this listener.
+                    const maxStartVisible = Math.max(0, totalVisible - visibleLines);
+                    const newFirstVisible = totalVisible === 0 ? 0 : Math.max(0, Math.min(maxStartVisible, low - 1));
                     const prevStartVisible = (state._lastRender && typeof state._lastRender.startVisible === 'number') ? state._lastRender.startVisible : 0;
 
                     if (newFirstVisible === prevStartVisible) return;
