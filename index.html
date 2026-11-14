@@ -16942,19 +16942,15 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             }
         }
         function gobacktolastfutureevent(secId = editorIndex) {
-            
-            enablepastbtn();
             pastOrFuture(futureevents, pastevents, true, secId);
         }
         function gobacktolastpastevent(secId = editorIndex) {
-            enablefuturebtn();
             pastOrFuture(pastevents, futureevents, false, secId);
         }
         function pastOrFuture(wentedBucket = pastevents, wantedCounterBucket = futureevents, isFutureEv = false, parentId) {
             resolvePendingPast();
-            noKeyDown = true;
             if (!parentId || undoing == true) return;
-            undoing = true;
+            
             const bucket = wentedBucket[parentId];
             
             if (!bucket || !Array.isArray(bucket) || bucket.length == 0) {
@@ -16975,6 +16971,8 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
             if (!wantedCounterBucket[parentId]) {
                 wantedCounterBucket[parentId] = [];
             }
+            noKeyDown = true;
+            undoing = true;
             const lastevent = bucket.pop();
             if (!lastevent || !Array.isArray(lastevent)) {
                 if (isFutureEv) {
@@ -16983,6 +16981,7 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                     disablepastbtn();
                 }
                 undoing = false;
+                noKeyDown = false;
                 return;
             }
             
@@ -17051,14 +17050,16 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 
                 else if (element.type == "text" && hasIndex(element.index)) {
                     const target = safeGetLine(element.index);
-                    let elToPush = {
-                        type: "text",
-                        text: target.text,
-                        index: element.index
-                    };
-                    // add cursor pos in the future (maybe)
-                    pushEl.push(elToPush);
-                    if (target) target.text = element.text;
+                    if (target) {
+                        let elToPush = {
+                            type: "text",
+                            text: target.text,
+                            index: element.index
+                        };
+                        // add cursor pos in the future (maybe)
+                        pushEl.push(elToPush);
+                        target.text = element.text;
+                    }
                 }
                 
                 else if (element.type == "create" && hasIndex(element.index)) {
@@ -17127,8 +17128,15 @@ ${" ".repeat(editorIndentSize)}width: 100vw;
                 }
             });
             wantedCounterBucket[parentId].push(pushEl);
+            
+            if (isFutureEv) {
+                enablepastbtn();
+            } else {
+                enablefuturebtn();
+            }
+            
             const lastElement = events[events.length - 1];
-            if (section && lastElement.index != undefined && hasIndex(lastElement.index) && parentId == section.id) {
+            if (lastElement && section && lastElement.index != undefined && hasIndex(lastElement.index) && parentId == section.id) {
                 scrolltolinenumber(lastElement.index);
                 
                 updateSelectedClasses(undefined, () => {
@@ -26735,7 +26743,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 const sel = window.getSelection();
                 if (!sel || !sel.rangeCount) return null;
                 const range = sel.getRangeAt(0);
-                selectedText = range.toString();
+                const selectedText = range.toString();
                 if (selectedText !== "" && event.key !== "Tab") {
                     range.deleteContents();
                 }
@@ -26831,21 +26839,29 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             }
             
             celine.textContent = textBeforeCursor + processedLines[0];
-            
+
             const newLines = new Array(lineCount - 1);
             for (let i = 1; i < lineCount; i++) {
+                const isLast = i === lineCount - 1;
                 const newline = {
                     id: createCodeEditorLineId(),
                     classes: ['code-editor-line'],
-                    text: spaces + processedLines[i]
+                    text: spaces + processedLines[i] + (isLast ? textAfterCursor : '')
                 };
                 newLines[i - 1] = newline;
                 newpast2.push({ element: {...newline}, type: "create", index: lineIndex + i });
             }
-            
             allLines.splice(lineIndex + 1, 0, ...newLines);
             
             const lastLine = lineIndex + lineCount - 1;
+            const caretPosition = spaces.length + processedLines[lineCount - 1].length;
+            
+            // record history right away so it can't be skipped
+            resolvePendingPast();
+            pasteventPrep();
+            pastevents[lasteventsparentsection.id].push(newpast2);
+            enablepastbtn();
+            updateSaveFile();
             
             updateAttribute(celine);
             updateSelectedClasses(0, () => {
@@ -26854,20 +26870,8 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     noKeyDown = false;
                     const theNewCeline = section.querySelector(`.code-editor-line[line-index="${lastLine}"]`);
                     if (!theNewCeline) return;
-                    
-                    const caretPosition = spaces.length + processedLines[lineCount - 1].length;
-                    theNewCeline.textContent += textAfterCursor;
-                    updateAttribute(theNewCeline);
                     theNewCeline.focus();
                     setCursorPosition(theNewCeline, caretPosition);
-                    
-                    if (newpast2.length > 0) {
-                        resolvePendingPast();
-                        pasteventPrep();
-                        pastevents[lasteventsparentsection.id].push(newpast2);
-                        enablepastbtn();
-                        updateSaveFile();
-                    }
                     preserveCursorAndHighlight(theNewCeline);
                 });
             });
@@ -27747,9 +27751,11 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
         document.addEventListener('beforeinput', e => {
             if (e.target && e.target.parentElement && e.target.parentElement.classList.contains('code-editor-container')) {
                 if (e.inputType == 'historyUndo') {
+                    e.preventDefault();
                     gobacktolastpastevent();
                 }
                 else if (e.inputType === 'historyRedo') {
+                    e.preventDefault();
                     gobacktolastfutureevent();
                 }
             }
@@ -27766,6 +27772,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
             if (event.target && event.target.parentElement && event.target.parentElement.classList.contains('code-editor-container')) {
                 handleKeyDown(event);
             }
+            
+            if (typeof event.key !== 'string') return;
+            
             if (section.id != "forview" && editorIndex && editorIndex != "forview") {
                 const isCmdOrCtrl = event.metaKey || event.ctrlKey;
                 const areSelectedLine = editorFiles[editorIndex] && editorFiles[editorIndex].filter(el => el.classes.includes('selected')).length > 0;
@@ -27981,6 +27990,7 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                     return;
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "z" && !event.shiftKey) {
+                    event.preventDefault();
                     shortNotificationmessageelement("To undo changes in a file, use Ctrl/Cmd + u");
                 }
                 else if (isCmdOrCtrl && event.key.toLowerCase() == "y") {
@@ -28216,28 +28226,9 @@ os.system = lambda cmd: fallback_clear_engine() if cmd in ['clear', 'cls', 'cls 
                 selection.removeAllRanges();
                 selection.addRange(range);
             };
-        
+            
             const skipOrRecord = (closingChar) => skipClosingCharacterIfMatches(celine, selection, range, cursorOffset, closingChar, newpast, cursorPosition);
-        
-            const skipOrInsertPair = (closingChar) => {
-                const allLines = editorFiles[editorIndex];
-                if (skipClosingCharacterIfMatches(celine, selection, range, cursorOffset, closingChar, newpast, cursorPosition)) {
-                    event.preventDefault();
-                } else {
-                    lasteventsparentsection = section;
-                    pushPastTo(newpast, { type: "text", index: lineIndex, text: celine.textContent, cursor: cursorPosition });
-                    event.preventDefault();
-                    insertClosing(cosing = closingChar, closingChar);
-                    const text2 = celine.textContent;
-                    const after2 = text2.substring(cursorOffset);
-                    celine.textContent = text2.substring(0, cursorOffset) + closingChar + closingChar + after2;
-                    const node2 = celine.firstChild || celine;
-                    range.setStart(node2, cursorOffset + 1);
-                    range.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
-            };
+            
             if (event.key === 'Tab') {
                 event.preventDefault();
                 const additionalspaces = " ".repeat(m__right);
